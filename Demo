@@ -7,6 +7,10 @@
 
 using namespace std;
 
+int appearance_min_x = 10;
+int appearance_max_x = 50;
+int appearance_min_y = 5;
+int appearance_max_y = 20;
 
 const int width = 60; // Ancho del tablero
 const int height = 25; // Alto del tablero
@@ -18,61 +22,135 @@ int Puntaje = 0; // Puntaje del jugador
 
 string Espera = "Presiona cualquier tecla para continuar..."; // Tiempo de espera
 
-void clearScreen() {
-    system("cls");
-}
+int Board_1[height][width] = {
+    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+    {1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1},
+    {1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+    {1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1},
+    {1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1},
+    {1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1},
+    {1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1},
+    {1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1},
+    {1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1},
+    {1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+};
 
-void Drawboard_1(int board[height][width]) {
-    // Inicializar el tablero con 1 (pared)
-    for (int i = 0; i < height; ++i) {
-        for (int j = 0; j < width; ++j) {
-            board[i][j] = 1;
-        }
-    }
+int Board_2[height][width] = {
+    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+    {1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1},
+    {1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1},
+    {1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1},
+    {1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1},
+    {1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1},
+    {1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1},
+    {1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1},
+    {1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1},
+    {1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1},
+    {1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1},
+    {1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1},
+    {1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1},
+    {1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1},
+    {1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1},
+    {1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1},
+    {1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1},
+    {1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1},
+    {1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1},
+    {1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1},
+    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+};
 
-    // Crear un camino inicial en el laberinto
-    for (int i = 1; i < height - 1; ++i) {
-        board[i][1] = 0; // Crear un camino vertical en la segunda columna
-    }
-    for (int j = 1; j < width - 1; ++j) {
-        board[height / 2][j] = 0; // Crear un camino horizontal en la fila central
-    }
-
-    // Generar aleatoriamente algunos caminos adicionales
-    srand(time(0));
-    for (int i = 0; i < height; ++i) {
-        for (int j = 0; j < width; ++j) {
-            if (rand() % 5 == 0) {
-                board[i][j] = 0; // Crear caminos aleatorios
-            }
-        }
-    }
-
-    // Asegurar un camino en las posiciones de inicio y fin del muñeco
-    board[1][1] = 0; // Punto de inicio
-    board[height - 2][width - 2] = 0; // Punto de fin
-}
+int Board_3[height][width] = {
+    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+    {1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1},
+    {1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+    {1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+    {1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+    {1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1},
+    {1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1},
+    {1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1},
+    {1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1},
+    {1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1},
+    {1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1},
+    {1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1},
+    {1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1},
+    {1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1},
+    {1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1},
+    {1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1},
+    {1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1},
+    {1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1},
+    {1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1},
+    {1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1},
+    {1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 0, 1},
+    {1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1},
+    {1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1},
+    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1},
+    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+};
 
 void PrintBoard_1(int board[height][width]) {
     for (int i = 0; i < height; ++i) {
         for (int j = 0; j < width; ++j) {
             if (board[i][j] == 1) {
-                cout << "#"; // Pared
+                cout << "\033[41m  \033[0m"; // Bloque de color rojo
             }
             else {
-                cout << " "; // Camino
+                cout << "  ";
             }
         }
         cout << endl;
     }
 }
 
-void dibujarHeroe() {
-    cout << "";
-    cout << "";
-    cout << "";
+void PrintBoard_2(int board[height][width]) {
+    for (int i = 0; i < height; ++i) {
+        for (int j = 0; j < width; ++j) {
+            if (board[i][j] == 1) {
+                cout << "\033[42m  \033[0m"; // Bloque de color verde
+            }
+            else {
+                cout << "  ";
+            }
+        }
+        cout << endl;
+    }
 }
 
+void PrintBoard_3(int board[height][width]) {
+    for (int i = 0; i < height; ++i) {
+        for (int j = 0; j < width; ++j) {
+            if (board[i][j] == 1) {
+                cout << "\033[43m  \033[0m"; // Bloque de color amarillo
+            }
+            else {
+                cout << "  ";
+            }
+        }
+        cout << endl;
+    }
+}
+
+/*
+Funciones Auxiliares
+*/
 void gotoxy(int x, int y) {
     COORD coord;
     coord.X = x;
@@ -80,8 +158,44 @@ void gotoxy(int x, int y) {
     SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
 }
 
-void Drawboard() {
-    int board[height][width] = {0,0,0,0,0,0,0,00};
+void clearScreen() {
+    system("cls");
+}
+
+void hideCursor() {
+    // Estructura para almacenar la información del cursor
+    CONSOLE_CURSOR_INFO cursorInfo;
+
+    // Manejador de la consola
+    HANDLE consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
+
+    // Obtiene la información actual del cursor
+    GetConsoleCursorInfo(consoleHandle, &cursorInfo);
+
+    // Oculta el cursor estableciendo su visibilidad en false
+    cursorInfo.bVisible = false;
+
+    // Establece la información del cursor en la consola
+    SetConsoleCursorInfo(consoleHandle, &cursorInfo);
+}
+
+int randnum(int min, int max) {
+    return min + rand() % (max - min + 1);
+}
+
+/*
+Heroe
+*/
+void Heroe(int x, int y) {
+    gotoxy(x, y);   cout << " O";
+    gotoxy(x, y++); cout << "/|\\";
+    gotoxy(x, y++); cout << "/ \\";
+}
+
+void borrarHeroe(int x, int y) {
+    gotoxy(x, y);   cout << "    ";
+    gotoxy(x, y++); cout << "    ";
+    gotoxy(x, y++); cout << "    ";
 }
 
 void PuntajeHeroe(int x, int y, int puntaje) {
@@ -89,6 +203,9 @@ void PuntajeHeroe(int x, int y, int puntaje) {
     cout << puntaje;
 }
 
+/*
+Efectos de Mensaje
+*/
 void printGradually(const string& message, int delay) {
     for (char c : message) {
         cout << c << flush; // Asegura que el carácter se imprima inmediatamente
@@ -112,24 +229,9 @@ void printBlinkingText(const string& text) {
     }
 }
 
-// Función para ocultar el cursor en la consola
-void hideCursor() {
-    // Estructura para almacenar la información del cursor
-    CONSOLE_CURSOR_INFO cursorInfo;
-
-    // Manejador de la consola
-    HANDLE consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
-
-    // Obtiene la información actual del cursor
-    GetConsoleCursorInfo(consoleHandle, &cursorInfo);
-
-    // Oculta el cursor estableciendo su visibilidad en false
-    cursorInfo.bVisible = false;
-
-    // Establece la información del cursor en la consola
-    SetConsoleCursorInfo(consoleHandle, &cursorInfo);
-}
-
+/*
+Movimiento de los Tutores y Enemigos
+*/
 void moveCharacter(char board[height][width], int& posY, int& posX) {
     int move = rand() % 4;
     switch (move) {
@@ -146,6 +248,9 @@ void moveCharacters(char board[height][width], int posYChars[], int posXChars[])
     }
 }
 
+/*
+Tutoriales
+*/
 void showPythagorasCuriousThings() {
     clearScreen();
     int input;
@@ -161,7 +266,7 @@ void showPythagorasCuriousThings() {
         break;
     case 2:
         cout << "Fundador de una Escuela Secreta:" << endl;
-        cout << "Sobre su fundacion de una escuela en Crotona, donde sus seguidores, aprendian con el, Matematicas, Filosofía y Musica." << endl;
+        cout << "Sobre su fundacion de una escuela en Crotona, donde sus seguidores, aprendian con el, Matematicas, Filosofia y Musica." << endl;
         cout << "La escuela funcionaba casi como una sociedad secreta con sus propios ritos y reglas." << endl;
         cout << "Aun tienes mucho por descubrir en este mundo de las Matematicas" << endl;
         break;
@@ -236,8 +341,8 @@ void showPythagorasTheorem() {
         break;
     case 5:
         cout << "Pruebas diversas:" << endl;
-        cout << "Hay mas de 370 pruebas conocidas del teorema de Pitagoras, incluyendo algunas geometricas, algebraicas y por reducción al absurdo." << endl;
-        cout << "Uno de los más famosos que ofrecio una prueba fue el presidente de los Estados Unidos, James Garfield." << endl;
+        cout << "Hay mas de 370 pruebas conocidas del teorema de Pitagoras, incluyendo algunas geometricas, algebraicas y por reduccion al absurdo." << endl;
+        cout << "Uno de los mas famosos que ofrecio una prueba fue el presidente de los Estados Unidos, James Garfield." << endl;
         cout << "¿Podrias demostrarlo?" << endl;
         break;
     case 6:
@@ -529,13 +634,18 @@ void showEquationsTutorial_X() {
     }
 }
 
+/*
+Estructura para los Desafios
+*/
 struct Challenge {
     string challengeText;
     string alternatives[3];
     int correctAnswer;
 };
 
-
+/*
+Modelo de Pregunta
+*/
 void askQuestion(const Challenge& challenge) {
     cout << challenge.challengeText << endl;
     cout << "Opciones:" << endl;
@@ -551,6 +661,7 @@ void askQuestion(const Challenge& challenge) {
 
         if (userChoice == 0) {
             cout << "Desafio omitido." << endl;
+            Sleep(1000);
             return;
         }
         else if (userChoice >= 1 && userChoice <= 3) {
@@ -582,7 +693,7 @@ void showChallengePythagorasCuriousThings() {
     srand(time(0));
     clearScreen();
 
-    // Definir desafíos sobre curiosidades de Pitágoras
+    // Definicion de Desafios
     Challenge pythagorasChallenges[] = {
         {"¿Como es atribuido Pitagoras?",
          {"Pitagorico", "Padre de la biologia", "Padre de los numeros"},
@@ -618,7 +729,7 @@ void showChallengePythagorasTheorem() {
     srand(time(0));
     clearScreen();
 
-    // Definir desafíos sobre curiosidades de Pitágoras
+    // Definicion de Desafios
     Challenge pythagorasChallenges[] = {
         {"¿En la formula a^2 + b^2 = c^2, que representa la c?",
          {"Diagonal", "Hipotenusa", "Cateto"},
@@ -629,7 +740,7 @@ void showChallengePythagorasTheorem() {
         {"¿En que areas es usado el Teorema de Pitagoras?",
          {"Medicina", "Economia", "Navegacion"},
          3},
-        {"¿Cuantos grados debe medir un angulo para ser considerado rectangulo?",
+        {"¿Cuantos grados debe medir un angulo en un triangulo para ser considerado rectangulo?",
          {"90", "85", "45"},
          1},
         {"Aproximadamente, ¿cuantas pruebas hay del Teorema de Pitagoras?",
@@ -654,27 +765,9 @@ void showChallengePythagorasVectors() {
     srand(time(0));
     clearScreen();
 
-    // Definir desafíos sobre curiosidades de Pitágoras
+    // Definicion de Desafios
     Challenge pythagorasChallenges[] = {
-        {"¿Como se calcula la magnitud de un vector?",
-         {"Restando la componente x con la y", "Sumando sus componentes y multiplicandolos por 6", "Raiz cuadrada de la suma de los cuadrados de sus componentex x y y"},
-         3},
-        {"¿Puede calcularse la distancia entre dos puntos en el plano cartesiano?",
-         {"Solo en circulos", "Si, su magnnitud tambien", "No puede calcularse"},
-         2},
-        {"¿Podria calcular la distancia y magnitud en un vector en un plano tridimensional?",
-         {"Si, anadiendo el cuadrado de su tercer componente z a la formula de la magnitud", "No, la formula funciona unicamente en el plano bidimensional", "Si, pero necesita ser modificado severamente"},
-         1},
-        {"Si un vector es perpendicular a otro, y sus magnitudes son '3' y '4', ¿cual es la magnitud de su vector resultante?",
-         {"7", "5", "12"},
-         2},
-        {"¿Para que aplicaciones de la fisica es util el Teorema de Pitagoras?",
-         {"La masa", "La gravedad", "La velocidad"},
-         3},
-        {"¿En que otras areas es utilizado el teorema de Pitagoras?",
-         {"Aritmetica", "Finanzas", "Algebra Vectorial"},
-         3},
-        {"¿Como es llamado a la magnitud de n dimensiones derivado del Teorema de Pitagoras?",
+        {"¿Como selamado a la magnitud de n dimensiones derivado del Teorema de Pitagoras?",
         {"Basicismo", "Norma Neutral", "Norma Euclidiana"},
         3},
     };
@@ -712,9 +805,9 @@ void showChallengeEquationsCuriousThings() {
     srand(time(0));
     clearScreen();
 
-    // Definir desafíos sobre curiosidades de Pitágoras
+    // Definicion de Desafios
     Challenge equationsChallenges[] = {
-        {"¿Desde que años ya resolvian ecuaciones lineales?",
+        {"¿Desde que anos ya resolvian ecuaciones lineales?",
          {"Desde 900 a. C.", "Desde 1500 a. C.", "Desde 1900 a. C."},
          3},
         {"¿Donde son fundamentales las ecuaciones lineales?",
@@ -748,7 +841,7 @@ void showChallengeEquationsUtility() {
     srand(time(0));
     clearScreen();
 
-    // Definir desafíos sobre curiosidades de Pitágoras
+    // Definicion de Desafios
     Challenge equationsChallenges[] = {
         {"¿En que disciplinas el modelado de ecuaciones es util?",
          {"Gastronomia","Ingenieria", "Psicologia"},
@@ -786,7 +879,7 @@ void showChallengeEquationsHistory() {
     srand(time(0));
     clearScreen();
 
-    // Definir desafíos sobre curiosidades de Pitágoras
+    // Definicion de Desafios
     Challenge equationsChallenges[] = {
         {"¿Que desarrollaron los Babilonios en 2000 a.C.?",
          {"Tablas de division", "Tablas de multiplicar", "Tablas de suma"},
@@ -838,143 +931,4 @@ void showEquationsChallenge_K() {
         break;
     default: clearScreen(); showEquationsChallenge_K();
     }
-}
-
-int main() {
-    hideCursor();
-
-    // Posiciones iniciales de los muñecos A
-    int posXChars_A[numCharacters] = { 10, 20, 30, 5, 15, 25, 35, 5, 15, 25 };
-    int posYChars_A[numCharacters] = { 5, 10, 15, 5, 10, 15, 5, 15, 5, 15 };
-
-    // Posiciones iniciales de los muñecos X
-    int posXChars_X[numCharacters] = { 8, 18, 28, 3, 13, 23, 33, 8, 18, 28 };
-    int posYChars_X[numCharacters] = { 3, 8, 13, 3, 8, 13, 3, 13, 3, 13 };
-
-    // Posiciones iniciales de los muñecos W
-    int posXChars_W[numCharacters] = { 6, 14, 22, 4, 12, 20, 28, 10, 18, 26 };
-    int posYChars_W[numCharacters] = { 2, 4, 6, 8, 10, 12, 14, 16, 18, 20 };
-
-    // Posiciones iniciales de los muñecos K
-    int posXChars_K[numCharacters] = { 4, 14, 24, 3, 13, 23, 33, 8, 18, 28 };
-    int posYChars_K[numCharacters] = { 1, 6, 11, 1, 6, 11, 1, 11, 1, 11 };
-
-    char board[height][width]; // Tablero de juego
-
-    // Inicializamos el tablero con espacios en blanco y bordes
-    for (int i = 0; i < height; ++i) {
-        for (int j = 0; j < width; ++j) {
-            // Dibujar bordes
-            if (i == 0 || i == height - 1 || j == 0 || j == width - 1)
-                board[i][j] = '#'; // Carácter para el borde
-            else
-                board[i][j] = ' '; // Espacio en blanco para el interior
-        }
-    }
-
-    // Añadir obstáculos al tablero
-    srand(time(0));
-    int numObstacles = 400; // Número de obstáculos
-    for (int i = 0; i < numObstacles; ++i) {
-        int obsX, obsY;
-        bool validPosition;
-        do {
-            obsX = rand() % (width - 2) + 1; // Generar coordenada X aleatoria dentro del tablero
-            obsY = rand() % (height - 2) + 1; // Generar coordenada Y aleatoria dentro del tablero
-            validPosition = true;
-            // Verificar que la posición no sea la inicial del muñeco O ni de otros muñecos
-            if (obsX == posX && obsY == posY) {
-                validPosition = false;
-            }
-            else {
-                for (int j = 0; j < numCharacters; ++j) {
-                    if ((obsX == posXChars_A[j] && obsY == posYChars_A[j]) ||
-                        (obsX == posXChars_X[j] && obsY == posYChars_X[j]) ||
-                        (obsX == posXChars_W[j] && obsY == posYChars_W[j]) ||
-                        (obsX == posXChars_K[j] && obsY == posYChars_K[j])) {
-                        validPosition = false;
-                        break;
-                    }
-                }
-            }
-        } while (!validPosition || board[obsY][obsX] != ' '); // Asegurarse de que el obstáculo no se coloque sobre otro obstáculo o muñeco
-        board[obsY][obsX] = '#'; // Carácter para el obstáculo
-    }
-
-    while (true) {
-
-        // Dibujamos los muñecos A, X, W y K en el tablero
-        for (int i = 0; i < numCharacters; ++i) {
-            board[posYChars_A[i]][posXChars_A[i]] = 'A';
-            board[posYChars_X[i]][posXChars_X[i]] = 'X';
-            board[posYChars_W[i]][posXChars_W[i]] = 'W';
-            board[posYChars_K[i]][posXChars_K[i]] = 'K';
-        }
-
-        // Dibujamos al muñeco O en el tablero
-        board[posY][posX] = 'O';
-
-        // Limpiamos la pantalla
-        system("cls");
-
-        // Imprimimos el tablero
-        for (int i = 0; i < height; ++i) {
-            for (int j = 0; j < width; ++j) {
-                cout << board[i][j] << " ";
-            }
-            cout << endl;
-        }
-
-        // Limpiamos las posiciones anteriores de los muñecos en el tablero
-        for (int i = 0; i < numCharacters; ++i) {
-            board[posYChars_A[i]][posXChars_A[i]] = ' ';
-            board[posYChars_X[i]][posXChars_X[i]] = ' ';
-            board[posYChars_W[i]][posXChars_W[i]] = ' ';
-            board[posYChars_K[i]][posXChars_K[i]] = ' ';
-        }
-        board[posY][posX] = ' ';
-
-        moveCharacters(board, posYChars_A, posXChars_A);
-        moveCharacters(board, posYChars_X, posXChars_X);
-        moveCharacters(board, posYChars_W, posXChars_W);
-        moveCharacters(board, posYChars_K, posXChars_K);
-
-        char input;
-        // Capturamos la entrada del usuario
-        input = toupper(_getch());
-
-        // Movemos al muñeco O según la entrada, asegurándonos de no colisionar con los bordes ni con los obstáculos
-        switch (input) {
-        case 'W':
-            if (posY > 1 && board[posY - 1][posX] == ' ') posY--; // Mover arriba si no está en el borde superior o hay un obstáculo
-            break;
-        case 'A':
-            if (posX > 1 && board[posY][posX - 1] == ' ') posX--; // Mover izquierda si no está en el borde izquierdo o hay un obstáculo
-            break;
-        case 'S':
-            if (posY < height - 2 && board[posY + 1][posX] == ' ') posY++; // Mover abajo si no está en el borde inferior o hay un obstáculo
-            break;
-        case 'D':
-            if (posX < width - 2 && board[posY][posX + 1] == ' ') posX++; // Mover derecha si no está en el borde derecho o hay un obstáculo
-            break;
-        }
-
-        // Verificar si el muñeco O está en la posición de algún muñeco A o X para mostrar tutoriales
-        for (int i = 0; i < numCharacters; ++i) {
-            if (posX == posXChars_A[i] && posY == posYChars_A[i]) {
-                showPythagorasTutorial_A();
-            }
-            if (posX == posXChars_X[i] && posY == posYChars_X[i]) {
-                showEquationsTutorial_X();
-            }
-            if (posX == posXChars_W[i] && posY == posYChars_W[i]) {
-                showPythagorasChallenge_W();
-            }
-            if (posX == posXChars_K[i] && posY == posYChars_K[i]) {
-                showEquationsChallenge_K();
-            }
-        }
-    }
-
-    return 0;
 }
