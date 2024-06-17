@@ -932,3 +932,147 @@ void showEquationsChallenge_K() {
     default: clearScreen(); showEquationsChallenge_K();
     }
 }
+
+/*
+Funcion Principal
+*/
+int main() {
+    hideCursor();
+
+    // Posiciones iniciales de los muñecos A
+    int posXChars_A[numCharacters] = {};
+    int posYChars_A[numCharacters] = {};
+
+    // Posiciones iniciales de los muñecos X
+    int posXChars_X[numCharacters] = {};
+    int posYChars_X[numCharacters] = {};
+
+    // Posiciones iniciales de los muñecos W
+    int posXChars_W[numCharacters] = {};
+    int posYChars_W[numCharacters] = {};
+
+    // Posiciones iniciales de los muñecos K
+    int posXChars_K[numCharacters] = {};
+    int posYChars_K[numCharacters] = {};
+
+    char board[height][width]; // Tablero de juego
+
+    // Inicializar el tablero con espacios vacíos
+    for (int i = 0; i < height; ++i) {
+        for (int j = 0; j < width; ++j) {
+            board[i][j] = '#';
+        }
+    }
+
+    srand(time(0));
+    for (int i = 0; i < numCharacters; ++i) {
+        bool validPosition = false;
+        do {
+            // Generar coordenadas aleatorias dentro del tablero
+            posXChars_A[i] = randnum(1, width - 2);
+            posYChars_A[i] = randnum(1, height - 2);
+            posXChars_X[i] = randnum(1, width - 2);
+            posYChars_X[i] = randnum(1, height - 2);
+            posXChars_W[i] = randnum(1, width - 2);
+            posYChars_W[i] = randnum(1, height - 2);
+            posXChars_K[i] = randnum(1, width - 2);
+            posYChars_K[i] = randnum(1, height - 2);
+
+            // Verificar que la posición no sea la inicial del muñeco O ni de otros muñecos
+            if ((posXChars_A[i] != posXChars_X[i] || posYChars_A[i] != posYChars_X[i]) &&
+                (posXChars_A[i] != posXChars_W[i] || posYChars_A[i] != posYChars_W[i]) &&
+                (posXChars_A[i] != posXChars_K[i] || posYChars_A[i] != posYChars_K[i]) &&
+                (posXChars_X[i] != posXChars_W[i] || posYChars_X[i] != posYChars_W[i]) &&
+                (posXChars_X[i] != posXChars_K[i] || posYChars_X[i] != posYChars_K[i]) &&
+                (posXChars_W[i] != posXChars_K[i] || posYChars_W[i] != posYChars_K[i]) &&
+                board[posYChars_A[i]][posXChars_A[i]] == ' ' &&
+                board[posYChars_X[i]][posXChars_X[i]] == ' ' &&
+                board[posYChars_W[i]][posXChars_W[i]] == ' ' &&
+                board[posYChars_K[i]][posXChars_K[i]] == ' ') {
+                validPosition = true;
+            }
+            else {
+                validPosition = false;
+            }
+        } while (!validPosition); // Asegurarse de que el obstáculo no se coloque sobre otro obstáculo o muñeco
+    }
+
+    /*
+    Juego
+    */
+    while (Puntaje < 20) {
+
+        // Dibujamos los muñecos A, X, W y K
+        for (int i = 0; i < numCharacters; ++i) {
+            board[posYChars_A[i]][posXChars_A[i]] = 'A';
+            board[posYChars_X[i]][posXChars_X[i]] = 'X';
+            board[posYChars_W[i]][posXChars_W[i]] = 'W';
+            board[posYChars_K[i]][posXChars_K[i]] = 'K';
+        }
+
+        // Borramos el rastro del Heroe
+        borrarHeroe(posX, posY);
+
+        // Dibujamos al Heroe
+        Heroe(posX, posY);
+
+        // Imprimimos el tablero
+        for (int i = 0; i < height; ++i) {
+            for (int j = 0; j < width; ++j) {
+                cout << board[i][j] << " ";
+            }
+            cout << endl;
+        }
+
+        // Limpiamos las posiciones anteriores de los muñecos
+        for (int i = 0; i < numCharacters; ++i) {
+            board[posYChars_A[i]][posXChars_A[i]] = ' ';
+            board[posYChars_X[i]][posXChars_X[i]] = ' ';
+            board[posYChars_W[i]][posXChars_W[i]] = ' ';
+            board[posYChars_K[i]][posXChars_K[i]] = ' ';
+        }
+
+        moveCharacters(board, posYChars_A, posXChars_A);
+        moveCharacters(board, posYChars_X, posXChars_X);
+        moveCharacters(board, posYChars_W, posXChars_W);
+        moveCharacters(board, posYChars_K, posXChars_K);
+
+        char input;
+        // Capturamos la entrada
+        input = toupper(_getch());
+
+        // Movemos al muñeco O según la entrada, asegurándonos de no colisionar con los bordes ni con los obstáculos
+        switch (input) {
+        case 'W':
+            if (posY > 1 && board[posY - 1][posX] == ' ') posY--; // Mover arriba si no está en el borde superior o hay un obstáculo
+            break;
+        case 'A':
+            if (posX > 1 && board[posY][posX - 1] == ' ') posX--; // Mover izquierda si no está en el borde izquierdo o hay un obstáculo
+            break;
+        case 'S':
+            if (posY < height - 2 && board[posY + 1][posX] == ' ') posY++; // Mover abajo si no está en el borde inferior o hay un obstáculo
+            break;
+        case 'D':
+            if (posX < width - 2 && board[posY][posX + 1] == ' ') posX++; // Mover derecha si no está en el borde derecho o hay un obstáculo
+            break;
+        }
+
+        // Verificar si el muñeco O está en la posición de algún muñeco A, X, W o K para mostrar tutoriales
+        for (int i = 0; i < numCharacters; ++i) {
+            if (posX == posXChars_A[i] && posY == posYChars_A[i]) {
+                showPythagorasTutorial_A(); // Mostrar Tutorial de Pitagoras al colisionar
+            }
+            if (posX == posXChars_X[i] && posY == posYChars_X[i]) {
+                showEquationsTutorial_X(); // Mostrar Tutorial de Ecuaciones al colisionar
+            }
+            if (posX == posXChars_W[i] && posY == posYChars_W[i]) {
+                showPythagorasChallenge_W(); // Mostrar Desafio de Pitagoras al colisionar
+            }
+            if (posX == posXChars_K[i] && posY == posYChars_K[i]) {
+                showEquationsChallenge_K(); // Mostrar Desafio de Ecuaciones al colisionar
+            }
+        }
+    }
+
+    return 0;
+}
