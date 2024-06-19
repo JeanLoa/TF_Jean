@@ -2,11 +2,10 @@
 #include <conio.h> // Necesario para getch()
 #include <cstdlib> // Necesario para system("cls")
 #include <ctime> // Necesario para srand y rand
-#include <windows.h> // Necesario para HideCursor
+#include <windows.h> // Necesario para HideCursor y SetColor
 #include <string>
 
 using namespace std;
-
 
 const int width = 60; // Ancho del tablero
 const int height = 25; // Alto del tablero
@@ -14,15 +13,23 @@ int posX = width / 2; // Posición inicial X del muñeco O
 int posY = height / 2; // Posición inicial Y del muñeco O
 const int numCharacters = 10; // Número total de muñecos
 
-int Puntaje = 0; // Puntaje del jugador
+bool validPosition; // Booleano para controlar la validacion de posicion
+
+int visitsA = 0; // Visitas al tutor A
+int visitsX = 0; // Visitas al tutor X
+int visitsW = 0; // Visitas al desafiante W
+int visitsK = 0; // Visitas al desafiante K
+int Points = 1; // Puntaje del jugador
 
 string Espera = "Presiona cualquier tecla para continuar..."; // Tiempo de espera
+string Despedida = "El juego ha finalizado";
+
+char board[height][width]; // Tablero de juego
 
 /*
-Mapa
+Mundos
 */
-
-const char Board_1[height][width] = {
+char Board_1[height][width] = {
     {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
     {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
     {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
@@ -50,7 +57,7 @@ const char Board_1[height][width] = {
     {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
 };
 
-const char Board_2[height][width] = {
+char Board_2[height][width] = {
     {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
     {1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
     {1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
@@ -78,7 +85,7 @@ const char Board_2[height][width] = {
     {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
 };
 
-const char Board_3[height][width] = {
+char Board_3[height][width] = {
     {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
     {1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1},
     {1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1},
@@ -106,15 +113,14 @@ const char Board_3[height][width] = {
     {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
 };
 
- /*
- Impresion de los mapas
- */
-
-void PrintBoard_1(const char Board[height][width]) {
+/*
+Impresion de Mundos
+*/
+void PrintBoard_1(char board[height][width]) {
     for (int i = 0; i < height; ++i) {
         for (int j = 0; j < width; ++j) {
-            if (Board[i][j] == 1) {
-                cout << "\033[41m  \033[0m"; // Bloque de color verde
+            if (board[i][j] == 1) {
+                cout << "# "; // Bloque de color rojo
             }
             else {
                 cout << "  ";
@@ -124,11 +130,11 @@ void PrintBoard_1(const char Board[height][width]) {
     }
 }
 
-void PrintBoard_2(const char board[height][width]) {
+void PrintBoard_2(char board[height][width]) {
     for (int i = 0; i < height; ++i) {
         for (int j = 0; j < width; ++j) {
             if (board[i][j] == 1) {
-                cout << "\033[42m  \033[0m"; // Bloque de color verde
+                cout << "# "; // Bloque de color verde
             }
             else {
                 cout << "  ";
@@ -138,11 +144,11 @@ void PrintBoard_2(const char board[height][width]) {
     }
 }
 
-void PrintBoard_3(const char board[height][width]) {
+void PrintBoard_3(char board[height][width]) {
     for (int i = 0; i < height; ++i) {
         for (int j = 0; j < width; ++j) {
             if (board[i][j] == 1) {
-                cout << "\033[43m  \033[0m"; // Bloque de color amarillo
+                cout << "# "; // Bloque de color amarillo
             }
             else {
                 cout << "  ";
@@ -155,6 +161,26 @@ void PrintBoard_3(const char board[height][width]) {
 /*
 Funciones Auxiliares
 */
+void setColor(int textColor, int bgColor) {
+    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+    SetConsoleTextAttribute(hConsole, (bgColor << 4) | textColor);
+}
+
+void resetColor() {
+    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+    SetConsoleTextAttribute(hConsole, (0 << 4) | 7); // Reset to white text on black background
+}
+
+void gotoxy(int x, int y) {
+    COORD coord;
+    coord.X = x;
+    coord.Y = y;
+    SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
+}
+
+void clearScreen() {
+    system("cls");
+}
 
 void hideCursor() {
     // Estructura para almacenar la información del cursor
@@ -173,37 +199,42 @@ void hideCursor() {
     SetConsoleCursorInfo(consoleHandle, &cursorInfo);
 }
 
-void clearScreen() {
-    system("cls");
-}
-
-void gotoxy(int x, int y) {
-    COORD coord;
-    coord.X = x;
-    coord.Y = y;
-    SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
+int randnum(int min, int max) {
+    return min + rand() % (max - min + 1);
 }
 
 /*
 Heroe
 */
-
-void dibujarHeroe(int x, int y) {
-    cout << ""; gotoxy(x, y);
-    cout << ""; gotoxy(x, y++);
-    cout << ""; gotoxy(x, y++);
-}
-
 void PuntajeHeroe(int x, int y, int puntaje) {
     gotoxy(x, y);
-    cout << puntaje;
+    cout << "Puntaje del Jugador: " << puntaje;
+    gotoxy(0, 0);
+}
+
+void Hero(int x, int y, string nombre) {
+    gotoxy(x, y);
+    cout << "Heroe " << nombre << ", ¿podra liberarnos de la ignorancia?";
+    gotoxy(0, 0);
+}
+
+void NumVisits_A_X(int x, int y, int visitasA, int visitasX) {
+    gotoxy(x, y);
+    cout << "Numero de Visitas al Tutor A: " << visitasA; gotoxy(x, y - 1);
+    cout << "Numero de Visitas al Tutor X: " << visitasX;
+    gotoxy(0, 0);
+}
+
+void NumVisits_W_K(int x, int y, int visitasW, int visitasK) {
+    gotoxy(x, y);
+    cout << "Numero de Visitas al Enemigo W: " << visitasW; gotoxy(x, y - 1);
+    cout << "Numero de Visitas al Enemigo K: " << visitasK;
     gotoxy(0, 0);
 }
 
 /*
-Efectos de Impresion
+Efectos de Mensaje
 */
-
 void printGradually(const string& message, int delay) {
     for (char c : message) {
         cout << c << flush; // Asegura que el carácter se imprima inmediatamente
@@ -212,12 +243,13 @@ void printGradually(const string& message, int delay) {
     cout << endl; // Salto de línea al final del mensaje
 }
 
-void printBlinkingText(const string& text) {
+void printBlinkingText(const string& text, int x, int y) {
     while (true) {
         if (_kbhit()) {
             // Si se ha presionado una tecla, detener el parpadeo y salir del bucle
             break;
         }
+        gotoxy(x, y);
         cout << text << flush; // Imprimir texto
         Sleep(500); // Retraso
 
@@ -230,7 +262,6 @@ void printBlinkingText(const string& text) {
 /*
 Movimiento de los Tutores y Enemigos
 */
-
 void moveCharacter(char board[height][width], int& posY, int& posX) {
     int move = rand() % 4;
     switch (move) {
@@ -250,7 +281,6 @@ void moveCharacters(char board[height][width], int posYChars[], int posXChars[])
 /*
 Tutoriales
 */
-
 void showPythagorasCuriousThings() {
     clearScreen();
     int input;
@@ -266,7 +296,7 @@ void showPythagorasCuriousThings() {
         break;
     case 2:
         cout << "Fundador de una Escuela Secreta:" << endl;
-        cout << "Sobre su fundacion de una escuela en Crotona, donde sus seguidores, aprendian con el, Matematicas, Filosofía y Musica." << endl;
+        cout << "Sobre su fundacion de una escuela en Crotona, donde sus seguidores, aprendian con el, Matematicas, Filosofia y Musica." << endl;
         cout << "La escuela funcionaba casi como una sociedad secreta con sus propios ritos y reglas." << endl;
         cout << "Aun tienes mucho por descubrir en este mundo de las Matematicas" << endl;
         break;
@@ -304,7 +334,7 @@ void showPythagorasCuriousThings() {
         clearScreen();
         showPythagorasCuriousThings();
     }
-    printBlinkingText(Espera);
+    printBlinkingText(Espera, 0, 5);
     _getch();
 }
 
@@ -341,8 +371,8 @@ void showPythagorasTheorem() {
         break;
     case 5:
         cout << "Pruebas diversas:" << endl;
-        cout << "Hay mas de 370 pruebas conocidas del teorema de Pitagoras, incluyendo algunas geometricas, algebraicas y por reducción al absurdo." << endl;
-        cout << "Uno de los más famosos que ofrecio una prueba fue el presidente de los Estados Unidos, James Garfield." << endl;
+        cout << "Hay mas de 370 pruebas conocidas del teorema de Pitagoras, incluyendo algunas geometricas, algebraicas y por reduccion al absurdo." << endl;
+        cout << "Uno de los mas famosos que ofrecio una prueba fue el presidente de los Estados Unidos, James Garfield." << endl;
         cout << "¿Podrias demostrarlo?" << endl;
         break;
     case 6:
@@ -362,7 +392,7 @@ void showPythagorasTheorem() {
         showPythagorasTheorem();
         return;
     }
-    printBlinkingText(Espera);
+    printBlinkingText(Espera, 0, 5);
     _getch();
 }
 
@@ -419,7 +449,7 @@ void showPythagorasVectors() {
         clearScreen();
         showPythagorasVectors();
     }
-    printBlinkingText(Espera);
+    printBlinkingText(Espera, 0, 5);
     _getch();
 }
 
@@ -496,7 +526,7 @@ void showEquationsCuriousThings() {
         clearScreen();
         showEquationsCuriousThings();
     }
-    printBlinkingText(Espera);
+    printBlinkingText(Espera, 0, 5);
     _getch();
 }
 
@@ -553,7 +583,7 @@ void showEquationsUtility() {
         clearScreen();
         showEquationsUtility();
     }
-    printBlinkingText(Espera);
+    printBlinkingText(Espera, 0, 5);
     _getch();
 }
 
@@ -610,7 +640,7 @@ void showEquationsHistory() {
         clearScreen();
         showEquationsHistory();
     }
-    printBlinkingText(Espera);
+    printBlinkingText(Espera, 0, 5);
     _getch();
 }
 
@@ -635,16 +665,17 @@ void showEquationsTutorial_X() {
 }
 
 /*
-Desafios
+Estructura para los Desafios
 */
-
 struct Challenge {
     string challengeText;
     string alternatives[3];
     int correctAnswer;
 };
 
-
+/*
+Modelo de Pregunta
+*/
 void askQuestion(const Challenge& challenge) {
     cout << challenge.challengeText << endl;
     cout << "Opciones:" << endl;
@@ -660,16 +691,17 @@ void askQuestion(const Challenge& challenge) {
 
         if (userChoice == 0) {
             cout << "Desafio omitido." << endl;
+            Sleep(1000);
             return;
         }
         else if (userChoice >= 1 && userChoice <= 3) {
             if (userChoice == challenge.correctAnswer) {
                 cout << "¡Respuesta correcta!" << endl;
-                Puntaje++; // Aumentamos el puntaje si la respuesta es correcta
+                Points+=25; // Aumentamos el puntaje si la respuesta es correcta
             }
             else {
                 cout << "Respuesta incorrecta. La respuesta correcta es la opcion: " << challenge.correctAnswer << endl;
-                Puntaje--; // Disminuimos el puntaje si la respuesta es incorrecta
+                Points-=1; // Disminuimos el puntaje si la respuesta es incorrecta
             }
             Sleep(1000);
             return; // Salir de la función después de una respuesta válida
@@ -691,7 +723,7 @@ void showChallengePythagorasCuriousThings() {
     srand(time(0));
     clearScreen();
 
-    // Definir desafíos sobre curiosidades de Pitágoras
+    // Definicion de Desafios
     Challenge pythagorasChallenges[] = {
         {"¿Como es atribuido Pitagoras?",
          {"Pitagorico", "Padre de la biologia", "Padre de los numeros"},
@@ -727,7 +759,7 @@ void showChallengePythagorasTheorem() {
     srand(time(0));
     clearScreen();
 
-    // Definir desafíos sobre curiosidades de Pitágoras
+    // Definicion de Desafios
     Challenge pythagorasChallenges[] = {
         {"¿En la formula a^2 + b^2 = c^2, que representa la c?",
          {"Diagonal", "Hipotenusa", "Cateto"},
@@ -738,7 +770,7 @@ void showChallengePythagorasTheorem() {
         {"¿En que areas es usado el Teorema de Pitagoras?",
          {"Medicina", "Economia", "Navegacion"},
          3},
-        {"¿Cuantos grados debe medir un angulo para ser considerado rectangulo?",
+        {"¿Cuantos grados debe medir un angulo en un triangulo para ser considerado rectangulo?",
          {"90", "85", "45"},
          1},
         {"Aproximadamente, ¿cuantas pruebas hay del Teorema de Pitagoras?",
@@ -763,27 +795,9 @@ void showChallengePythagorasVectors() {
     srand(time(0));
     clearScreen();
 
-    // Definir desafíos sobre curiosidades de Pitágoras
+    // Definicion de Desafios
     Challenge pythagorasChallenges[] = {
-        {"¿Como se calcula la magnitud de un vector?",
-         {"Restando la componente x con la y", "Sumando sus componentes y multiplicandolos por 6", "Raiz cuadrada de la suma de los cuadrados de sus componentex x y y"},
-         3},
-        {"¿Puede calcularse la distancia entre dos puntos en el plano cartesiano?",
-         {"Solo en circulos", "Si, su magnnitud tambien", "No puede calcularse"},
-         2},
-        {"¿Podria calcular la distancia y magnitud en un vector en un plano tridimensional?",
-         {"Si, anadiendo el cuadrado de su tercer componente z a la formula de la magnitud", "No, la formula funciona unicamente en el plano bidimensional", "Si, pero necesita ser modificado severamente"},
-         1},
-        {"Si un vector es perpendicular a otro, y sus magnitudes son '3' y '4', ¿cual es la magnitud de su vector resultante?",
-         {"7", "5", "12"},
-         2},
-        {"¿Para que aplicaciones de la fisica es util el Teorema de Pitagoras?",
-         {"La masa", "La gravedad", "La velocidad"},
-         3},
-        {"¿En que otras areas es utilizado el teorema de Pitagoras?",
-         {"Aritmetica", "Finanzas", "Algebra Vectorial"},
-         3},
-        {"¿Como es llamado a la magnitud de n dimensiones derivado del Teorema de Pitagoras?",
+        {"¿Como selamado a la magnitud de n dimensiones derivado del Teorema de Pitagoras?",
         {"Basicismo", "Norma Neutral", "Norma Euclidiana"},
         3},
     };
@@ -813,7 +827,7 @@ void showPythagorasChallenge_W() {
         break;
     case 3: showChallengePythagorasVectors();
         break;
-    default: clearScreen(); showPythagorasChallenge_W(); // Mostrar el desafio otra vez si se elige una opcion no valida
+    default: clearScreen(); showPythagorasChallenge_W();
     }
 }
 
@@ -821,9 +835,9 @@ void showChallengeEquationsCuriousThings() {
     srand(time(0));
     clearScreen();
 
-    // Definir desafíos sobre curiosidades de Pitágoras
+    // Definicion de Desafios
     Challenge equationsChallenges[] = {
-        {"¿Desde que años ya resolvian ecuaciones lineales?",
+        {"¿Desde que anos ya resolvian ecuaciones lineales?",
          {"Desde 900 a. C.", "Desde 1500 a. C.", "Desde 1900 a. C."},
          3},
         {"¿Donde son fundamentales las ecuaciones lineales?",
@@ -857,7 +871,7 @@ void showChallengeEquationsUtility() {
     srand(time(0));
     clearScreen();
 
-    // Definir desafíos sobre curiosidades de Pitágoras
+    // Definicion de Desafios
     Challenge equationsChallenges[] = {
         {"¿En que disciplinas el modelado de ecuaciones es util?",
          {"Gastronomia","Ingenieria", "Psicologia"},
@@ -869,7 +883,7 @@ void showChallengeEquationsUtility() {
          {"Para mejorar la satisfaccion del cliente", "Para aumentar la visibilidad de la marca", "Para optimizar rutas de transporte"},
          3},
         {"¿Para que los Ingenieros utilizan las ecuaciones?",
-         {"Para modelar sistemas financieros", "Para analizar comportamientos de mercado", "Para diseñar estructuras"},
+         {"Para modelar sistemas financieros", "Para analizar comportamientos de mercado", "Para disenar estructuras"},
          3},
         {"¿Que modelan las ecuaciones en la Medicina y Biologia?",
          {"Modelan el dinamismo celular", "Predicen la propagacion de enfermedades", "Analizan el comportamiento de grupos sociales"},
@@ -895,7 +909,7 @@ void showChallengeEquationsHistory() {
     srand(time(0));
     clearScreen();
 
-    // Definir desafíos sobre curiosidades de Pitágoras
+    // Definicion de Desafios
     Challenge equationsChallenges[] = {
         {"¿Que desarrollaron los Babilonios en 2000 a.C.?",
          {"Tablas de division", "Tablas de multiplicar", "Tablas de suma"},
@@ -945,136 +959,441 @@ void showEquationsChallenge_K() {
         break;
     case 3: showChallengeEquationsHistory();
         break;
-    default: clearScreen(); showEquationsChallenge_K(); // Mostrar el desafio otra vez si se elige una opcion no valida
+    default: clearScreen(); showEquationsChallenge_K();
     }
 }
 
-int main() {
-    hideCursor();
+void Bienvenida() {
+    cout << "";
+    cout << "";
+    cout << "";
+    cout << "";
+    cout << "";
+    cout << "";
+}
 
-    int posX = width / 2; // Posición inicial X del muñeco O
-    int posY = height / 2; // Posición inicial Y del muñeco O
+void postCredits(string nombre, int nivel, int x, int y, int calificacion, int visitsA, int visitsX, int visitsW, int visitsK) {
+    clearScreen();
+    gotoxy(x, y);
+    cout << "Enhorabuena " << nombre << ", has completado " << nivel << " niveles";
+    gotoxy(x, --y);
+    cout << "Tu calificacion es de " << calificacion;
+    gotoxy(x, --y);
+    cout << "Has visitado a los personajes:";
+    gotoxy(++x, --y);
+    cout << "A: " << visitsA;
+    gotoxy(x, --y);
+    cout << "X: " << visitsX;
+    gotoxy(x, --y);
+    cout << "W: " << visitsW;
+    gotoxy(x, --y);
+    cout << "K: " << visitsK;
+    gotoxy(--x, --y);
+    cout << "Tu calificacion es ";
+    if (calificacion < 1) {
+        cout << "PRINCIPIANTE";
+    }
+    else if (calificacion >= 1 && calificacion < 2) {
+        cout << "REGULAR";
+    }
+    else if (calificacion >= 2 && calificacion < 3) {
+        cout << "SOBRESALIENTE";
+    }
+    else if (calificacion >= 3) {
+        cout << "INCREIBLE";
+    }
+    gotoxy(x, --y);
+    printBlinkingText(Despedida, x+=3, y);
+    _getch();
+}
 
-    // Posiciones iniciales de los muñecos A, X, W, K
-    int posXChars_A[numCharacters] = {};
-    int posYChars_A[numCharacters] = {};
-    int posXChars_X[numCharacters] = {};
-    int posYChars_X[numCharacters] = {};
-    int posXChars_W[numCharacters] = {};
-    int posYChars_W[numCharacters] = {};
-    int posXChars_K[numCharacters] = {};
-    int posYChars_K[numCharacters] = {};
+string nombre; // Nombre del Jugador
 
-    char Board[height][width]; // Tablero de juego
+// Posiciones iniciales de los muñecos A
+int posXChars_A[numCharacters] = {};
+int posYChars_A[numCharacters] = {};
 
-    // Inicialización del tablero
+// Posiciones iniciales de los muñecos X
+int posXChars_X[numCharacters] = {};
+int posYChars_X[numCharacters] = {};
+
+// Posiciones iniciales de los muñecos W
+int posXChars_W[numCharacters] = {};
+int posYChars_W[numCharacters] = {};
+
+// Posiciones iniciales de los muñecos K
+int posXChars_K[numCharacters] = {};
+int posYChars_K[numCharacters] = {};
+
+char O = 'O'; // Caracte para Heroe O
+char A = 'A'; // Caracter para Tutor A
+char X = 'X'; // Caracter para Tutor X
+char W = 'W'; // Caracter para Desafiante W
+char K = 'K'; // Caracter para Desafiante K
+
+
+void BoardValidation() {
+    // Inicializamos el tablero con espacios en blanco y bordes
     for (int i = 0; i < height; ++i) {
         for (int j = 0; j < width; ++j) {
-            Board[i][j] = ' '; // Inicializar todo el tablero con espacios vacíos
+            // Dibujar bordes
+            if (i == 0 || i == height - 1 || j == 0 || j == width - 1)
+                board[i][j] = '#'; // Carácter para el borde
+            else
+                board[i][j] = ' '; // Espacio en blanco para el interior
         }
     }
-
     // Añadir obstáculos al tablero
     srand(time(0));
-    for (int i = 0; i < numCharacters; ++i) {
-        bool validPosition;
+    int numObstacles = 400; // Número de obstáculos
+    for (int i = 0; i < numObstacles; ++i) {
+        int obsX, obsY;
         do {
-            posXChars_A[i] = rand() % (width - 2) + 1;
-            posYChars_A[i] = rand() % (height - 2) + 1;
-            posXChars_X[i] = rand() % (width - 2) + 1;
-            posYChars_X[i] = rand() % (height - 2) + 1;
-            posXChars_W[i] = rand() % (width - 2) + 1;
-            posYChars_W[i] = rand() % (height - 2) + 1;
-            posXChars_K[i] = rand() % (width - 2) + 1;
-            posYChars_K[i] = rand() % (height - 2) + 1;
-
+            obsX = rand() % (width - 2) + 1; // Generar coordenada X aleatoria dentro del tablero
+            obsY = rand() % (height - 2) + 1; // Generar coordenada Y aleatoria dentro del tablero
             validPosition = true;
-
-            // Verificar que la posición no sea la inicial del muñeco O
-            if ((posXChars_A[i] == posX && posYChars_A[i] == posY) ||
-                (posXChars_X[i] == posX && posYChars_X[i] == posY) ||
-                (posXChars_W[i] == posX && posYChars_W[i] == posY) ||
-                (posXChars_K[i] == posX && posYChars_K[i] == posY)) {
+            // Verificar que la posición no sea la inicial del muñeco O ni de otros muñecos
+            if (obsX == posX && obsY == posY) {
                 validPosition = false;
             }
-
-            // Verificar que las posiciones no se solapen entre sí
-            for (int j = 0; j < i; ++j) {
-                if ((posXChars_A[i] == posXChars_A[j] && posYChars_A[i] == posYChars_A[j]) ||
-                    (posXChars_X[i] == posXChars_X[j] && posYChars_X[i] == posYChars_X[j]) ||
-                    (posXChars_W[i] == posXChars_W[j] && posYChars_W[i] == posYChars_W[j]) ||
-                    (posXChars_K[i] == posXChars_K[j] && posYChars_K[i] == posYChars_K[j])) {
-                    validPosition = false;
-                    break;
+            else {
+                for (int j = 0; j < numCharacters; ++j) {
+                    if ((obsX == posXChars_A[j] && obsY == posYChars_A[j]) ||
+                        (obsX == posXChars_X[j] && obsY == posYChars_X[j]) ||
+                        (obsX == posXChars_W[j] && obsY == posYChars_W[j]) ||
+                        (obsX == posXChars_K[j] && obsY == posYChars_K[j])) {
+                        validPosition = false;
+                        break;
+                    }
                 }
             }
-
-        } while (!validPosition ||
-            Board[posYChars_A[i]][posXChars_A[i]] != ' ' ||
-            Board[posYChars_X[i]][posXChars_X[i]] != ' ' ||
-            Board[posYChars_W[i]][posXChars_W[i]] != ' ' ||
-            Board[posYChars_K[i]][posXChars_K[i]] != ' ');
+        } while (!validPosition || board[obsY][obsX] != ' '); // Asegurarse de que el obstáculo no se coloque sobre otro obstáculo o muñeco
+        board[obsY][obsX] = '#'; // Carácter para el obstáculo
     }
+}
 
-    while (Puntaje < 25) {
-        // Limpiamos la pantalla
+void CharactersValidation() {
+    for (int i = 0; i < numCharacters; ++i) {
+        bool validPosition = false;
+        do {
+            // Generar coordenadas aleatorias dentro del tablero
+            posXChars_A[i] = randnum(1, width - 2);
+            posYChars_A[i] = randnum(1, height - 2);
+            posXChars_X[i] = randnum(1, width - 2);
+            posYChars_X[i] = randnum(1, height - 2);
+            posXChars_W[i] = randnum(1, width - 2);
+            posYChars_W[i] = randnum(1, height - 2);
+            posXChars_K[i] = randnum(1, width - 2);
+            posYChars_K[i] = randnum(1, height - 2);
+
+            // Verificar que la posición no sea la inicial del muñeco O ni de otros muñecos
+            if ((posXChars_A[i] != posXChars_X[i] || posYChars_A[i] != posYChars_X[i]) &&
+                (posXChars_A[i] != posXChars_W[i] || posYChars_A[i] != posYChars_W[i]) &&
+                (posXChars_A[i] != posXChars_K[i] || posYChars_A[i] != posYChars_K[i]) &&
+                (posXChars_X[i] != posXChars_W[i] || posYChars_X[i] != posYChars_W[i]) &&
+                (posXChars_X[i] != posXChars_K[i] || posYChars_X[i] != posYChars_K[i]) &&
+                (posXChars_W[i] != posXChars_K[i] || posYChars_W[i] != posYChars_K[i]) &&
+                board[posYChars_A[i]][posXChars_A[i]] == ' ' &&
+                board[posYChars_X[i]][posXChars_X[i]] == ' ' &&
+                board[posYChars_W[i]][posXChars_W[i]] == ' ' &&
+                board[posYChars_K[i]][posXChars_K[i]] == ' ') {
+                validPosition = true;
+            }
+            else {
+                validPosition = false;
+            }
+        } while (!validPosition); // Asegurarse de que el obstáculo no se coloque sobre otro obstáculo o muñeco
+    }
+}
+
+/*
+Juego 1
+*/
+void GamePlay1() {
+    while (Points < 100 && Points > 0) {
+        // Dibujar personajes en el tablero
+        for (int i = 0; i < numCharacters; ++i) {
+            board[posYChars_A[i]][posXChars_A[i]] = A;
+            board[posYChars_X[i]][posXChars_X[i]] = X;
+            board[posYChars_W[i]][posXChars_W[i]] = W;
+            board[posYChars_K[i]][posXChars_K[i]] = K;
+        }
+        board[posY][posX] = O; // Dibujar el personaje principal
+
         clearScreen();
+        PuntajeHeroe(1, 25, Points);
+        NumVisits_A_X(1, 27, visitsA, visitsX);
+        NumVisits_W_K(1, 29, visitsK, visitsW);
+        Hero(70, 27, nombre);
 
-        // Dibujamos los muñecos A, X, W y K en el tablero
-        for (int i = 0; i < numCharacters; ++i) {
-            Board[posYChars_A[i]][posXChars_A[i]] = 'A';
-            Board[posYChars_X[i]][posXChars_X[i]] = 'X';
-            Board[posYChars_W[i]][posXChars_W[i]] = 'W';
-            Board[posYChars_K[i]][posXChars_K[i]] = 'K';
+        // Imprimimos el tablero
+        for (int i = 0; i < height; ++i) {
+            for (int j = 0; j < width; ++j) {
+                cout << board[i][j] << " ";
+            }
+            cout << endl;
         }
 
-        // Dibujamos al muñeco O en el tablero
-        Board[posY][posX] = 'O';
+        board[posY][posX] = ' '; // Dibujar el personaje principal
 
-        // Limpiamos las posiciones anteriores de los muñecos en el tablero
-        for (int i = 0; i < numCharacters; ++i) {
-            Board[posYChars_A[i]][posXChars_A[i]] = ' ';
-            Board[posYChars_X[i]][posXChars_X[i]] = ' ';
-            Board[posYChars_W[i]][posXChars_W[i]] = ' ';
-            Board[posYChars_K[i]][posXChars_K[i]] = ' ';
-        }
-        Board[posY][posX] = ' ';
-
-        // Capturamos la entrada del usuario
+        // Capturamos la entrada
         char input = toupper(_getch());
+
+        // Limpiamos las posiciones anteriores de los muñecos
+        for (int i = 0; i < numCharacters; ++i) {
+            board[posYChars_A[i]][posXChars_A[i]] = ' ';
+            board[posYChars_X[i]][posXChars_X[i]] = ' ';
+            board[posYChars_W[i]][posXChars_W[i]] = ' ';
+            board[posYChars_K[i]][posXChars_K[i]] = ' ';
+        }
 
         // Movemos al muñeco O según la entrada, asegurándonos de no colisionar con los bordes ni con los obstáculos
         switch (input) {
         case 'W':
-            if (posY > 1 && Board[posY - 1][posX] == ' ') posY--; // Mover arriba si no está en el borde superior o hay un obstáculo
+            if (posY > 1 && board[posY - 1][posX] == ' ') posY--; // Mover arriba si no está en el borde superior o hay un obstáculo
             break;
         case 'A':
-            if (posX > 1 && Board[posY][posX - 1] == ' ') posX--; // Mover izquierda si no está en el borde izquierdo o hay un obstáculo
+            if (posX > 1 && board[posY][posX - 1] == ' ') posX--; // Mover izquierda si no está en el borde izquierdo o hay un obstáculo
             break;
         case 'S':
-            if (posY < height - 2 && Board[posY + 1][posX] == ' ') posY++; // Mover abajo si no está en el borde inferior o hay un obstáculo
+            if (posY < height - 2 && board[posY + 1][posX] == ' ') posY++; // Mover abajo si no está en el borde inferior o hay un obstáculo
             break;
         case 'D':
-            if (posX < width - 2 && Board[posY][posX + 1] == ' ') posX++; // Mover derecha si no está en el borde derecho o hay un obstáculo
-                break;
+            if (posX < width - 2 && board[posY][posX + 1] == ' ') posX++; // Mover derecha si no está en el borde derecho o hay un obstáculo
+            break;
         }
+        // Mover personajes
+        moveCharacters(board, posYChars_A, posXChars_A);
+        moveCharacters(board, posYChars_X, posXChars_X);
+        moveCharacters(board, posYChars_W, posXChars_W);
+        moveCharacters(board, posYChars_K, posXChars_K);
 
-        // Verificar si el muñeco O está en la posición de algún muñeco A o X para mostrar tutoriales
+        // Verificar si el muñeco O está en la posición de algún muñeco A, X, W o K para mostrar tutoriales
         for (int i = 0; i < numCharacters; ++i) {
             if (posX == posXChars_A[i] && posY == posYChars_A[i]) {
-                showPythagorasTutorial_A();
+                showPythagorasTutorial_A(); // Mostrar Tutorial de Pitagoras al colisionar
+                visitsA++; Points--;
             }
             if (posX == posXChars_X[i] && posY == posYChars_X[i]) {
-                showEquationsTutorial_X();
+                showEquationsTutorial_X(); // Mostrar Tutorial de Ecuaciones al colisionar
+                visitsX++; Points--;
             }
             if (posX == posXChars_W[i] && posY == posYChars_W[i]) {
-                showPythagorasChallenge_W();
+                showPythagorasChallenge_W(); // Mostrar Desafio de Pitagoras al colisionar
+                visitsW++;
             }
             if (posX == posXChars_K[i] && posY == posYChars_K[i]) {
-                showEquationsChallenge_K();
+                showEquationsChallenge_K(); // Mostrar Desafio de Ecuaciones al colisionar
+                visitsK++;
             }
         }
     }
+}
+
+/*
+Juego 2
+*/
+void GamePlay2() {
+    while (Points < 100 && Points > 0) {
+        // Dibujar personajes en el tablero
+        for (int i = 0; i < numCharacters; ++i) {
+            board[posYChars_A[i]][posXChars_A[i]] = A;
+            board[posYChars_X[i]][posXChars_X[i]] = X;
+            board[posYChars_W[i]][posXChars_W[i]] = W;
+            board[posYChars_K[i]][posXChars_K[i]] = K;
+        }
+        board[posY][posX] = O; // Dibujar el personaje principal
+
+        clearScreen();
+        PuntajeHeroe(1, 25, Points);
+        NumVisits_A_X(1, 27, visitsA, visitsX);
+        NumVisits_W_K(1, 29, visitsK, visitsW);
+        Hero(70, 27, nombre);
+
+        // Imprimimos el tablero
+        for (int i = 0; i < height; ++i) {
+            for (int j = 0; j < width; ++j) {
+                cout << board[i][j] << " ";
+            }
+            cout << endl;
+        }
+
+        board[posY][posX] = ' '; // Dibujar el personaje principal
+
+        // Capturamos la entrada
+        char input = toupper(_getch());
+
+        // Limpiamos las posiciones anteriores de los muñecos
+        for (int i = 0; i < numCharacters; ++i) {
+            board[posYChars_A[i]][posXChars_A[i]] = ' ';
+            board[posYChars_X[i]][posXChars_X[i]] = ' ';
+            board[posYChars_W[i]][posXChars_W[i]] = ' ';
+            board[posYChars_K[i]][posXChars_K[i]] = ' ';
+        }
+
+        // Movemos al muñeco O según la entrada, asegurándonos de no colisionar con los bordes ni con los obstáculos
+        switch (input) {
+        case 'W':
+            if (posY > 1 && board[posY - 1][posX] == ' ') posY--; // Mover arriba si no está en el borde superior o hay un obstáculo
+            break;
+        case 'A':
+            if (posX > 1 && board[posY][posX - 1] == ' ') posX--; // Mover izquierda si no está en el borde izquierdo o hay un obstáculo
+            break;
+        case 'S':
+            if (posY < height - 2 && board[posY + 1][posX] == ' ') posY++; // Mover abajo si no está en el borde inferior o hay un obstáculo
+            break;
+        case 'D':
+            if (posX < width - 2 && board[posY][posX + 1] == ' ') posX++; // Mover derecha si no está en el borde derecho o hay un obstáculo
+            break;
+        }
+        // Mover personajes
+        moveCharacters(board, posYChars_A, posXChars_A);
+        moveCharacters(board, posYChars_X, posXChars_X);
+        moveCharacters(board, posYChars_W, posXChars_W);
+        moveCharacters(board, posYChars_K, posXChars_K);
+
+        // Verificar si el muñeco O está en la posición de algún muñeco A, X, W o K para mostrar tutoriales
+        for (int i = 0; i < numCharacters; ++i) {
+            if (posX == posXChars_A[i] && posY == posYChars_A[i]) {
+                showPythagorasTutorial_A(); // Mostrar Tutorial de Pitagoras al colisionar
+                visitsA++; Points--;
+            }
+            if (posX == posXChars_X[i] && posY == posYChars_X[i]) {
+                showEquationsTutorial_X(); // Mostrar Tutorial de Ecuaciones al colisionar
+                visitsX++; Points--;
+            }
+            if (posX == posXChars_W[i] && posY == posYChars_W[i]) {
+                showPythagorasChallenge_W(); // Mostrar Desafio de Pitagoras al colisionar
+                visitsW++;
+            }
+            if (posX == posXChars_K[i] && posY == posYChars_K[i]) {
+                showEquationsChallenge_K(); // Mostrar Desafio de Ecuaciones al colisionar
+                visitsK++;
+            }
+        }
+    }
+}
+
+/*
+Juego 3
+*/
+void GamePlay3() {
+    while (Points < 100 && Points > 0) {
+        // Dibujar personajes en el tablero
+        for (int i = 0; i < numCharacters; ++i) {
+            board[posYChars_A[i]][posXChars_A[i]] = A;
+            board[posYChars_X[i]][posXChars_X[i]] = X;
+            board[posYChars_W[i]][posXChars_W[i]] = W;
+            board[posYChars_K[i]][posXChars_K[i]] = K;
+        }
+        board[posY][posX] = O; // Dibujar el personaje principal
+
+        clearScreen();
+        PuntajeHeroe(1, 25, Points);
+        NumVisits_A_X(1, 27, visitsA, visitsX);
+        NumVisits_W_K(1, 29, visitsK, visitsW);
+        Hero(70, 27, nombre);
+
+        // Imprimimos el tablero
+        for (int i = 0; i < height; ++i) {
+            for (int j = 0; j < width; ++j) {
+                cout << board[i][j] << " ";
+            }
+            cout << endl;
+        }
+
+        board[posY][posX] = ' '; // Dibujar el personaje principal
+
+        // Capturamos la entrada
+        char input = toupper(_getch());
+
+        // Limpiamos las posiciones anteriores de los muñecos
+        for (int i = 0; i < numCharacters; ++i) {
+            board[posYChars_A[i]][posXChars_A[i]] = ' ';
+            board[posYChars_X[i]][posXChars_X[i]] = ' ';
+            board[posYChars_W[i]][posXChars_W[i]] = ' ';
+            board[posYChars_K[i]][posXChars_K[i]] = ' ';
+        }
+
+        // Movemos al muñeco O según la entrada, asegurándonos de no colisionar con los bordes ni con los obstáculos
+        switch (input) {
+        case 'W':
+            if (posY > 1 && board[posY - 1][posX] == ' ') posY--; // Mover arriba si no está en el borde superior o hay un obstáculo
+            break;
+        case 'A':
+            if (posX > 1 && board[posY][posX - 1] == ' ') posX--; // Mover izquierda si no está en el borde izquierdo o hay un obstáculo
+            break;
+        case 'S':
+            if (posY < height - 2 && board[posY + 1][posX] == ' ') posY++; // Mover abajo si no está en el borde inferior o hay un obstáculo
+            break;
+        case 'D':
+            if (posX < width - 2 && board[posY][posX + 1] == ' ') posX++; // Mover derecha si no está en el borde derecho o hay un obstáculo
+            break;
+        }
+        // Mover personajes
+        moveCharacters(board, posYChars_A, posXChars_A);
+        moveCharacters(board, posYChars_X, posXChars_X);
+        moveCharacters(board, posYChars_W, posXChars_W);
+        moveCharacters(board, posYChars_K, posXChars_K);
+
+        // Verificar si el muñeco O está en la posición de algún muñeco A, X, W o K para mostrar tutoriales
+        for (int i = 0; i < numCharacters; ++i) {
+            if (posX == posXChars_A[i] && posY == posYChars_A[i]) {
+                showPythagorasTutorial_A(); // Mostrar Tutorial de Pitagoras al colisionar
+                visitsA++; Points--;
+            }
+            if (posX == posXChars_X[i] && posY == posYChars_X[i]) {
+                showEquationsTutorial_X(); // Mostrar Tutorial de Ecuaciones al colisionar
+                visitsX++; Points--;
+            }
+            if (posX == posXChars_W[i] && posY == posYChars_W[i]) {
+                showPythagorasChallenge_W(); // Mostrar Desafio de Pitagoras al colisionar
+                visitsW++;
+            }
+            if (posX == posXChars_K[i] && posY == posYChars_K[i]) {
+                showEquationsChallenge_K(); // Mostrar Desafio de Ecuaciones al colisionar
+                visitsK++;
+            }
+        }
+    }
+}
+/*
+Funcion Principal
+*/
+int main() {
+    hideCursor();
+    srand(time(0));
+
+    int Nivel = 0;
+    float Calificacion = 0;
+
+    cout << "Ingresa tu nombre:\n";
+    cin >> nombre;
+
+    BoardValidation();
+    CharactersValidation();
+
+    /*
+    Juego
+    */
+    GamePlay1();
+
+
+    if (Points <= 0) {
+        Points = 0;
+        Calificacion = 0;
+        postCredits(nombre, Nivel, 42, 18, Calificacion, visitsA, visitsX, visitsW, visitsK); // Mostrar creditos si el Heroe tiene como Puntaje 0
+        exit(0);
+    }
+
+    Calificacion = visitsK * visitsW - visitsA - visitsX;
+    visitsK = 0; visitsW = 0; visitsA = 0; visitsX = 0;
+    Points = 25;
+    Nivel++;
+    while (Points < 100 && Points > 0) {
+
+    }
+    
 
     return 0;
 }
