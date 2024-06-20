@@ -168,7 +168,7 @@ void setColor(int textColor, int bgColor) {
 
 void resetColor() {
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-    SetConsoleTextAttribute(hConsole, (0 << 4) | 7); // Reset to white text on black background
+    SetConsoleTextAttribute(hConsole, (0 << 4) | 7); // Restaura a texto blanco con fondo negro
 }
 
 void gotoxy(int x, int y) {
@@ -697,11 +697,11 @@ void askQuestion(const Challenge& challenge) {
         else if (userChoice >= 1 && userChoice <= 3) {
             if (userChoice == challenge.correctAnswer) {
                 cout << "¡Respuesta correcta!" << endl;
-                Points+=25; // Aumentamos el puntaje si la respuesta es correcta
+                Points += 5; // Aumentamos el puntaje si la respuesta es correcta
             }
             else {
                 cout << "Respuesta incorrecta. La respuesta correcta es la opcion: " << challenge.correctAnswer << endl;
-                Points-=1; // Disminuimos el puntaje si la respuesta es incorrecta
+                Points -= 3; // Disminuimos el puntaje si la respuesta es incorrecta
             }
             Sleep(1000);
             return; // Salir de la función después de una respuesta válida
@@ -797,7 +797,25 @@ void showChallengePythagorasVectors() {
 
     // Definicion de Desafios
     Challenge pythagorasChallenges[] = {
-        {"¿Como selamado a la magnitud de n dimensiones derivado del Teorema de Pitagoras?",
+        {"¿Se puede desarrollar la magnitud de un vector usando el teorema de Pitagoras?",
+         {"Si", "No, es imposible", "Solo se halla usando ley de senos y cosenos"},
+         1},
+        {"¿Como es calculada la distancia entre 2 puntos en el plano?",
+         {"(x_2 - x_1) + (y_2 - y_1)", "sqrt((x_2 - x_1)^2 + (y_2 - y_1)^2)", "(x_2 * x_1 + y_2 * y_1)^2"},
+         2},
+        {"¿Como es denotado los componentes de un vector tridimensional?",
+         {"a, b, c", "1, 2, 3", "x, y, z"},
+         3},
+        {"¿Puede saberse la magnitud de un vector resultante de vectores perpendiculares a partir del teorema de Pitagoras?",
+         {"No, los angulos deben ser llanos", "Si, sabiendo su perpendicularidad", "No es posible"},
+         2},
+        {"¿Para que aplicaciones en la Fisica es util el teorema de Pitagoras?",
+         {"Peso", "Fuerza Resultante", "Altura"},
+         2},
+        {"¿En que ambitos de la Geometria y Trigonometria es usado el teorema de Pitagoras?",
+        {"Algebra Vectorial", "Arte Moderno", "Aritmetica de Punteros"},
+        1},
+        {"¿Como se llama a la magnitud de n dimensiones derivado del Teorema de Pitagoras?",
         {"Basicismo", "Norma Neutral", "Norma Euclidiana"},
         3},
     };
@@ -963,7 +981,7 @@ void showEquationsChallenge_K() {
     }
 }
 
-void Bienvenida() {
+void Menu() {
     cout << "";
     cout << "";
     cout << "";
@@ -972,24 +990,51 @@ void Bienvenida() {
     cout << "";
 }
 
-void postCredits(string nombre, int nivel, int x, int y, int calificacion, int visitsA, int visitsX, int visitsW, int visitsK) {
+void Instructions() {
+    cout << "";
+    cout << "";
+    cout << "";
+    cout << "";
+    cout << "";
+    cout << "";
+}
+
+void Welcome() {
+    cout << "";
+    cout << "";
+    cout << "";
+    cout << "";
+    cout << "";
+    cout << "";
+}
+
+void postCredits(const string& nombre, int nivel, int x, int y, int calificacion, int visitsA, int visitsX, int visitsW, int visitsK) {
     clearScreen();
-    gotoxy(x, y);
+
+    gotoxy(x-3, y);
     cout << "Enhorabuena " << nombre << ", has completado " << nivel << " niveles";
-    gotoxy(x, --y);
+
+    gotoxy(x, y + 1);
     cout << "Tu calificacion es de " << calificacion;
-    gotoxy(x, --y);
+
+    gotoxy(x, y + 2);
     cout << "Has visitado a los personajes:";
-    gotoxy(++x, --y);
+
+    gotoxy(x+1, y+3);
     cout << "A: " << visitsA;
-    gotoxy(x, --y);
+
+    gotoxy(x+1, y+4);
     cout << "X: " << visitsX;
-    gotoxy(x, --y);
+
+    gotoxy(x+1, y+5);
     cout << "W: " << visitsW;
-    gotoxy(x, --y);
+
+    gotoxy(x+1, y+6);
     cout << "K: " << visitsK;
-    gotoxy(--x, --y);
+
+    gotoxy(x, y+7);
     cout << "Tu calificacion es ";
+
     if (calificacion < 1) {
         cout << "PRINCIPIANTE";
     }
@@ -1002,12 +1047,14 @@ void postCredits(string nombre, int nivel, int x, int y, int calificacion, int v
     else if (calificacion >= 3) {
         cout << "INCREIBLE";
     }
-    gotoxy(x, --y);
-    printBlinkingText(Despedida, x+=3, y);
+
+    gotoxy(x, y+8);
+    printBlinkingText(Despedida, x+3, y+9);
+
     _getch();
 }
 
-string nombre; // Nombre del Jugador
+string Name; // Nombre del Jugador
 
 // Posiciones iniciales de los muñecos A
 int posXChars_A[numCharacters] = {};
@@ -1052,11 +1099,11 @@ void BoardValidation() {
             obsX = rand() % (width - 2) + 1; // Generar coordenada X aleatoria dentro del tablero
             obsY = rand() % (height - 2) + 1; // Generar coordenada Y aleatoria dentro del tablero
             validPosition = true;
-            // Verificar que la posición no sea la inicial del muñeco O ni de otros muñecos
+            // Verificar que la posición no sea la inicial del muñeco O
             if (obsX == posX && obsY == posY) {
                 validPosition = false;
             }
-            else {
+            else { // Verificar con
                 for (int j = 0; j < numCharacters; ++j) {
                     if ((obsX == posXChars_A[j] && obsY == posYChars_A[j]) ||
                         (obsX == posXChars_X[j] && obsY == posYChars_X[j]) ||
@@ -1086,7 +1133,7 @@ void CharactersValidation() {
             posXChars_K[i] = randnum(1, width - 2);
             posYChars_K[i] = randnum(1, height - 2);
 
-            // Verificar que la posición no sea la inicial del muñeco O ni de otros muñecos
+            // Verificar que la posición no sea una ocupada
             if ((posXChars_A[i] != posXChars_X[i] || posYChars_A[i] != posYChars_X[i]) &&
                 (posXChars_A[i] != posXChars_W[i] || posYChars_A[i] != posYChars_W[i]) &&
                 (posXChars_A[i] != posXChars_K[i] || posYChars_A[i] != posYChars_K[i]) &&
@@ -1106,6 +1153,9 @@ void CharactersValidation() {
     }
 }
 
+int Level = 0; // Nivel
+float Calification = 0; // Calificacion del Jugador
+
 /*
 Juego 1
 */
@@ -1119,13 +1169,13 @@ void GamePlay1() {
             board[posYChars_K[i]][posXChars_K[i]] = K;
         }
         board[posY][posX] = O; // Dibujar el personaje principal
-
         clearScreen();
+        setColor(6, 0);
         PuntajeHeroe(1, 25, Points);
         NumVisits_A_X(1, 27, visitsA, visitsX);
         NumVisits_W_K(1, 29, visitsK, visitsW);
-        Hero(70, 27, nombre);
-
+        Hero(70, 27, Name);
+        setColor(0, 3);
         // Imprimimos el tablero
         for (int i = 0; i < height; ++i) {
             for (int j = 0; j < width; ++j) {
@@ -1133,11 +1183,10 @@ void GamePlay1() {
             }
             cout << endl;
         }
+        resetColor();
 
-        board[posY][posX] = ' '; // Dibujar el personaje principal
+        board[posY][posX] = ' '; // Borrar posición actual de Heroe
 
-        // Capturamos la entrada
-        char input = toupper(_getch());
 
         // Limpiamos las posiciones anteriores de los muñecos
         for (int i = 0; i < numCharacters; ++i) {
@@ -1146,6 +1195,9 @@ void GamePlay1() {
             board[posYChars_W[i]][posXChars_W[i]] = ' ';
             board[posYChars_K[i]][posXChars_K[i]] = ' ';
         }
+
+        // Capturamos la entrada
+        char input = toupper(_getch());
 
         // Movemos al muñeco O según la entrada, asegurándonos de no colisionar con los bordes ni con los obstáculos
         switch (input) {
@@ -1172,11 +1224,11 @@ void GamePlay1() {
         for (int i = 0; i < numCharacters; ++i) {
             if (posX == posXChars_A[i] && posY == posYChars_A[i]) {
                 showPythagorasTutorial_A(); // Mostrar Tutorial de Pitagoras al colisionar
-                visitsA++; Points--;
+                visitsA++; Points-=2;
             }
             if (posX == posXChars_X[i] && posY == posYChars_X[i]) {
                 showEquationsTutorial_X(); // Mostrar Tutorial de Ecuaciones al colisionar
-                visitsX++; Points--;
+                visitsX++; Points-=2;
             }
             if (posX == posXChars_W[i] && posY == posYChars_W[i]) {
                 showPythagorasChallenge_W(); // Mostrar Desafio de Pitagoras al colisionar
@@ -1187,6 +1239,17 @@ void GamePlay1() {
                 visitsK++;
             }
         }
+    }
+    if (Points <= 0) {
+        Points = 0;
+        Calification = 0;
+        postCredits(Name, Level, 42, 10, Calification, visitsA, visitsX, visitsW, visitsK); // Mostrar creditos si el Heroe tiene como Puntaje 0
+        exit(0);
+    }
+    else if (Points >= 100) {
+        Calification = Points;
+        Level++;
+        Points = 25;
     }
 }
 
@@ -1205,11 +1268,12 @@ void GamePlay2() {
         board[posY][posX] = O; // Dibujar el personaje principal
 
         clearScreen();
+        setColor(5, 0);
         PuntajeHeroe(1, 25, Points);
         NumVisits_A_X(1, 27, visitsA, visitsX);
         NumVisits_W_K(1, 29, visitsK, visitsW);
-        Hero(70, 27, nombre);
-
+        Hero(70, 27, Name);
+        setColor(0, 4);
         // Imprimimos el tablero
         for (int i = 0; i < height; ++i) {
             for (int j = 0; j < width; ++j) {
@@ -1256,11 +1320,11 @@ void GamePlay2() {
         for (int i = 0; i < numCharacters; ++i) {
             if (posX == posXChars_A[i] && posY == posYChars_A[i]) {
                 showPythagorasTutorial_A(); // Mostrar Tutorial de Pitagoras al colisionar
-                visitsA++; Points--;
+                visitsA++; Points-=2;
             }
             if (posX == posXChars_X[i] && posY == posYChars_X[i]) {
                 showEquationsTutorial_X(); // Mostrar Tutorial de Ecuaciones al colisionar
-                visitsX++; Points--;
+                visitsX++; Points-=2;
             }
             if (posX == posXChars_W[i] && posY == posYChars_W[i]) {
                 showPythagorasChallenge_W(); // Mostrar Desafio de Pitagoras al colisionar
@@ -1271,6 +1335,17 @@ void GamePlay2() {
                 visitsK++;
             }
         }
+    }
+    if (Points <= 0) {
+        Points = 0;
+        Calification = 0;
+        postCredits(Name, Level, 42, 10, Calification, visitsA, visitsX, visitsW, visitsK); // Mostrar creditos si el Heroe tiene como Puntaje 0
+        exit(0);
+    }
+    else if (Points >= 100) {
+        Calification = Points;
+        Level++;
+        Points = 25;
     }
 }
 
@@ -1292,7 +1367,7 @@ void GamePlay3() {
         PuntajeHeroe(1, 25, Points);
         NumVisits_A_X(1, 27, visitsA, visitsX);
         NumVisits_W_K(1, 29, visitsK, visitsW);
-        Hero(70, 27, nombre);
+        Hero(70, 27, Name);
 
         // Imprimimos el tablero
         for (int i = 0; i < height; ++i) {
@@ -1340,11 +1415,11 @@ void GamePlay3() {
         for (int i = 0; i < numCharacters; ++i) {
             if (posX == posXChars_A[i] && posY == posYChars_A[i]) {
                 showPythagorasTutorial_A(); // Mostrar Tutorial de Pitagoras al colisionar
-                visitsA++; Points--;
+                visitsA++; Points-=2;
             }
             if (posX == posXChars_X[i] && posY == posYChars_X[i]) {
                 showEquationsTutorial_X(); // Mostrar Tutorial de Ecuaciones al colisionar
-                visitsX++; Points--;
+                visitsX++; Points-=2;
             }
             if (posX == posXChars_W[i] && posY == posYChars_W[i]) {
                 showPythagorasChallenge_W(); // Mostrar Desafio de Pitagoras al colisionar
@@ -1356,44 +1431,45 @@ void GamePlay3() {
             }
         }
     }
+    if (Points <= 0) {
+        Points = 0;
+        Calification = 0;
+        postCredits(Name, Level, 42, 10, Calification, visitsA, visitsX, visitsW, visitsK); // Mostrar creditos si el Heroe tiene como Puntaje 0
+        exit(0);
+    }
+    else if (Points >= 100) {
+        Calification = Points;
+        Level++;
+        postCredits(Name, Level, 42, 10, Calification, visitsA, visitsX, visitsW, visitsK); // Mensaje Ganador
+    }
+}
+
+void TF() {
+    hideCursor();
+    srand(time(0));
+    Welcome();
+    Menu();
+    
+    cout << "Ingresa tu nombre:\n";
+    cin >> Name;
+
+    /*
+    Juego
+    */
+    BoardValidation(); // Validacion del Tablero
+    CharactersValidation(); // Validacion de los Personajes
+    GamePlay1(); // Juego 1
+    BoardValidation(); // Validacion del Tablero
+    CharactersValidation(); // Validacion de los Personajes
+    GamePlay2(); // Juego 2
+    BoardValidation(); // Validacion del Tablero
+    CharactersValidation(); // Validacion de los Personajes
+    GamePlay3(); // Juego 3
 }
 /*
 Funcion Principal
 */
 int main() {
-    hideCursor();
-    srand(time(0));
-
-    int Nivel = 0;
-    float Calificacion = 0;
-
-    cout << "Ingresa tu nombre:\n";
-    cin >> nombre;
-
-    BoardValidation();
-    CharactersValidation();
-
-    /*
-    Juego
-    */
-    GamePlay1();
-
-
-    if (Points <= 0) {
-        Points = 0;
-        Calificacion = 0;
-        postCredits(nombre, Nivel, 42, 18, Calificacion, visitsA, visitsX, visitsW, visitsK); // Mostrar creditos si el Heroe tiene como Puntaje 0
-        exit(0);
-    }
-
-    Calificacion = visitsK * visitsW - visitsA - visitsX;
-    visitsK = 0; visitsW = 0; visitsA = 0; visitsX = 0;
-    Points = 25;
-    Nivel++;
-    while (Points < 100 && Points > 0) {
-
-    }
-    
-
+    TF();
     return 0;
 }
