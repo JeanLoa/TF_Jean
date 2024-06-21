@@ -219,13 +219,13 @@ void Hero(int level, int x, int y, string name) {
 
 void NumVisitsTutor(int x, int y, int TutorVisits) {
     gotoxy(x, y);
-    cout << "Numero de Visitas al Tutor: " << TutorVisits;
+    cout << "Numero de visitas al Tutor: " << TutorVisits;
     gotoxy(0, 0);
 }
 
 void NumVisitsEnemy(int x, int y, int EnemyVisits) {
     gotoxy(x, y);
-    cout << "Numero de Visitas al Enemigo: " << EnemyVisits;
+    cout << "Numero de visitas al Enemigo: " << EnemyVisits;
     gotoxy(0, 0);
 }
 
@@ -1159,7 +1159,7 @@ void showFinalChallenge_U() {
     int input;
     cout << "¡Colisionaste con el jefe final U!" << endl;
     cout << "Ahora un desafio aleatorio" << endl;
-    
+
     Challenge FinalBossChallenges[] = {
        {"¿Cuanto es el resultado de 3^2?",
         {"7", "5", "9"},
@@ -1222,6 +1222,10 @@ void showFinalChallenge_U() {
         {"No, fue Platon", "Si, fue Pitagoras", "No, antiguas civilizaciones ya lo habian descubierto"},
         2},
     };
+    int numChallenge = rand() % 21;
+    cout << "Bien, ahora un desafio aleatorio" << endl;
+    cout << "Aqui el desafio " << numChallenge + 1 << endl;
+    askQuestion(FinalBossChallenges[numChallenge]);
 }
 
 void Menu() {
@@ -1842,6 +1846,5 @@ Funcion Principal
 */
 int main() {
     MathWorld();
-    system("pause");
     return 0;
 }
