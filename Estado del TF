@@ -17,7 +17,7 @@ bool validPosition; // Booleano para controlar la validacion de posicion
 
 int TutorVisits; // Visitas al tutor
 int EnemyVisits; // Visitas al enemigo
-float Points = 15; // Puntaje del jugador
+float Points = 25; // Puntaje del jugador
 
 string Espera = "Presiona cualquier tecla para continuar..."; // Tiempo de espera
 string Despedida = "El juego ha finalizado";
@@ -165,8 +165,7 @@ void setColor(int textColor, int bgColor) {
 }
 
 void resetColor() {
-    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-    SetConsoleTextAttribute(hConsole, (0 << 4) | 7); // Restaura a texto blanco con fondo negro
+    setColor(7, 0);
 }
 
 void gotoxy(int x, int y) {
@@ -204,15 +203,17 @@ int randnum(int min, int max) {
 /*
 Heroe
 */
-void PuntajeHeroe(int x, int y, int puntaje) {
+void PuntajeHeroe(int x, int y, int points) {
     gotoxy(x, y);
-    cout << "Puntaje del Jugador: " << puntaje;
+    cout << "Puntaje del Jugador: " << points;
     gotoxy(0, 0);
 }
 
-void Hero(int x, int y, string nombre) {
+void Hero(int level, int x, int y, string name) {
     gotoxy(x, y);
-    cout << "Heroe " << nombre << ", ¿podra liberarnos de la ignorancia?";
+    cout << "Has llegado al Mundo " << (level + 1);
+    gotoxy(x-16, y+1);
+    cout << "Querido Heroe " << name << ", ¿podra liberarnos de la ignorancia?";
     gotoxy(0, 0);
 }
 
@@ -330,7 +331,7 @@ void showPythagorasCuriousThings() {
         clearScreen();
         showPythagorasCuriousThings();
     }
-    printBlinkingText(Espera, 0, 5);
+    printBlinkingText(Espera, 0, 7);
     _getch();
 }
 
@@ -386,9 +387,8 @@ void showPythagorasTheorem() {
     default:
         clearScreen();
         showPythagorasTheorem();
-        return;
     }
-    printBlinkingText(Espera, 0, 5);
+    printBlinkingText(Espera, 0, 7);
     _getch();
 }
 
@@ -445,7 +445,7 @@ void showPythagorasVectors() {
         clearScreen();
         showPythagorasVectors();
     }
-    printBlinkingText(Espera, 0, 5);
+    printBlinkingText(Espera, 0, 7);
     _getch();
 }
 
@@ -465,7 +465,9 @@ void showPythagorasTutorial_A() {
         break;
     case 3: showPythagorasVectors();
         break;
-    default: clearScreen(); showPythagorasTutorial_A();
+    default: 
+        clearScreen();
+        showPythagorasTutorial_A();
     }
 }
 
@@ -522,7 +524,7 @@ void showEquationsCuriousThings() {
         clearScreen();
         showEquationsCuriousThings();
     }
-    printBlinkingText(Espera, 0, 5);
+    printBlinkingText(Espera, 0, 7);
     _getch();
 }
 
@@ -579,7 +581,7 @@ void showEquationsUtility() {
         clearScreen();
         showEquationsUtility();
     }
-    printBlinkingText(Espera, 0, 5);
+    printBlinkingText(Espera, 0, 7);
     _getch();
 }
 
@@ -636,7 +638,7 @@ void showEquationsHistory() {
         clearScreen();
         showEquationsHistory();
     }
-    printBlinkingText(Espera, 0, 5);
+    printBlinkingText(Espera, 0, 7);
     _getch();
 }
 
@@ -781,7 +783,7 @@ void showChallengePythagorasTheorem() {
     };
 
     int numChallenge = rand() % 7;
-    cout << "Bien, escogiste un desafio sobre curiosidades de Pitagoras" << endl;
+    cout << "Bien, escogiste un desafio sobre el teorema de Pitagoras" << endl;
     cout << "Aqui esta el desafio aleatorio numero " << (numChallenge + 1) << ":" << endl;
 
     askQuestion(pythagorasChallenges[numChallenge]);
@@ -817,7 +819,7 @@ void showChallengePythagorasVectors() {
     };
 
     int numChallenge = rand() % 7;
-    cout << "Bien, escogiste un desafio sobre curiosidades de Pitagoras" << endl;
+    cout << "Bien, escogiste un desafio sobre vectores en el Pitagoras" << endl;
     cout << "Aqui esta el desafio aleatorio numero " << (numChallenge + 1) << ":" << endl;
 
     askQuestion(pythagorasChallenges[numChallenge]);
@@ -875,7 +877,7 @@ void showChallengeEquationsCuriousThings() {
     };
 
     int numChallenge = rand() % 7;
-    cout << "Bien, escogiste un desafio sobre curiosidades de Pitagoras" << endl;
+    cout << "Bien, escogiste un desafio sobre curiosidades de Ecuaciones" << endl;
     cout << "Aqui esta el desafio aleatorio numero " << (numChallenge + 1) << ":" << endl;
 
     askQuestion(equationsChallenges[numChallenge]);
@@ -903,7 +905,7 @@ void showChallengeEquationsUtility() {
          {"Modelan el dinamismo celular", "Predicen la propagacion de enfermedades", "Analizan el comportamiento de grupos sociales"},
          1},
         {"¿Para que se utilizan las ecuaciones en las Ciencias Sociales?",
-         {"Para diseñar politicas publicas", "Para predecir comportamientos humanos", "Para estudiar fenomenos naturales"},
+         {"Para disenar politicas publicas", "Para predecir comportamientos humanos", "Para estudiar fenomenos naturales"},
          2},
         {"¿Para que se utilizan las ecuaciones en los sistemas informaticos?",
          {"Para desarrollar estrategias de marketing", "Para entender el comportamiento del consumidor", "Para optimizar la eficiencia y funcionamiento"},
@@ -913,7 +915,7 @@ void showChallengeEquationsUtility() {
 
 
     int numChallenge = rand() % 7;
-    cout << "Bien, escogiste un desafio sobre curiosidades de Pitagoras" << endl;
+    cout << "Bien, escogiste un desafio sobre la utilidad de las ecuaciones" << endl;
     cout << "Aqui esta el desafio aleatorio numero " << (numChallenge + 1) << ":" << endl;
 
     askQuestion(equationsChallenges[numChallenge]);
@@ -949,7 +951,7 @@ void showChallengeEquationsHistory() {
     };
 
     int numChallenge = rand() % 7;
-    cout << "Bien, escogiste un desafio sobre curiosidades de Pitagoras" << endl;
+    cout << "Bien, escogiste un desafio sobre la historia de las Ecuaciones" << endl;
     cout << "Aqui esta el desafio aleatorio numero " << (numChallenge + 1) << ":" << endl;
 
     askQuestion(equationsChallenges[numChallenge]);
@@ -1006,7 +1008,7 @@ void showPythagorasTutorial() {
         clearScreen();
         showPythagorasTutorial();
     }
-    printBlinkingText(Espera, 0, 5);
+    printBlinkingText(Espera, 0, 7);
     _getch();
 }
 
@@ -1039,7 +1041,7 @@ void showEquationsTutorial() {
         clearScreen();
         showEquationsTutorial();
     }
-    printBlinkingText(Espera, 0, 5);
+    printBlinkingText(Espera, 0, 7);
     _getch();
 }
 
@@ -1180,22 +1182,22 @@ void showFinalChallenge_U() {
        {"¿Cuanto es el resultado de 5^2 + 6^2 = x?",
        {"61", "58", "64"},
        2},
-       {"¿Cuanto es el resultado de 3^2?",
-        {"7", "5", "9"},
+       {"En la ecuacion 5x - 9 = 0?",
+        {"14", "9", "9/5"},
         3},
        {"En la ecuacion 3x + 7 = 25, ¿cuanto vale x?",
         {"6", "9", "18"},
-        1},
+        2},
        {"Teniendo un triangulo con catetos x y 4, e hipotenusa 17, ¿cuanto vale x?",
         {"", "11", "13"},
-        1},
+        2},
        {"¿Teniendo la siguiente ecuacion, (9x - 7)/18 = 2, ¿cuanto vale x?",
         {"4", "0", "No se puede determinar"},
-        1},
-       {"¿Cual es la formula que determina la longitud de un cateto usando el teorema de Pitagoras?",
-        {"c^2 = a^2 + b^2", "b = sqrt(c^2 - a^2)", "Ninguna de las anteriores"},
+        2},
+       {"¿Cuanto vale x en la expresion, 2x = 15?",
+        {"12", "30", "15/2"},
         3},
-       {"¿Fue Pitagoras el primero que descubrio el teorema de Pitagoras?",
+       {"¿?",
         {"No, fue Platon", "Si, fue Pitagoras", "No, antiguas civilizaciones ya lo habian descubierto"},
         1},
        {"¿Cuanto es el resultado de 5^2 + 6^2 = x?",
@@ -1206,19 +1208,19 @@ void showFinalChallenge_U() {
         3},
        {"En la ecuacion 3x + 7 = 25, ¿cuanto vale x?",
         {"6", "9", "18"},
-        1},
+        3},
        {"Teniendo un triangulo con catetos x y 4, e hipotenusa 17, ¿cuanto vale x?",
         {"", "11", "13"},
-        1},
+        2},
        {"¿Teniendo la siguiente ecuacion, (9x - 7)/18 = 2, ¿cuanto vale x?",
         {"4", "0", "No se puede determinar"},
-        1},
+        3},
        {"¿Cual es la formula que determina la longitud de un cateto usando el teorema de Pitagoras?",
         {"c^2 = a^2 + b^2", "b = sqrt(c^2 - a^2)", "Ninguna de las anteriores"},
-        3},
+        1},
        {"¿Fue Pitagoras el primero que descubrio el teorema de Pitagoras?",
         {"No, fue Platon", "Si, fue Pitagoras", "No, antiguas civilizaciones ya lo habian descubierto"},
-        1},
+        2},
     };
 }
 
@@ -1241,12 +1243,15 @@ void Instructions() {
 }
 
 void Welcome() {
-    cout << "";
-    cout << "";
-    cout << "";
-    cout << "";
-    cout << "";
-    cout << "";
+    setColor(0, 15);
+    gotoxy(36, 11);
+    cout << " __  __       _   _       _    _           _     _ "; gotoxy(36,12);
+    cout << "|  \\/  |     | | | |     | |  | |         | |   | |"; gotoxy(36, 13);
+    cout << "| \\  / | __ _| |_| |_    | |  | | ___  ___| |___| |"; gotoxy(36, 14);
+    cout << "| |\\/| |/ _` | __| '_ \\  | |/\\| |/ _ \\| __| |  _  |"; gotoxy(36, 15);
+    cout << "| |  | | (_| | |_| | | | | /  \\ |||_||| | | | |_| |"; gotoxy(36, 16);
+    cout << "|_|  |_|\\__,_|\\__|_| |_| |__/\\__|\\___/\\_| |_|_____|"; gotoxy(36, 17);
+    resetColor();
 }
 
 void postCredits(const string& name, int nivel, int x, int y, int calification, int tutorvisits, int enemyvisits) {
@@ -1267,7 +1272,7 @@ void postCredits(const string& name, int nivel, int x, int y, int calification, 
     gotoxy(x+1, y+4);
     cout << "Enemigos: " << enemyvisits;
 
-    gotoxy(x, y+5);
+    gotoxy(x+4, y+5);
     cout << "Eres ";
 
     if (calification < 1) {
@@ -1283,7 +1288,7 @@ void postCredits(const string& name, int nivel, int x, int y, int calification, 
         cout << "BRILLANTE";
     }
 
-    gotoxy(x, y+6);
+    gotoxy(x+2, y+6);
     printBlinkingText(Despedida, x+3, y+9);
 
     _getch();
@@ -1371,7 +1376,7 @@ void BoardValidation1() {
     }
     // Añadir obstáculos al tablero
     srand(time(0));
-    int numObstacles = 400; // Número de obstáculos
+    int numObstacles = 300; // Número de obstáculos
     for (int i = 0; i < numObstacles; ++i) {
         int obsX, obsY;
         do {
@@ -1411,7 +1416,7 @@ void BoardValidation2() {
     }
     // Añadir obstáculos al tablero
     srand(time(0));
-    int numObstacles = 400; // Número de obstáculos
+    int numObstacles = 300; // Número de obstáculos
     for (int i = 0; i < numObstacles; ++i) {
         int obsX, obsY;
         do {
@@ -1449,7 +1454,7 @@ void BoardValidation3() {
     }
     // Añadir obstáculos al tablero
     srand(time(0));
-    int numObstacles = 400; // Número de obstáculos
+    int numObstacles = 300; // Número de obstáculos
     for (int i = 0; i < numObstacles; ++i) {
         int obsX, obsY;
         do {
@@ -1567,10 +1572,10 @@ void GamePlay1() {
         board[posY][posX] = O; // Dibujar el personaje principal
         clearScreen();
         setColor(6, 0);
-        PuntajeHeroe(1, 25, Points);
+        PuntajeHeroe(1, 26, Points);
         NumVisitsTutor(1, 27, TutorVisits);
-        NumVisitsEnemy(1, 29, EnemyVisits);
-        Hero(70, 27, Name);
+        NumVisitsEnemy(1, 28, EnemyVisits);
+        Hero(Level, 70, 27, Name);
         setColor(0, 3);
         // Imprimimos el tablero
         for (int i = 0; i < height; ++i) {
@@ -1582,7 +1587,6 @@ void GamePlay1() {
         resetColor();
 
         board[posY][posX] = ' '; // Limpiamos la posición actual de Heroe
-
 
         // Limpiamos las posiciones anteriores de los muñecos
         for (int i = 0; i < numCharacters; ++i) {
@@ -1637,13 +1641,12 @@ void GamePlay1() {
         }
     }
     if (Points <= 0) {
-        Points = 0;
         Calification = 0;
         postCredits(Name, Level, 42, 10, Calification, TutorVisits, EnemyVisits); // Mostrar creditos si el Heroe tiene como Puntaje 0
         exit(0);
     }
     else if (Points >= 100) {
-        Calification = Points;
+        Calification += Points/100;
         Level++;
         Points = 25;
     }
@@ -1662,12 +1665,12 @@ void GamePlay2() {
         board[posY][posX] = O; // Dibujar el personaje principal
 
         clearScreen();
-        setColor(5, 0);
-        PuntajeHeroe(1, 25, Points);
+        setColor(15, 0);
+        PuntajeHeroe(1, 26, Points);
         NumVisitsTutor(1, 27, TutorVisits);
-        NumVisitsEnemy(1, 29, EnemyVisits);
-        Hero(70, 27, Name);
-        setColor(0, 4);
+        NumVisitsEnemy(1, 28, EnemyVisits);
+        Hero(Level, 70, 27, Name);
+        setColor(5, 14);
         // Imprimimos el tablero
         for (int i = 0; i < height; ++i) {
             for (int j = 0; j < width; ++j) {
@@ -1675,18 +1678,18 @@ void GamePlay2() {
             }
             cout << endl;
         }
-        resetColor();
+        resetColor(); // Restaurar el color
 
-        board[posY][posX] = ' '; // Dibujar el personaje principal
-
-        // Capturamos la entrada
-        char input = toupper(_getch());
+        board[posY][posX] = ' '; // Limpiamos la posición actual de Heroe
 
         // Limpiamos las posiciones anteriores de los muñecos
         for (int i = 0; i < numCharacters; ++i) {
             board[posYChars_H[i]][posXChars_H[i]] = ' ';
             board[posYChars_V[i]][posXChars_V[i]] = ' ';
         }
+
+        // Capturamos la entrada
+        char input = toupper(_getch());
 
         // Movemos al muñeco O según la entrada, asegurándonos de no colisionar con los bordes ni con los obstáculos
         switch (input) {
@@ -1703,6 +1706,7 @@ void GamePlay2() {
             if (posX < width - 2 && board[posY][posX + 1] == ' ') posX++; // Mover derecha si no está en el borde derecho o hay un obstáculo
             break;
         }
+
         // Mover personajes
         moveCharacters(board, posYChars_H, posXChars_H);
         moveCharacters(board, posYChars_V, posXChars_V);
@@ -1718,17 +1722,15 @@ void GamePlay2() {
                 EnemyVisits++;
             }
         }
-        if (Points <= 0) {
-            Points = 0;
-            Calification = 0;
-            postCredits(Name, Level, 42, 10, Calification, TutorVisits, EnemyVisits); // Mostrar creditos si el Heroe tiene como Puntaje 0
-            exit(0);
-        }
-        else if (Points >= 100) {
-            Calification = Points;
-            Level++;
-            Points = 25;
-        }
+    }
+    if (Points <= 0) {
+        postCredits(Name, Level, 42, 10, Calification, TutorVisits, EnemyVisits); // Mostrar creditos si el Heroe tiene como Puntaje 0
+        exit(0);
+    }
+    else if (Points >= 100) {
+        Calification += Points / 100;
+        Level++;
+        Points = 25;
     }
 }
 
@@ -1736,6 +1738,7 @@ void GamePlay2() {
 Juego 3
 */
 void GamePlay3() {
+    resetColor();
     while (Points < 100 && Points > 0) {
         // Dibujar personajes en el tablero
         for (int i = 0; i < numCharacters; ++i) {
@@ -1744,11 +1747,12 @@ void GamePlay3() {
         board[posY][posX] = O; // Dibujar el personaje principal
 
         clearScreen();
-        PuntajeHeroe(1, 25, Points);
+        setColor(15, 0);
+        PuntajeHeroe(1, 26, Points);
         NumVisitsTutor(1, 27, TutorVisits);
-        NumVisitsEnemy(1, 29, EnemyVisits);
-        Hero(70, 27, Name);
-
+        NumVisitsEnemy(1, 28, EnemyVisits);
+        Hero(Level, 70, 27, Name);
+        setColor(4, 15);
         // Imprimimos el tablero
         for (int i = 0; i < height; ++i) {
             for (int j = 0; j < width; ++j) {
@@ -1756,16 +1760,17 @@ void GamePlay3() {
             }
             cout << endl;
         }
+        resetColor(); // Restablecer el color después de imprimir el tablero
 
-        board[posY][posX] = ' '; // Dibujar el personaje principal
-
-        // Capturamos la entrada
-        char input = toupper(_getch());
+        board[posY][posX] = ' '; // Limpiamos la posición actual de Heroe
 
         // Limpiamos las posiciones anteriores de los muñecos
         for (int i = 0; i < numCharacters; ++i) {
             board[posYChars_U[i]][posXChars_U[i]] = ' ';
         }
+
+        // Capturamos la entrada
+        char input = toupper(_getch());
 
         // Movemos al muñeco O según la entrada, asegurándonos de no colisionar con los bordes ni con los obstáculos
         switch (input) {
@@ -1782,6 +1787,7 @@ void GamePlay3() {
             if (posX < width - 2 && board[posY][posX + 1] == ' ') posX++; // Mover derecha si no está en el borde derecho o hay un obstáculo
             break;
         }
+
         // Mover personajes
         moveCharacters(board, posYChars_U, posXChars_U);
 
@@ -1794,25 +1800,23 @@ void GamePlay3() {
         }
     }
     if (Points <= 0) {
-        Points = 0;
-        Calification = 0;
         postCredits(Name, Level, 42, 10, Calification, TutorVisits, EnemyVisits); // Mostrar creditos si el Heroe tiene como Puntaje 0
         exit(0);
     }
     else if (Points >= 100) {
-        Calification = Points/100;
+        Calification += Points / 100;
         Level++;
         postCredits(Name, Level, 42, 10, Calification, TutorVisits, EnemyVisits); // Mensaje Ganador
     }
 }
 
-void TF() {
+void MathWorld() {
     hideCursor(); // Ocultar el cursor
     srand(time(0)); // Semilla para los números aleatorios
     Welcome(); // Bienvenida
     Menu(); // Menu
     
-    cout << "Ingresa tu nombre:\n";
+    cout << "Ingresa tu nombre: ";
     cin >> Name;
 
     /*
@@ -1832,10 +1836,12 @@ void TF() {
     GamePlay3(); // Juego 3
     Gratitude(); // Despedida
 }
+
 /*
 Funcion Principal
 */
 int main() {
-    TF();
+    MathWorld();
+    system("pause");
     return 0;
 }
