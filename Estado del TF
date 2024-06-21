@@ -1181,7 +1181,7 @@ void showFinalChallenge_U() {
         1},
        {"¿Cuanto es el resultado de 5^2 + 6^2 = x?",
        {"61", "58", "64"},
-       2},
+        2},
        {"En la ecuacion 5x - 9 = 0?",
         {"14", "9", "9/5"},
         3},
@@ -1189,7 +1189,7 @@ void showFinalChallenge_U() {
         {"6", "9", "18"},
         2},
        {"Teniendo un triangulo con catetos x y 4, e hipotenusa 17, ¿cuanto vale x?",
-        {"", "11", "13"},
+        {"g", "11", "13"},
         2},
        {"¿Teniendo la siguiente ecuacion, (9x - 7)/18 = 2, ¿cuanto vale x?",
         {"4", "0", "No se puede determinar"},
@@ -1197,29 +1197,29 @@ void showFinalChallenge_U() {
        {"¿Cuanto vale x en la expresion, 2x = 15?",
         {"12", "30", "15/2"},
         3},
-       {"¿?",
-        {"No, fue Platon", "Si, fue Pitagoras", "No, antiguas civilizaciones ya lo habian descubierto"},
+       {"¿Es una ecuacion, 5 + 10 = 15?",
+        {"No, necesita una incognita", "Si, porque hay una igualdad de terminos", "No, porque los terminos son desiguales"},
         1},
-       {"¿Cuanto es el resultado de 5^2 + 6^2 = x?",
-        {"61", "58", "64"},
-       2},
-       {"¿Cuanto es el resultado de 3^2?",
-        {"7", "5", "9"},
-        3},
-       {"En la ecuacion 3x + 7 = 25, ¿cuanto vale x?",
-        {"6", "9", "18"},
-        3},
-       {"Teniendo un triangulo con catetos x y 4, e hipotenusa 17, ¿cuanto vale x?",
-        {"", "11", "13"},
+       {"¿Cuanto vale x en, x^2 = 64?",
+        {"10", "8", "12"},
         2},
-       {"¿Teniendo la siguiente ecuacion, (9x - 7)/18 = 2, ¿cuanto vale x?",
-        {"4", "0", "No se puede determinar"},
+       {"¿Cuanto vale x en, x + 3x = 12?",
+        {"1", "2", "3"},
         3},
-       {"¿Cual es la formula que determina la longitud de un cateto usando el teorema de Pitagoras?",
-        {"c^2 = a^2 + b^2", "b = sqrt(c^2 - a^2)", "Ninguna de las anteriores"},
+       {"En la ecuacion, x - 15 = 0, ¿cuanto vale x?",
+        {"19", "10", "15"},
+        3},
+       {"¿Cuanto vale x en la siguiente expresion?, x - 5 = x",
+        {"10", "No tiene solucion, porque no hay igualdad de terminos", "15"},
+        2},
+       {"¿Cuanto vale x en la siguiente expresion?, 5x + 25 = 5",
+        {"4", "2", "-4"},
+        3},
+       {"¿Cuanto vale x?, x - 12 = 8 ",
+        {"20", "4", "12"},
         1},
-       {"¿Fue Pitagoras el primero que descubrio el teorema de Pitagoras?",
-        {"No, fue Platon", "Si, fue Pitagoras", "No, antiguas civilizaciones ya lo habian descubierto"},
+       {"¿x es la unica posible letra para las incognitas?",
+        {"Si, unica y exclusivamente", "No, se puede usar cualquier letra", "Es indeterminado"},
         2},
     };
     int numChallenge = rand() % 21;
@@ -1228,32 +1228,86 @@ void showFinalChallenge_U() {
     askQuestion(FinalBossChallenges[numChallenge]);
 }
 
-void Menu() {
-    cout << "";
-    cout << "";
-    cout << "";
-    cout << "";
-    cout << "";
-    cout << "";
+void LogoIntroduction() {
+    clearScreen();
+    setColor(3, 0);
+    gotoxy(26, 2);
+    cout << "  _____         _                  _                   _               ";        gotoxy(26, 3);
+    cout << " |__ __| _ __  | |_ _ __  ___   __| |_   _  ____  ____(_) ___  _ ___   ";        gotoxy(26, 4);
+    cout << "   | |  | '_ \\ | __| '__|/ _ \\ / _  | | | |/  __|/  __| |/ _ \\| '_  \\  ";    gotoxy(26, 5);
+    cout << "  _| |_ | | | || |_| |  | (_) | (_| | |_| |  (__|  (__| | (_) | | | |  ";        gotoxy(26, 6);
+    cout << " |_____||_| |_|\\__||_|   \\___/ \\____|\\___/ \\____|\\____|_|\\___/|_| |_|  "; gotoxy(26, 7);
 }
 
-void Instructions() {
-    cout << "";
-    cout << "";
-    cout << "";
-    cout << "";
-    cout << "";
-    cout << "";
+void Intructions() {
+    setColor(6, 0);
+    gotoxy(26, 9);
+    cout << "Caracteristicas principales:";                                             gotoxy(26, 10);
+    cout << "Aventuras Matematicas:";                                                   gotoxy(26, 11);
+    cout << "Explora diferentes niveles y escenarios, cada uno con sus propios";        gotoxy(26, 12);
+    cout << "retos matematicos que pondran a prueba tus conocimientos y habilidades.";  gotoxy(26, 13);
+    cout << "Personajes Interactivos:";                                                 gotoxy(26, 14);
+    cout << "Interactua con personajes unicos que te ayudaran y te desafiaran";         gotoxy(26, 15);
+    cout << "a lo largo de tu viaje en MathWorld.";                                     gotoxy(26, 16);
+    cout << "Desafios y Tutoriales:";                                                   gotoxy(26, 17);
+    cout << "Completa tutoriales interactivos para aprender nuevas tecnicas y";         gotoxy(26, 18);
+    cout << "enfrenta desafios que te permitiran poner a prueba lo aprendido.";         gotoxy(26, 19);
+    cout << "Sistema de Puntuacion:";                                                   gotoxy(26, 20);
+    cout << "Gana puntos resolviendo problemas y avanzando a traves de los niveles.";   gotoxy(26, 21);
+    cout << "Tu objetivo es alcanzar la maxima puntuacion posible.";                    gotoxy(26, 22);
+    printBlinkingText(Espera,26, 23);
+}
+
+void GameModel() {
+    clearScreen();
+    setColor(9, 15);
+
+    cout << "Juego 1: Aventura del Conocimiento              \n                                                \n";
+    cout << "Objetivo:                                       \n                                                \n";
+    cout << "Acumula 100 puntos enfrentando desafios basados \nen el Teorema de Pitagoras y Ecuaciones.        \n";
+    cout << "Personajes:                                     \n                                                \n";
+    cout << "A: Tutor de Pitagoras                           \n                                                \n";
+    cout << "X: Tutor de Ecuaciones                          \n                                                \n";
+    cout << "W: Desafio de Pitagoras                         \n                                                \n";
+    cout << "K: Desafio de Ecuaciones                        \n                                                \n";
+    cout << "Reglas:                                         \n                                                \n";
+    cout << "Evita perder puntos colisionando con los tutores\n y enemigos.                                    \n";
+    cout << "Llega a 100 puntos para pasar al siguiente nivel\n                                                \n";
+    resetColor();
+    system("pause");
+    clearScreen();
+    setColor(6, 15);
+    cout << "Juego 2: Resolucion de Problemas                                                                    \n";
+    cout << "Objetivo:                                                                                           \n";
+    cout << "Resuelve ecuaciones y problemas algebraicos para ganar puntos y avanzar de nivel.                   \n";
+    cout << "Personajes:                                                                                         \n";
+    cout << "H: Tutor de Algebra                                                                                 \n";
+    cout << "V: Desafio de Variables                                                                             \n";
+    cout << "Reglas:                                                                                             \n";
+    cout << "Cada problema resuelto correctamente te acerca a la victoria.                                       \n";
+    cout << "Cuidado con los desafios, pueden hacerte perder puntos.                                             \n";
+    system("pause");
+    clearScreen();
+    setColor(4, 15);
+    cout << "Juego 3: Desafio Final                                                                              \n";
+    cout << "Objetivo:                                                                                           \n";
+    cout << "Enfrenta el desafIo final resolviendo problemas avanzados y demostrando tus habilidades matematicas.\n";
+    cout << "Personajes:                                                                                         \n";
+    cout << "U: Desafio Final                                                                                    \n";
+    cout << "Reglas:                                                                                             \n";
+    cout << "Supera los desafios finales para completar el juego y ganar.                                        \n";
+    system("pause");
+    resetColor();
 }
 
 void Welcome() {
     setColor(0, 15);
     gotoxy(36, 11);
-    cout << " __  __       _   _       _    _           _     _ "; gotoxy(36,12);
-    cout << "|  \\/  |     | | | |     | |  | |         | |   | |"; gotoxy(36, 13);
-    cout << "| \\  / | __ _| |_| |_    | |  | | ___  ___| |___| |"; gotoxy(36, 14);
-    cout << "| |\\/| |/ _` | __| '_ \\  | |/\\| |/ _ \\| __| |  _  |"; gotoxy(36, 15);
-    cout << "| |  | | (_| | |_| | | | | /  \\ |||_||| | | | |_| |"; gotoxy(36, 16);
+    cout << " __  __       _   _       _    _           _     _ ";      gotoxy(36, 12);
+    cout << "|  \\/  |     | | | |     | |  | |         | |   | |";     gotoxy(36, 13);
+    cout << "| \\  / | __ _| |_| |_    | |  | | ___  ___| |___| |";     gotoxy(36, 14);
+    cout << "| |\\/| |/ _` | __| '_ \\  | |/\\| |/ _ \\| __| |  _  |";  gotoxy(36, 15);
+    cout << "| |  | | (_| | |_| | | | | /  \\ |||_||| | | | |_| |";     gotoxy(36, 16);
     cout << "|_|  |_|\\__,_|\\__|_| |_| |__/\\__|\\___/\\_| |_|_____|"; gotoxy(36, 17);
     resetColor();
 }
@@ -1818,11 +1872,12 @@ void MathWorld() {
     hideCursor(); // Ocultar el cursor
     srand(time(0)); // Semilla para los números aleatorios
     Welcome(); // Bienvenida
-    Menu(); // Menu
     
     cout << "Ingresa tu nombre: ";
     cin >> Name;
-
+    LogoIntroduction();
+    Intructions();
+    GameModel();
     /*
     Juego
     */
