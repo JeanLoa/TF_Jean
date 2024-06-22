@@ -1,9 +1,9 @@
-#include <iostream> // Necesario para Operadores de entrada y salida de datos
+#include <iostream> // Necesario para operadores de entrada y salida de datos
 #include <conio.h> // Necesario para getch()
 #include <cstdlib> // Necesario para system("cls")
 #include <ctime> // Necesario para srand y rand
 #include <windows.h> // Necesario para HideCursor y SetColor
-#include <string>
+#include <string> // Para usar string
 
 using namespace std;
 
@@ -1260,44 +1260,51 @@ void Intructions() {
 
 void GameModel() {
     clearScreen();
-    setColor(9, 15);
-
-    cout << "Juego 1: Aventura del Conocimiento              \n                                                \n";
-    cout << "Objetivo:                                       \n                                                \n";
-    cout << "Acumula 100 puntos enfrentando desafios basados \nen el Teorema de Pitagoras y Ecuaciones.        \n";
-    cout << "Personajes:                                     \n                                                \n";
-    cout << "A: Tutor de Pitagoras                           \n                                                \n";
-    cout << "X: Tutor de Ecuaciones                          \n                                                \n";
-    cout << "W: Desafio de Pitagoras                         \n                                                \n";
-    cout << "K: Desafio de Ecuaciones                        \n                                                \n";
-    cout << "Reglas:                                         \n                                                \n";
-    cout << "Evita perder puntos colisionando con los tutores\n y enemigos.                                    \n";
-    cout << "Llega a 100 puntos para pasar al siguiente nivel\n                                                \n";
+    gotoxy(11, 10);
+    setColor(15, 0);
+    cout << "Juego 1: Aventura del Conocimiento                                                                  "; gotoxy(11, 11);
+    setColor(8, 0);
+    cout << "Objetivo:                                                                                           "; gotoxy(11, 12);
+    cout << "Acumula 100 puntos enfrentando desafios basados en el Teorema de Pitagoras y Ecuaciones.            "; gotoxy(11, 13);
+    cout << "Personajes:                                                                                         "; gotoxy(11, 14);
+    cout << "A: Tutor de Pitagoras                                                                               "; gotoxy(11, 15);
+    cout << "X: Tutor de Ecuaciones                                                                              "; gotoxy(11, 16);
+    cout << "W: Desafio de Pitagoras                                                                             "; gotoxy(11, 17);
+    cout << "K: Desafio de Ecuaciones                                                                            "; gotoxy(11, 18);
+    cout << "Reglas:                                                                                             "; gotoxy(11, 19);
+    cout << "Evita perder puntos colisionando con los tutores y enemigos.                                        "; gotoxy(11, 20);
+    cout << "Llega a 100 puntos para pasar al siguiente nivel                                                    "; gotoxy(11, 21);
     resetColor();
     system("pause");
     clearScreen();
-    setColor(6, 15);
-    cout << "Juego 2: Resolucion de Problemas                                                                    \n";
-    cout << "Objetivo:                                                                                           \n";
-    cout << "Resuelve ecuaciones y problemas algebraicos para ganar puntos y avanzar de nivel.                   \n";
-    cout << "Personajes:                                                                                         \n";
-    cout << "H: Tutor de Algebra                                                                                 \n";
-    cout << "V: Desafio de Variables                                                                             \n";
-    cout << "Reglas:                                                                                             \n";
-    cout << "Cada problema resuelto correctamente te acerca a la victoria.                                       \n";
-    cout << "Cuidado con los desafios, pueden hacerte perder puntos.                                             \n";
+    gotoxy(11, 11);
+    setColor(15, 0);
+    cout << "Juego 2: Resolucion de Problemas                                                                    "; gotoxy(11, 12);
+    setColor(6, 0);
+    cout << "Objetivo:                                                                                           "; gotoxy(11, 13);
+    cout << "Resuelve ecuaciones y problemas algebraicos para ganar puntos y avanzar de nivel.                   "; gotoxy(11, 14);
+    cout << "Personajes:                                                                                         "; gotoxy(11, 15);
+    cout << "H: Tutor de Algebra                                                                                 "; gotoxy(11, 16);
+    cout << "V: Desafio de Variables                                                                             "; gotoxy(11, 17);
+    cout << "Reglas:                                                                                             "; gotoxy(11, 18);
+    cout << "Cada problema resuelto correctamente te acerca a la victoria.                                       "; gotoxy(11, 19);
+    cout << "Cuidado con los desafios, pueden hacerte perder puntos.                                             "; gotoxy(11, 20);
+    resetColor();
     system("pause");
     clearScreen();
-    setColor(4, 15);
-    cout << "Juego 3: Desafio Final                                                                              \n";
-    cout << "Objetivo:                                                                                           \n";
-    cout << "Enfrenta el desafIo final resolviendo problemas avanzados y demostrando tus habilidades matematicas.\n";
-    cout << "Personajes:                                                                                         \n";
-    cout << "U: Desafio Final                                                                                    \n";
-    cout << "Reglas:                                                                                             \n";
-    cout << "Supera los desafios finales para completar el juego y ganar.                                        \n";
-    system("pause");
+    gotoxy(11, 12);
+    setColor(15, 0);
+    cout << "Juego 3: Desafio Final                                                                              "; gotoxy(11, 13);
+    setColor(4, 0);
+    cout << "Objetivo:                                                                                           "; gotoxy(11, 14);
+    cout << "Enfrenta el desafio final resolviendo problemas avanzados y demostrando tus habilidades matematicas."; gotoxy(11, 15);
+    cout << "Personajes:                                                                                         "; gotoxy(11, 16);
+    cout << "U: Desafio Final                                                                                    "; gotoxy(11, 17);
+    cout << "Reglas:                                                                                             "; gotoxy(11, 18);
+    cout << "Supera los desafios finales para completar el juego y ganar.                                        "; gotoxy(11, 19);
     resetColor();
+    system("pause");
+    gotoxy(0, 0);
 }
 
 void Welcome() {
@@ -1330,7 +1337,7 @@ void postCredits(const string& name, int nivel, int x, int y, int calification, 
     gotoxy(x+1, y+4);
     cout << "Enemigos: " << enemyvisits;
 
-    gotoxy(x+4, y+5);
+    gotoxy(x+9, y+6);
     cout << "Eres ";
 
     if (calification < 1) {
@@ -1346,7 +1353,7 @@ void postCredits(const string& name, int nivel, int x, int y, int calification, 
         cout << "BRILLANTE";
     }
 
-    gotoxy(x+2, y+6);
+    gotoxy(x+6, y+6);
     printBlinkingText(Despedida, x+3, y+9);
 
     _getch();
