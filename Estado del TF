@@ -1521,14 +1521,15 @@ void Gratitude(int x, int y) {
     clearScreen();
     gotoxy(x, y);
     cout << "Con esto nos despedimos";                                                                          gotoxy(x, ++y);
-    cout << "Ha sido un gusto que probases nuestro juego";                                                      gotoxy(x, y += 2); setColor(6, 0);
+    cout << "Ha sido un gusto que probases nuestro juego";                                                      gotoxy(x, y+=2); setColor(6, 0);
     cout << "Beneficios Educativos:";                                                                           gotoxy(x, ++y);    setColor(9, 0);
     cout << "Desarrollo de Habilidades Matematicas:";                                                           gotoxy(x, ++y);    setColor(15, 0);
     cout << "Refuerza y mejora tus conocimientos en geometria, algebra y resolucion de problemas.";             gotoxy(x, ++y);    setColor(9, 0);
     cout << "Aprendizaje Interactivo:";                                                                         gotoxy(x, ++y);    setColor(15, 0);
     cout << "Aprende de manera dinamica y divertida con tutoriales y desafos integrados en el juego.";          gotoxy(x, ++y);    setColor(9, 0);
     cout << "Motivacion y Logros:";                                                                             gotoxy(x, ++y);    setColor(15, 0);
-    cout << "Manten la motivacion con un sistema de puntuacion y logros que te incentiva a seguir mejorando.";
+    cout << "Manten la motivacion con un sistema de puntuacion y logros que te incentiva a seguir mejorando.";  gotoxy(x+=2, y+=2);
+    cout << "Estudiante: Jean Franck Loa Rojas - Curso: Introduccion a los Algoritmos - Seccion: CC1L";
     resetColor();
     _getch();
 }
