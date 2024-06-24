@@ -5,7 +5,7 @@
 #include <windows.h> // Necesario para HideCursor y SetColor
 #include <string> // Para usar string
 
-using namespace std;
+using namespace std; // Alias std
 
 const int width = 60; // Ancho del tablero
 const int height = 25; // Alto del tablero
@@ -17,10 +17,10 @@ bool validPosition; // Booleano para controlar la validacion de posicion
 
 int TutorVisits; // Visitas al tutor
 int EnemyVisits; // Visitas al enemigo
-float Points = 25; // Puntaje del jugador
+float Points = 99; // Puntaje del jugador
 
 string Espera = "Presiona cualquier tecla para continuar..."; // Tiempo de espera
-string Despedida = "El juego ha finalizado";
+string Despedida = "El juego ha finalizado";                  // Mensaje de Despedida
 
 char board[height][width]; // Tablero de juego
 
@@ -212,7 +212,7 @@ void PuntajeHeroe(int x, int y, int points) {
 void Hero(int level, int x, int y, string name) {
     gotoxy(x, y);
     cout << "Has llegado al Mundo " << (level + 1);
-    gotoxy(x-16, y+1);
+    gotoxy(x - 16, y + 1);
     cout << "Querido Heroe " << name << ", ¿podra liberarnos de la ignorancia?";
     gotoxy(0, 0);
 }
@@ -465,7 +465,7 @@ void showPythagorasTutorial_A() {
         break;
     case 3: showPythagorasVectors();
         break;
-    default: 
+    default:
         clearScreen();
         showPythagorasTutorial_A();
     }
@@ -1181,8 +1181,8 @@ void showFinalChallenge_U() {
         1},
        {"¿Cuanto es el resultado de 5^2 + 6^2 = x?",
        {"61", "58", "64"},
-        2},
-       {"En la ecuacion 5x - 9 = 0?",
+        1},
+       {"En la ecuacion 5x - 9 = 0, ¿cuanto vale x?",
         {"14", "9", "9/5"},
         3},
        {"En la ecuacion 3x + 7 = 25, ¿cuanto vale x?",
@@ -1228,6 +1228,9 @@ void showFinalChallenge_U() {
     askQuestion(FinalBossChallenges[numChallenge]);
 }
 
+/*
+Estética
+*/
 void LogoIntroduction() {
     clearScreen();
     setColor(3, 0);
@@ -1239,7 +1242,7 @@ void LogoIntroduction() {
     cout << " |_____||_| |_|\\__||_|   \\___/ \\____|\\___/ \\____|\\____|_|\\___/|_| |_|  "; gotoxy(26, 7);
 }
 
-void Intructions() {
+void Instructions1() {
     setColor(6, 0);
     gotoxy(26, 9);
     cout << "Caracteristicas principales:";                                             gotoxy(26, 10);
@@ -1255,7 +1258,33 @@ void Intructions() {
     cout << "Sistema de Puntuacion:";                                                   gotoxy(26, 20);
     cout << "Gana puntos resolviendo problemas y avanzando a traves de los niveles.";   gotoxy(26, 21);
     cout << "Tu objetivo es alcanzar la maxima puntuacion posible.";                    gotoxy(26, 22);
-    printBlinkingText(Espera,26, 23);
+    printBlinkingText(Espera, 26, 23);
+    clearScreen();
+}
+
+void Instructions2(int x, int y) {
+    clearScreen();
+    setColor(5, 0);
+    gotoxy(x, y);
+    cout << "Como Jugar:";
+    gotoxy(x, y += 2); setColor(12, 0);
+    cout << "Movimiento:";                                                              gotoxy(x, ++y); setColor(8, 0);
+    cout << "W: Mover hacia arriba";                                                    gotoxy(x, ++y);
+    cout << "A: Mover hacia izquierda";                                                 gotoxy(x, ++y);
+    cout << "S: Mover hacia abajo";                                                     gotoxy(x, ++y);
+    cout << "D: Mover hacia derecha";
+    gotoxy(x, y += 2); setColor(1, 0);
+    cout << "Interaccion:";                                                             gotoxy(x, ++y); setColor(8, 0);
+    cout << "Interactua con los personajes y el entorno para recibir tutoriales";       gotoxy(x, ++y);
+    cout << "y enfrentar desafios.";
+    gotoxy(x, y += 2); setColor(6, 0);
+    cout << "Puntuacion:";                                                              gotoxy(x, ++y); setColor(8, 0);
+    cout << "Gana puntos resolviendo problemas correctamente y evita perder puntos";    gotoxy(x, ++y);
+    cout << "por colisiones con enemigos.";                                             gotoxy(x, ++y);
+    setColor(7, 0);
+    system("pause");
+    gotoxy(0, 0);
+    clearScreen();
 }
 
 void GameModel() {
@@ -1319,27 +1348,44 @@ void Welcome() {
     resetColor();
 }
 
-void postCredits(const string& name, int nivel, int x, int y, int calification, int tutorvisits, int enemyvisits) {
+int Menu() {
     clearScreen();
+    setColor(0, 15);
+    gotoxy(36, 8);
+    cout << " __  __       _   _       _    _           _     _ ";      gotoxy(36, 9);
+    cout << "|  \\/  |     | | | |     | |  | |         | |   | |";     gotoxy(36, 10);
+    cout << "| \\  / | __ _| |_| |_    | |  | | ___  ___| |___| |";     gotoxy(36, 11);
+    cout << "| |\\/| |/ _` | __| '_ \\  | |/\\| |/ _ \\| __| |  _  |";  gotoxy(36, 12);
+    cout << "| |  | | (_| | |_| | | | | /  \\ |||_||| | | | |_| |";     gotoxy(36, 13);
+    cout << "|_|  |_|\\__,_|\\__|_| |_| |__/\\__|\\___/\\_| |_|_____|";
+    setColor(8, 0);
+    gotoxy(36, 15);
+    cout << "1. Jugar"; gotoxy(36, 16);
+    cout << "2. Salir"; gotoxy(36, 17);
+    int input = _getch() - '0';
+    switch (input) {
+    case 1:
+        break;
+    case 2:
+        exit(0);
+    default: Menu();
+    }
+}
 
-    gotoxy(x-3, y);
-    cout << "Enhorabuena " << name << ", has completado " << nivel << " niveles";
-
-    gotoxy(x, y + 1);
-    cout << "Tu calificacion es de " << calification;
-
-    gotoxy(x, y + 2);
-    cout << "Has visitado a los personajes:";
-
-    gotoxy(x+1, y+3);
-    cout << "Tutores: " << tutorvisits;
-
-    gotoxy(x+1, y+4);
-    cout << "Enemigos: " << enemyvisits;
-
-    gotoxy(x+9, y+6);
-    cout << "Eres ";
-
+void postCredits(const string& name, int level, int x, int y, int calification, int tutorvisits, int enemyvisits) {
+    clearScreen();
+    gotoxy(x, y);
+    setColor(0, 15);
+    cout << " __________________________________________ ";                              gotoxy(x, ++y); Sleep(200);
+    cout << "|                                          |";                              gotoxy(x, ++y); Sleep(200);
+    cout << "|  Enhorabuena " << name << ", has completado " << level << " niveles  |";  gotoxy(x, ++y); Sleep(200);
+    cout << "|                                          |";                              gotoxy(x, ++y); Sleep(200);
+    cout << "|------------------------------------------|";                              gotoxy(x, ++y); Sleep(200);
+    cout << "|      Tu calificacion es de " << calification << "             |";         gotoxy(x, ++y); Sleep(200);
+    cout << "|      Has visitado a los personajes:      |";                              gotoxy(x, ++y); Sleep(200);
+    cout << "|      Tutores: " << tutorvisits << "                          |";          gotoxy(x, ++y); Sleep(200);
+    cout << "|      Enemigos: " << enemyvisits << "                         |";          gotoxy(x, ++y); Sleep(200);
+    cout << "|            Eres ";
     if (calification < 1) {
         cout << "PRINCIPIANTE";
     }
@@ -1352,33 +1398,160 @@ void postCredits(const string& name, int nivel, int x, int y, int calification, 
     else if (calification >= 3) {
         cout << "BRILLANTE";
     }
+    gotoxy(x + 43, y);
+    cout << "|";
+    gotoxy(x, ++y);
+    cout << "|__________________________________________|";     gotoxy(x, ++y); Sleep(200);
+    cout << "/                                          \\";    gotoxy(x, ++y); Sleep(200);
+    cout << "                                            ";     gotoxy(x, ++y); Sleep(200);
+    cout << "\\__________________________________________/";
+    printBlinkingText(Despedida, x+11, y-1);
+    _getch();
+    gotoxy(0, 0);
+    resetColor();
+}
 
-    gotoxy(x+6, y+6);
-    printBlinkingText(Despedida, x+3, y+9);
+void Transition(int x, int y, int level) {
+    gotoxy(0, 0);
+    clearScreen();
+    setColor(7, 0);
+    gotoxy(x, ++y);
+    cout << " _____                                        _               _                              _       ";             gotoxy(x, ++y); Sleep(200);
+    cout << "|  _  \\ _                               _    | |             | |                            | |      ";            gotoxy(x, ++y); Sleep(200);
+    cout << "| |_) |(_) ___  _ __ __  __ ___  _ __  (_) __| | ___     ___ | |   _ __ ___  _   _ _ __   __| | ___  ";             gotoxy(x, ++y); Sleep(200);
+    cout << "|  _  </ \\/ _ \\| ´_ \\\\ || // _ \\| ´_ \\ / \\/ _` |/ _ \\   / _ ´| |  | ´_ ´ _ \\| | | | ´_ \\ / _` |/ _ \\ ";  gotoxy(x, ++y); Sleep(200);
+    cout << "| |_) || |  __/| | | ||||||  __/| | | || | (_| | (_) | | (_| | |  | | | | | | |_| | | | | (_| | (_) |";             gotoxy(x, ++y); Sleep(200);
+    cout << "|_____/|_|\\___||_| |_|\\__/ \\___||_| |_||_|\\__,_|\\___/   \\___´|_|  |_| |_| |_|\\___/|_| |_|\\__,_|\\___/ ";    gotoxy(x, ++y);
+    if (level + 1 == 1) {
+        setColor(3, 1);
+        gotoxy(x += 43, y += 2);
+        Sleep(500);
+        cout << " _    __    _ "; gotoxy(x, ++y); Sleep(500);
+        cout << "|_|  /  |  |_|"; gotoxy(x, ++y); Sleep(500);
+        cout << "    |/| |     "; gotoxy(x, ++y); Sleep(500);
+        cout << "      | |     "; gotoxy(x, ++y); Sleep(500);
+        cout << "     _| |_    "; gotoxy(x, ++y); Sleep(500);
+        cout << "    |_____|   "; gotoxy(x, ++y); Sleep(500);
+        cout << "              "; Sleep(500);
+    }
+    if (level + 1 == 2) {
+        setColor(5, 14);
+        gotoxy(x += 43, y += 2);
+        Sleep(500);
+        cout << " _   ____   _ "; gotoxy(x, ++y); Sleep(500);
+        cout << "|_| /  _ \\ |_|"; gotoxy(x, ++y); Sleep(500);
+        cout << "    |_// |    "; gotoxy(x, ++y); Sleep(500);
+        cout << "      / /     "; gotoxy(x, ++y); Sleep(500);
+        cout << "     / /_     "; gotoxy(x, ++y); Sleep(500);
+        cout << "    |____|    "; gotoxy(x, ++y); Sleep(500);
+        cout << "              "; Sleep(500);
+    }
+    if (level + 1 == 3) {
+        setColor(12, 15 );
+        gotoxy(x += 43, y += 2);
+        Sleep(500);
+        cout << " _   ____   _ "; gotoxy(x, ++y); Sleep(500);
+        cout << "|_| |__  | |_|"; gotoxy(x, ++y); Sleep(500);
+        cout << "      _| |    "; gotoxy(x, ++y); Sleep(500);
+        cout << "     |_  |    "; gotoxy(x, ++y); Sleep(500);
+        cout << "     __| |    "; gotoxy(x, ++y); Sleep(500);
+        cout << "    |____|    "; gotoxy(x, ++y); Sleep(500);
+        cout << "              "; Sleep(500);
+    }
+    resetColor();
+    gotoxy(0, 0);
+    _getch();
+    clearScreen();
+}
 
+void UPClogo(int x, int y) {
+    clearScreen();
+    gotoxy(x, y);
+    const int height = 20;
+    const int width = 40;
+    int UPC[height][width] = {
+        {2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2},
+        {2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2},
+        {2,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,2},
+        {2,2,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,2,2},
+        {2,2,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,2,2},
+        {2,2,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,2,2},
+        {2,2,0,0,0,0,0,1,1,1,0,0,0,0,0,0,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,2,2},
+        {2,2,0,0,0,0,1,1,1,0,0,0,0,0,0,0,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,2,2},
+        {2,2,0,0,0,1,1,1,0,0,0,0,0,0,0,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,2,2},
+        {2,2,0,0,0,1,1,1,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,2,2},
+        {2,2,0,0,1,1,1,1,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,1,1,1,1,0,2,2},
+        {2,2,0,0,1,1,1,1,1,0,0,0,0,0,0,0,0,0,1,1,1,1,1,0,0,0,0,0,0,0,0,0,1,1,1,1,1,0,2,2},
+        {2,2,0,0,0,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,1,1,1,1,1,0,0,2,2},
+        {2,2,0,0,0,0,1,1,1,1,1,1,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,1,1,1,1,1,1,0,0,0,2,2},
+        {2,2,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0,0,0,1,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0,2,2},
+        {2,2,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,0,0,1,1,1,0,0,1,1,1,1,1,1,1,1,0,0,0,0,0,0,2,2},
+        {2,2,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,2,2},
+        {2,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,2,2},
+        {2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2},
+        {2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2},
+
+    };
+    for (int i = 0; i < height; i++) {
+        for (int j = 0; j < width; ++j) {
+            if (UPC[i][j] == 0) {
+                setColor(15, 0);
+                cout << "#";
+            }
+            if (UPC[i][j] == 1) {
+                setColor(4, 0);
+                cout << "#";
+            }
+            if (UPC[i][j] == 2) {
+                setColor(8, 0);
+                cout << "#";
+            }
+        }
+        gotoxy(x, y++);
+    }
+    gotoxy(x+=9, y++);
+    cout << "-Exigete, Innova, UPC-";
+    Sleep(3000);
+    gotoxy(0, 0);
+    clearScreen();
+    resetColor();
+}
+
+void Gratitude(int x, int y) {
+    clearScreen();
+    gotoxy(x, y);
+    cout << "Con esto nos despedimos";                                                                          gotoxy(x, ++y);
+    cout << "Ha sido un gusto que probases nuestro juego";                                                      gotoxy(x, y += 2); setColor(6, 0);
+    cout << "Beneficios Educativos:";                                                                           gotoxy(x, ++y);    setColor(9, 0);
+    cout << "Desarrollo de Habilidades Matematicas:";                                                           gotoxy(x, ++y);    setColor(15, 0);
+    cout << "Refuerza y mejora tus conocimientos en geometria, algebra y resolucion de problemas.";             gotoxy(x, ++y);    setColor(9, 0);
+    cout << "Aprendizaje Interactivo:";                                                                         gotoxy(x, ++y);    setColor(15, 0);
+    cout << "Aprende de manera dinamica y divertida con tutoriales y desafos integrados en el juego.";          gotoxy(x, ++y);    setColor(9, 0);
+    cout << "Motivacion y Logros:";                                                                             gotoxy(x, ++y);    setColor(15, 0);
+    cout << "Manten la motivacion con un sistema de puntuacion y logros que te incentiva a seguir mejorando.";
+    resetColor();
     _getch();
 }
 
-void Transition(int nivel) {
-    cout << "";
-    cout << "";
-    cout << "";
-    cout << "";
-    cout << "";
-    cout << "";
-}
-
-void Gratitude() {
-    cout << "";
-    cout << "";
-    cout << "";
-    cout << "";
-    cout << "";
-    cout << "";
+void Presentacion(int x, int y) {
+    gotoxy(x, y);
+    string Purpose[4] = {
+        " MathWorld no es solo un juego, es una aventura educativa disenada ",
+        " para desafiar tu mente y hacer que la matematicas sean divertidas ",
+        " y emocionantes. ¡Unete a la aventura y demuestra tus habilidades  ",
+        "                      matematicas en MathWorld!                    "
+    };
+    for (int i = 0; i < 4; ++i) {
+        setColor(8, 0);
+        printGradually(Purpose[i], 50);
+        gotoxy(x, ++y);
+    }
+    resetColor();
+    clearScreen();
 }
 
 string Name; // Nombre del Jugador
-char O = 'O'; // Caracte para Heroe O
+char O = 'O'; // Caracter para Heroe O
 
 /*
 Muñecos del Nivel 1
@@ -1424,9 +1597,13 @@ Muñecos del Nivel 3
 // Posiciones iniciales de los muñecos U
 int posXChars_U[numCharacters] = {};
 int posYChars_U[numCharacters] = {};
+
 char U = 'U'; // Caracter para el Jefe Final
 
 
+/*
+Validación de Tableros
+*/
 
 void BoardValidation1() {
     // Inicializamos el tablero con espacios en blanco y bordes
@@ -1543,6 +1720,9 @@ void BoardValidation3() {
     }
 }
 
+/*
+Validacion de Personajes
+*/
 void CharactersValidation1() {
     for (int i = 0; i < numCharacters; ++i) {
         bool validPosition = false;
@@ -1689,11 +1869,11 @@ void GamePlay1() {
         for (int i = 0; i < numCharacters; ++i) {
             if (posX == posXChars_A[i] && posY == posYChars_A[i]) {
                 showPythagorasTutorial_A(); // Mostrar Tutorial de Pitagoras al colisionar
-                TutorVisits++; Points-=2;
+                TutorVisits++; Points -= 2;
             }
             if (posX == posXChars_X[i] && posY == posYChars_X[i]) {
                 showEquationsTutorial_X(); // Mostrar Tutorial de Ecuaciones al colisionar
-                TutorVisits++; Points-=2;
+                TutorVisits++; Points -= 2;
             }
             if (posX == posXChars_W[i] && posY == posYChars_W[i]) {
                 showPythagorasChallenge_W(); // Mostrar Desafio de Pitagoras al colisionar
@@ -1707,13 +1887,13 @@ void GamePlay1() {
     }
     if (Points <= 0) {
         Calification = 0;
-        postCredits(Name, Level, 42, 10, Calification, TutorVisits, EnemyVisits); // Mostrar creditos si el Heroe tiene como Puntaje 0
+        postCredits(Name, Level, 39, 7, Calification, TutorVisits, EnemyVisits); // Mostrar creditos si el Heroe tiene como Puntaje 0
         exit(0);
     }
     else if (Points >= 100) {
-        Calification += Points/100;
+        Calification += Points / 100;
         Level++;
-        Points = 25;
+        Points = 99;
     }
 }
 
@@ -1779,7 +1959,7 @@ void GamePlay2() {
         // Verificar si el muñeco O está en la posición de algún muñeco A, X, W o K para mostrar tutoriales
         for (int i = 0; i < numCharacters; ++i) {
             if (posX == posXChars_H[i] && posY == posYChars_H[i]) {
-                showTutorial_H(); // Mostrar Tutorial al colisionar
+                showTutorial_H(); Points -= 2; // Mostrar Tutorial al colisionar
                 TutorVisits++;
             }
             if (posX == posXChars_V[i] && posY == posYChars_V[i]) {
@@ -1789,13 +1969,13 @@ void GamePlay2() {
         }
     }
     if (Points <= 0) {
-        postCredits(Name, Level, 42, 10, Calification, TutorVisits, EnemyVisits); // Mostrar creditos si el Heroe tiene como Puntaje 0
+        postCredits(Name, Level, 39, 7, Calification, TutorVisits, EnemyVisits); // Mostrar creditos si el Heroe tiene como Puntaje 0
         exit(0);
     }
     else if (Points >= 100) {
         Calification += Points / 100;
         Level++;
-        Points = 25;
+        Points = 99;
     }
 }
 
@@ -1817,7 +1997,7 @@ void GamePlay3() {
         NumVisitsTutor(1, 27, TutorVisits);
         NumVisitsEnemy(1, 28, EnemyVisits);
         Hero(Level, 70, 27, Name);
-        setColor(4, 15);
+        setColor(12, 15);
         // Imprimimos el tablero
         for (int i = 0; i < height; ++i) {
             for (int j = 0; j < width; ++j) {
@@ -1865,48 +2045,57 @@ void GamePlay3() {
         }
     }
     if (Points <= 0) {
-        postCredits(Name, Level, 42, 10, Calification, TutorVisits, EnemyVisits); // Mostrar creditos si el Heroe tiene como Puntaje 0
+        postCredits(Name, Level, 39, 7, Calification, TutorVisits, EnemyVisits); // Mostrar creditos si el Heroe tiene como Puntaje 0
         exit(0);
     }
-    else if (Points >= 100) {
+    if (Points >= 100) {
         Calification += Points / 100;
         Level++;
-        postCredits(Name, Level, 42, 10, Calification, TutorVisits, EnemyVisits); // Mensaje Ganador
+        postCredits(Name, Level, 39, 7, Calification, TutorVisits, EnemyVisits); // Mensaje Ganador
     }
 }
 
+/*
+Función del Juego
+*/
 void MathWorld() {
-    hideCursor(); // Ocultar el cursor
-    srand(time(0)); // Semilla para los números aleatorios
-    Welcome(); // Bienvenida
-    
+    Presentacion(28, 5);             // Presentacion
+    hideCursor();                    // Ocultar el cursor
+    srand(time(0));                  // Semilla para los números aleatorios
+    UPClogo(40, 4);                  // Logo de UPC hecho manualmente 
+    Welcome();                       // Bienvenida
     cout << "Ingresa tu nombre: ";
-    cin >> Name;
-    LogoIntroduction();
-    Intructions();
-    GameModel();
+    cin >> Name; 
+    Menu();                          // Menu
+    LogoIntroduction();              // Logo de la Introduccion
+    Instructions1();                 // Primera Instruccion
+    Instructions2(28, 5);            // Segunda Instruccion
+    GameModel();                     // Contextualización
+    
     /*
     Juego
     */
-    BoardValidation1(); // Validacion del Tablero
-    CharactersValidation1(); // Validacion de los Personajes
-    Transition(Level); // Transición
-    GamePlay1(); // Juego 1
-    BoardValidation2(); // Validacion del Tablero
-    CharactersValidation2(); // Validacion de los Personajes
-    Transition(Level); // Transición
-    GamePlay2(); // Juego 2
-    BoardValidation3(); // Validacion del Tablero
-    CharactersValidation3(); // Validacion de los Personajes
-    Transition(Level); // Transición
-    GamePlay3(); // Juego 3
-    Gratitude(); // Despedida
+
+    BoardValidation1();              // Validacion del Tablero
+    CharactersValidation1();         // Validacion de los Personajes
+    Transition(10, 5, Level);        // Transición
+    GamePlay1();                     // Juego 1
+    BoardValidation2();              // Validacion del Tablero
+    CharactersValidation2();         // Validacion de los Personajes
+    Transition(10, 5, Level);        // Transición
+    GamePlay2();                     // Juego 2
+    BoardValidation3();              // Validacion del Tablero
+    CharactersValidation3();         // Validacion de los Personajes
+    Transition(10, 5, Level);        // Transición
+    GamePlay3();                     // Juego 3
+    Gratitude(15, 7);                // Despedida
+    UPClogo(40, 4);                  // Logo de UPC hecho manualmente
 }
 
 /*
 Funcion Principal
 */
 int main() {
-    MathWorld();
+    MathWorld(); // Llamamos al Juego
     return 0;
 }
