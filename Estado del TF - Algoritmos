@@ -1,0 +1,710 @@
+#include "pch.h"
+#include <iostream>
+#include <conio.h>
+#include <windows.h>
+#include <iomanip>
+using namespace std;
+using namespace System;
+// Chat GPT
+void hidecursor() {
+	HANDLE consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
+	CONSOLE_CURSOR_INFO info;
+	GetConsoleCursorInfo(consoleHandle, &info);
+	info.bVisible = FALSE;
+	SetConsoleCursorInfo(consoleHandle, &info);
+}
+// ChatGPT
+void setColor(int textColor, int bgColor) {
+	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+	SetConsoleTextAttribute(hConsole, (bgColor << 4) | textColor);
+}
+// ChatGPT
+void resetColor() {
+	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+	SetConsoleTextAttribute(hConsole, 7);
+}
+int randnum(int min, int max) {
+	return min + rand() % (max - min + 1);
+}
+int randDX() {
+	int num = rand() % 2;
+	switch (num) {
+	case 0:
+		num = -1;
+		break;
+	case 1:
+		num = 1;
+		break;
+	}
+	return num;
+}
+int randDY() {
+	int num = rand() % 2;
+	switch (num) {
+	case 0:
+		num = -1;
+		break;
+	case 1:
+		num = 1;
+		break;
+	}
+	return num;
+}
+int randX() {
+	return 2 + rand() % (46 - 1 + 1);
+}
+int randY() {
+	return 2 + rand() % (20 - 1 + 1);
+}
+char randRecurso() {
+	int num = rand() % 3;
+	char recurso = ' ';
+	switch (num) {
+	case 0:
+		recurso = '~';
+		break;
+	case 1:
+		recurso = '*';
+		break;
+	case 2:
+		recurso = '#';
+		break;
+	}
+	return recurso;
+}
+
+class Obstaculo {
+private:
+	int x, y;
+	char forma;
+public:
+	Obstaculo(int x, int y, char forma): x(x), y(y), forma(forma){}
+	~Obstaculo(){}
+	void dibujar() {
+		Console::SetCursorPosition(x, y);
+		cout << forma;
+	}
+	void setForma(char forma) {
+		this->forma = forma;
+	}
+	void setX(int x) {
+		this->x = x;
+	}
+	void setY(int y) {
+		this->y = y;
+	}
+	char getForma() {
+		return this->forma;
+	}
+	int getX() {
+		return this->x;
+	}
+	int getY() {
+		return this->y;
+	}
+};
+
+class Tablero {
+protected:
+	int ANCHO;
+	int LARGO;
+	char** TABLERO;
+	Obstaculo** obstaculos;
+	int n_Obstaculos;
+public:
+	Tablero() : ANCHO(25), LARGO(50), TABLERO(nullptr), obstaculos(nullptr), n_Obstaculos(80) {
+		TABLERO = new char* [ANCHO];
+		for (int i = 0; i < ANCHO; ++i) {
+			TABLERO[i] = new char[LARGO];
+		}
+		for (int i = 0; i < ANCHO; ++i) {
+			for (int j = 0; j < LARGO; ++j) {
+				// Bordes
+				if (i == 0 && j == 0) {
+					TABLERO[i][j] = 201;
+				}
+				else if (i == 0 && j == LARGO - 1) {
+					TABLERO[i][j] = 187;
+				}
+				else if (i == ANCHO - 1 && j == 0) {
+					TABLERO[i][j] = 200;
+				}
+				else if (i == ANCHO - 1 && j == LARGO - 1) {
+					TABLERO[i][j] = 188;
+				}
+				// Paredes
+				else if (i == 0 && j > 0 && j < LARGO - 1) {
+					TABLERO[i][j] = 205;
+				}
+				else if (i > 0 && i < ANCHO - 1 && j == 0) {
+					TABLERO[i][j] = 186;
+				}
+				else if (i == ANCHO - 1 && j > 0 && j < LARGO - 1) {
+					TABLERO[i][j] = 205;
+				}
+				else if (i > 0 && i < ANCHO - 1 && j == LARGO - 1) {
+					TABLERO[i][j] = 186;
+				}
+				else {
+					TABLERO[i][j] = ' ';
+				}
+			}
+			obstaculos = new Obstaculo * [n_Obstaculos];
+			bool valid;
+			int posX;
+			int posY;
+			for (int i = 0; i < n_Obstaculos; ++i) {
+				do {
+					valid = false;
+					posX = randX();
+					posY = randY();
+					if ((posX < 22 || posX > 27) && (posY < 11 || posY > 15)) {
+						valid = true;
+					}
+				} while (!valid);
+				obstaculos[i] = new Obstaculo(posX, posY, 206);
+			}
+		}
+	}
+	~Tablero() {
+		for (int i = 0; i < ANCHO; ++i) {
+			delete[] TABLERO[i];
+		}
+		delete[] TABLERO;
+	}
+	void DIBUJAR_MAPA() {
+		for (int i = 0; i < ANCHO; ++i) {
+			for (int j = 0; j < LARGO; ++j) {
+				cout << TABLERO[i][j];
+			}
+			cout << endl;
+		}
+	}
+	void DIBUJAR_OBSTACULOS() {
+		for (int i = 0; i < n_Obstaculos; ++i) {
+			Console::SetCursorPosition(obstaculos[i]->getX(), obstaculos[i]->getY());
+			setColor(0, 15);
+			cout << obstaculos[i]->getForma();
+		}
+	}
+	char getCelda(int x, int y) {
+		if (x >= 0 && x < ANCHO && y >= 0 && y < LARGO) {
+			return TABLERO[x][y];
+		}
+		return ' ';
+	}
+	void setCelda(int x, int y, char c) {
+		if (x >= 0 && x < ANCHO && y >= 0 && y < LARGO) {
+			TABLERO[x][y] = c;
+		}
+	}
+	Obstaculo** getObstaculo() {
+		return this->obstaculos;
+	}
+	int getN_Obs() {
+		return this->n_Obstaculos;
+	}
+};
+
+class Heroe {
+protected:
+	int x, y;
+	int dx, dy;
+	int vidas, salud;
+	bool reforestar, plantar, limpiar;
+	int PROGRESO;
+	float tiempo;
+public:
+	// Constructor y Destructor
+	Heroe() : x(0), y(0), dx(1), dy(1), vidas(3), reforestar(false), plantar(false), limpiar(false) {}
+	Heroe(int x, int y, int dx, int dy, int vidas, int progreso, int tiempo) : x(x), y(y), dx(dx), dy(dy), vidas(vidas), PROGRESO(progreso), tiempo(tiempo), reforestar(false), plantar(false), limpiar(false) {}
+	~Heroe() {}
+	void mostrarContador() {
+		Console::SetCursorPosition(48, 27);
+		cout << setw(2) << int(tiempo);
+	}
+	// Movimiento
+	void dibujar(int x, int y) {
+		setColor(3, 15);
+		Console::SetCursorPosition(x, y);	  cout << " O ";
+		Console::SetCursorPosition(x, y + 1); cout << "<|>";
+		Console::SetCursorPosition(x, y + 2); cout << "/ \\";
+		resetColor();
+	}
+	void borrar(int x, int y) {
+		Console::SetCursorPosition(x, y);	  cout << "   ";
+		Console::SetCursorPosition(x, y + 1); cout << "   ";
+		Console::SetCursorPosition(x, y + 2); cout << "   ";
+	}
+	void mover(char input, int n, Obstaculo** obstaculos) {
+		bool valid1 = true, valid2 = true, valid3 = true, valid4 = true;
+
+		for (int i = 0; i < n; ++i) {
+			if ((x - 1 == obstaculos[i]->getX() && y == obstaculos[i]->getY()) ||
+				(x - 1 == obstaculos[i]->getX() && y + 1 == obstaculos[i]->getY()) ||
+				(x - 1 == obstaculos[i]->getX() && y + 2 == obstaculos[i]->getY())) {
+				valid1 = false;
+			}
+			if ((x + 3 == obstaculos[i]->getX() && y == obstaculos[i]->getY()) ||
+				(x + 3 == obstaculos[i]->getX() && y + 1 == obstaculos[i]->getY()) ||
+				(x + 3 == obstaculos[i]->getX() && y + 2 == obstaculos[i]->getY())) {
+				valid2 = false;
+			}
+			if ((y - 1 == obstaculos[i]->getY() && x == obstaculos[i]->getX()) ||
+				(y - 1 == obstaculos[i]->getY() && x + 1 == obstaculos[i]->getX()) ||
+				(y - 1 == obstaculos[i]->getY() && x + 2 == obstaculos[i]->getX())) {
+				valid3 = false;
+			}
+			if ((y + 3 == obstaculos[i]->getY() && x == obstaculos[i]->getX()) ||
+				(y + 3 == obstaculos[i]->getY() && x + 1 == obstaculos[i]->getX()) ||
+				(y + 3 == obstaculos[i]->getY() && x + 2 == obstaculos[i]->getX())) {
+				valid4 = false;
+			}
+		}
+
+		if (input == 'A' && valid1 && x > 1) {
+			x -= 1;
+		}
+		if (input == 'D' && valid2 && x < 46) {
+			x += 1;
+		}
+		if (input == 'W' && valid3 && y > 1) {
+			y -= 1;
+		}
+		if (input == 'S' && valid4 && y < 21) {
+			y += 1;
+		}
+
+		// Actualizar las coordenadas del héroe
+		setX(x);
+		setY(y);
+	}
+	void Labores(int x, int y) {
+		if (reforestar) {
+			arbol(x, y);
+			setReforestar(false);
+		}
+		if (plantar) {
+			planta(x, y);
+			setPlantar(false);
+		}
+		if (limpiar) {
+			limpieza(x, y);
+			setLimpiar(false);
+		}
+	}
+	void arbol(int x, int y) {
+		Console::SetCursorPosition(x, y);		cout << "  /\\";
+		Console::SetCursorPosition(x, y + 1);	cout << " /  \\";
+		Console::SetCursorPosition(x, y + 2);	cout << "/____\\";
+		Console::SetCursorPosition(x, y + 3);	cout << "  ||";
+	}
+	void planta(int x, int y) {
+		Console::SetCursorPosition(x, y);		cout << " /---\\";
+		Console::SetCursorPosition(x, y + 1);	cout << "|     |";
+		Console::SetCursorPosition(x, y + 2);	cout << " \\---/";
+		Console::SetCursorPosition(x, y + 3);	cout << "  | |";
+	}
+	void limpieza(int x, int y) {
+		Console::SetCursorPosition(x, y);		cout << "  ||";
+		Console::SetCursorPosition(x, y + 1);	cout << "  ||";
+		Console::SetCursorPosition(x, y + 2);	cout << " /||\\";
+		Console::SetCursorPosition(x, y + 3);	cout << "//||\\\\";
+	}
+	void dibujarVidas() {
+		Console::SetCursorPosition(6, 26); cout << "Vidas: ";
+		for (int i = 0; i < vidas; ++i) {
+			vida(13 + i * 6, 25);
+		}
+	}
+	void vida(int x, int y) {
+		Console::SetCursorPosition(x, y);	cout << "/-\\/-\\";
+		Console::SetCursorPosition(x, y + 1); cout << "\\    /";
+		Console::SetCursorPosition(x, y + 2); cout << " \\__/";
+	}
+	void borrarVida(int i) {
+		Console::SetCursorPosition(i * 6 + 7, 25); cout << "      ";
+		Console::SetCursorPosition(i * 6 + 7, 26); cout << "      ";
+		Console::SetCursorPosition(i * 6 + 7, 27); cout << "      ";
+	}
+	void mostrarProgreso() {
+		Console::SetCursorPosition(20, 28);
+		cout << "Progreso:" << setw(3) << PROGRESO << "%";
+	}
+	void setX(int x) { this->x = x; }
+	void setY(int y) { this->y = y; }
+	int getX() { return x; }
+	int getY() { return y; }
+	float getTiempo() { return this->tiempo; }
+	void setTiempo(float tiempo) { this->tiempo = tiempo; }
+	int getVidas() { return vidas; }
+	void setVidas(int vidas) { this->vidas = vidas; }
+	int getProgreso() { return this->PROGRESO; }
+	void setProgreso(int progreso) { this->PROGRESO = progreso; }
+	void setReforestar(bool valor) { this->reforestar = valor; }
+	void setPlantar(bool valor) { this->plantar = valor; }
+	void setLimpiar(bool valor) { this->limpiar = valor; }
+};
+
+class Enemigo : public Tablero {
+private:
+	int x, y;
+	int dx;
+	char forma;
+public:
+	Enemigo() {}
+	Enemigo(int x, int y, int dx, char forma) : x(x), y(y), dx(dx), forma(forma) {}
+	~Enemigo() {}
+	void dibujar() {
+		Console::SetCursorPosition(x, y);
+		cout << forma;
+	}
+	void borrar() {
+		Console::SetCursorPosition(x, y);
+		cout << " ";
+	}
+	void mover() {
+		if (x <= 1 || x >= LARGO - 2) {
+			dx *= -1;
+		}
+		x += dx;
+	}
+	int getX() { return this->x; }
+	int getY() { return this->y; }
+	char getForma() { return this->forma; }
+};
+
+class Recurso : public Tablero {
+private:
+	int x, y;
+	int dx, dy;
+	char forma;
+public:
+	Recurso() {}
+	Recurso(int x, int y, int dx, int dy, char forma) : x(x), y(y), dx(dx), dy(dy), forma(forma) {}
+	~Recurso() {}
+	void dibujar() {
+		Console::SetCursorPosition(x, y);
+		cout << forma;
+	}
+	void borrar() {
+		Console::SetCursorPosition(x, y);
+		cout << " ";
+	}
+	void mover() {
+		if (x <= 1 || x >= LARGO - 2) {
+			dx *= -1;
+		}
+		if (y <= 1 || y >= ANCHO - 2) {
+			dy *= -1;
+		}
+		x += dx;
+		y += dy;
+	}
+	int getX() { return this->x; }
+	int getY() { return this->y; }
+	char getForma() { return this->forma; }
+};
+
+class Juego : Tablero, Heroe {
+protected:
+	// Declaraciones de los Objetos
+	Heroe* heroe;
+	Tablero* tablero;
+	Enemigo** enemigos;
+	int n_Enemigos;
+	Recurso** recursos;
+	int n_Recursos;
+
+	// Posiciones X y Y
+	int pos_x_E;
+	int pos_y_E;
+	int pos_x_R;
+	int pos_y_R;
+public:
+	Juego() : heroe(new Heroe(24, 11, 1, 1, 5, 0, 45)), tablero(new Tablero()), n_Enemigos(randnum(5, 7)), n_Recursos(randnum(22, 25)) {
+		enemigos = new Enemigo * [n_Enemigos];
+		for (int i = 0; i < n_Enemigos; ++i) {
+			enemigos[i] = new Enemigo(randX(), randY(), randDX(), 'X');
+		}
+		recursos = new Recurso * [n_Recursos];
+		for (int i = 0; i < n_Recursos; ++i) {
+			recursos[i] = new Recurso(randX(), randY(), randDX(), randDY(), randRecurso());
+		}
+	}
+	~Juego() {
+		delete heroe;
+		delete tablero;
+		for (int i = 0; i < n_Recursos; ++i) {
+			delete recursos[i];
+		}
+		delete[] recursos;
+
+		for (int i = 0; i < n_Enemigos; ++i) {
+			delete enemigos[i];
+		}
+		delete[] enemigos;
+	}
+	void contextualizacion() {
+		system("cls");
+		setColor(3, 0);
+		Console::SetCursorPosition(0, 10);
+		cout << R"(
+       En el juego "Guardian del Medio Ambiente"       
+      te embarcaras en una mision para restaurar       
+    y proteger el ecosistema de un mundo en peligro.   
+       Tu objetivo es enfrentar a los enemigos,        
+       recolectar recursos y realizar diversas         
+          tareas ecologicas para devolverle            
+              la salud a la naturaleza.                
+)";
+		system("pause>0");
+		system("cls");
+		resetColor();
+		setColor(4, 0);
+		Console::SetCursorPosition(0, 10);
+		cout << R"(
+         Te encontraras en un tablero lleno de         
+         desafios y oportunidades. Tendras que         
+        moverte por el mapa, recolectar recursos       
+         valiosos y realizar acciones cruciales        
+         como plantar arboles, limpiar areas y         
+          reforestar. Cada uno de estos actos          
+         contribuira al progreso de tu mision.         
+)";
+		system("pause>0");
+		system("cls");
+		resetColor();
+		setColor(5, 0);
+		Console::SetCursorPosition(0, 10);
+		cout << R"(
+        Sin embargo, no estaras solo. Enemigos         
+        peligrosos rondan el area y trataran de        
+      obstaculizar tus esfuerzos. Deberas evitar       
+      estos enemigos o enfrentarlos para mantener      
+       tus vidas y seguir adelante con tu mision.      
+)";
+		system("pause>0");
+		system("cls");
+		resetColor();
+		setColor(6, 0);
+		Console::SetCursorPosition(0, 10);
+		cout << R"(
+       Preparate para una aventura emocionante         
+         mientras trabajar para restaurar el           
+             equilibrio ecologico con                  
+                'X', '~', '*' y '#'.                   
+-------Buena suerte, Guardian del Medio Ambiente-------
+)";
+		system("pause>0");
+		resetColor();
+		system("cls");
+		setColor(0, 15);
+	}
+	void mostrarCreditos() {
+		system("cls");
+		Console::SetCursorPosition(6, 10); cout << "Integrantes:"; setColor(5, 0);
+		Console::SetCursorPosition(6, 11); cout << "- Jean Franck Loa Rojas | u20241E406"; setColor(6, 0);
+		Console::SetCursorPosition(6, 12); cout << "- Juan Tintaya Quina    | u202419718"; setColor(3, 0);
+		Console::SetCursorPosition(6, 13); cout << "- Joaquin Becerra Salas | u20231F717";
+		resetColor();
+	}
+	void validacion(int progreso, int vidas, int tiempo) {
+		bool end = false;
+		if (progreso >= 100 || vidas <= 0 || tiempo <= 0) {
+			end = true;
+		}
+		if (end) {
+			system("cls");
+			Console::SetCursorPosition(2, 11);
+			if (progreso >= 100) {
+				setColor(15, 10);
+				cout << R"(
+  ____    _    _   _    _    ____ _____ _____ 
+ / ___|  / \  | \ | |  / \  / ___|_   _| ____|
+| |  _  / _ \ |  \| | / _ \ \___ \ | | |  _|  
+| |_| |/ ___ \| |\  |/ ___ \ ___) || | | |___ 
+ \____/_/   \_\_| \_/_/   \_\____/ |_| |_____|
+)";
+			}
+			else if (vidas <= 0 || tiempo <= 0) {
+				setColor(15, 12);
+				cout << R"(
+ ____  _____ ____  ____ ___ ____ _____ _____ 
+|  _ \| ____|  _ \|  _ \_ _/ ___|_   _| ____|
+| |_) |  _| | |_) | | | | |\___ \ | | |  _|  
+|  __/| |___|  _ <| |_| | | ___) || | | |___ 
+|_|   |_____|_| \_\____/___|____/ |_| |_____|
+)";
+			}
+			_sleep(3000);
+			resetColor();
+			mostrarCreditos();
+			setColor(0, 0);
+			exit(0);
+		}
+	}
+	void Introduccion() {
+		setColor(0, 15);
+		Console::SetCursorPosition(8, 5);
+		cout << R"(
+  ____  _                           _    _        
+ |  _ \(_)                         (_)  | |       
+ | |_)| _  ___ _ __ __  _____ _ __  _  _| | ___   
+ |  _ <| |/ _ \ '_  \ \/ / _ \ '_ `| |/ _ |/ _ \  
+ | |_)|| |  __/ | | |\  /  __/ | | | | (_|| (_) | 
+ |____/|_|\___|_| |_| \/ \___|_| |_|_|\___|\___/  
+                      __ _                        
+      X              / _` |             ~         
+                    | (_| |                       
+      O              \__,_|               *       
+     <|>        ____ __  __    _                  
+     / \       / ___|  \/  |  / \       #         
+              | |  _| |\/| | / _ \                
+              | |_| | |  | |/ ___ \               
+               \____|_|  |_/_/   \_\              
+
+)";
+		resetColor();
+	}
+	void colisionRecursos() {
+		int heroeX = heroe->getX();
+		int heroeY = heroe->getY();
+
+		for (int i = 0; i < n_Recursos - 1; ++i) {
+			for (int dx = 0; dx <= 2; ++dx) {
+				for (int dy = 0; dy <= 2; ++dy) {
+					if (recursos[i]->getX() == heroeX + dx && recursos[i]->getY() == heroeY + dy) {
+						if (recursos[i]->getForma() == '~') {
+							heroe->setPlantar(true);
+						}
+						else if (recursos[i]->getForma() == '*') {
+							heroe->setReforestar(true);
+						}
+						else if (recursos[i]->getForma() == '#') {
+							heroe->setLimpiar(true);
+						}
+						heroe->Labores(recursos[i]->getX(), recursos[i]->getY());
+						heroe->setProgreso(heroe->getProgreso() + 5);
+						recursos[i]->borrar();
+						eliminarRecurso(i);
+						break;
+					}
+				}
+			}
+		}
+	}
+	void colisionEnemigos() {
+		int heroeX = heroe->getX();
+		int heroeY = heroe->getY();
+
+		for (int i = 0; i < n_Enemigos; ++i) {
+			for (int dx = 0; dx <= 2; ++dx) {
+				for (int dy = 0; dy <= 2; ++dy) {
+					if (enemigos[i]->getX() == heroeX + dx && enemigos[i]->getY() == heroeY + dy) {
+						heroe->borrarVida(heroe->getVidas());
+						heroe->setVidas(heroe->getVidas() - 1);
+					}
+				}
+			}
+		}
+	}
+	void moverEnemigos() {
+		for (int i = 0; i < n_Enemigos; ++i) {
+			setColor(12, 15);
+			enemigos[i]->borrar();
+			enemigos[i]->mover();
+			enemigos[i]->dibujar();
+			resetColor();
+		}
+	}
+	void moverRecursos() {
+		for (int i = 0; i < n_Recursos; ++i) {
+			setColor(8, 15);
+			recursos[i]->borrar();
+			recursos[i]->mover();
+			recursos[i]->dibujar();
+			resetColor();
+		}
+	}
+	void eliminarRecurso(int indice) {
+		delete recursos[indice];
+		for (int i = indice; i < n_Recursos - 1; ++i) {
+			recursos[i] = recursos[i + 1];
+		}
+		--n_Recursos;
+		Recurso** copia = new Recurso * [n_Recursos];
+		for (int i = 0; i < n_Recursos; ++i) {
+			copia[i] = recursos[i];
+		}
+		delete[] recursos;
+		recursos = copia;
+	}
+	void iniciarJuego() {
+		contextualizacion();
+		char input;
+		int prevx;
+		int prevy;
+		tablero->DIBUJAR_MAPA();
+		while (true) {
+			tablero->DIBUJAR_OBSTACULOS();
+			moverRecursos();
+			moverEnemigos();
+
+			prevx = heroe->getX();
+			prevy = heroe->getY();
+			heroe->borrar(prevx, prevy);
+
+			if (_kbhit()) {
+				input = toupper(_getch());
+				heroe->mover(input, tablero->getN_Obs(), tablero->getObstaculo());
+			}
+
+			heroe->dibujar(heroe->getX(), heroe->getY());
+			colisionRecursos();
+			colisionEnemigos();
+			heroe->dibujarVidas();
+			heroe->mostrarProgreso();
+			_sleep(50);
+			validacion(heroe->getProgreso(), heroe->getVidas(), heroe->getTiempo());
+			heroe->mostrarContador();
+			heroe->setTiempo(heroe->getTiempo()-0.07);
+		}
+	}
+};
+
+void TrabajoParcial() {
+	hidecursor();
+	int opcion;
+	Juego* ObjJuego = new Juego();
+	ObjJuego->Introduccion();
+	_sleep(500);
+	system("pause>0");
+	while (true) {
+		system("cls");
+		Console::SetCursorPosition(17, 13); cout << "1. Jugar";
+		Console::SetCursorPosition(17, 14); cout << "2. Mostrar creditos";
+		Console::SetCursorPosition(17, 15); cout << "3. Salir";
+		opcion = _getch() - '0';
+		system("cls");
+		switch (opcion) {
+		case 1:
+			ObjJuego->iniciarJuego();
+			break;
+		case 2:
+			ObjJuego->mostrarCreditos();
+			break;
+		case 3:
+			cout << "Saliendo...";
+			exit(0);
+			break;
+		}
+		system("pause>0");
+	}
+}
+
+int main() {
+	srand(time(0));
+	TrabajoParcial();
+	return 0;
+}
