@@ -112,7 +112,7 @@ protected:
 	Obstaculo** obstaculos;
 	int n_Obstaculos;
 public:
-	Tablero() : ANCHO(25), LARGO(50), TABLERO(nullptr), obstaculos(nullptr), n_Obstaculos(80) {
+	Tablero() : ANCHO(25), LARGO(50), TABLERO(nullptr), obstaculos(nullptr), n_Obstaculos(60) {
 		TABLERO = new char* [ANCHO];
 		for (int i = 0; i < ANCHO; ++i) {
 			TABLERO[i] = new char[LARGO];
@@ -155,11 +155,11 @@ public:
 			int posY;
 			for (int i = 0; i < n_Obstaculos; ++i) {
 				do {
-					valid = false;
+					valid = true;
 					posX = randX();
 					posY = randY();
-					if ((posX < 22 || posX > 27) && (posY < 11 || posY > 15)) {
-						valid = true;
+					if ((posX > 22 && posX < 27) && (posY > 11 && posY < 15)) {
+						valid = false;
 					}
 				} while (!valid);
 				obstaculos[i] = new Obstaculo(posX, posY, 206);
