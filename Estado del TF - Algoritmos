@@ -78,8 +78,8 @@ private:
 	int x, y;
 	char forma;
 public:
-	Obstaculo(int x, int y, char forma): x(x), y(y), forma(forma){}
-	~Obstaculo(){}
+	Obstaculo(int x, int y, char forma) : x(x), y(y), forma(forma) {}
+	~Obstaculo() {}
 	void dibujar() {
 		Console::SetCursorPosition(x, y);
 		cout << forma;
@@ -503,10 +503,10 @@ public:
 	}
 	void mostrarCreditos() {
 		system("cls");
-		Console::SetCursorPosition(6, 10); cout << "Integrantes:"; setColor(5, 0);
-		Console::SetCursorPosition(6, 11); cout << "- Jean Franck Loa Rojas | u20241E406"; setColor(6, 0);
-		Console::SetCursorPosition(6, 12); cout << "- Juan Tintaya Quina    | u202419718"; setColor(3, 0);
-		Console::SetCursorPosition(6, 13); cout << "- Joaquin Becerra Salas | u20231F717";
+		Console::SetCursorPosition(6, 13); cout << "Integrantes:"; setColor(5, 0);
+		Console::SetCursorPosition(6, 14); cout << "- Jean Franck Loa Rojas | u20241E406"; setColor(6, 0);
+		Console::SetCursorPosition(6, 15); cout << "- Juan Tintaya Quina    | u202419718"; setColor(3, 0);
+		Console::SetCursorPosition(6, 16); cout << "- Joaquin Becerra Salas | u20231F717";
 		resetColor();
 	}
 	void validacion(int progreso, int vidas, int tiempo) {
@@ -668,39 +668,134 @@ public:
 			_sleep(50);
 			validacion(heroe->getProgreso(), heroe->getVidas(), heroe->getTiempo());
 			heroe->mostrarContador();
-			heroe->setTiempo(heroe->getTiempo()-0.07);
+			heroe->setTiempo(heroe->getTiempo() - 0.07);
 		}
 	}
 };
 
-void TrabajoParcial() {
-	hidecursor();
-	int opcion;
-	Juego* ObjJuego = new Juego();
-	ObjJuego->Introduccion();
-	_sleep(500);
-	system("pause>0");
+void printMenu(int selected = 0) {
+	const string options[] = { "1. Jugar", "2. Mostrar creditos", "3. Salir" };
+	const int numOptions = sizeof(options) / sizeof(options[0]);
+
+	system("cls");
+
+	for (int i = 0; i < numOptions; ++i) {
+		Console::SetCursorPosition(15, 13 + i);
+
+		if (i == selected) {
+			setColor(12, 0);
+			cout << "-> ";
+			resetColor();
+			cout << options[i] << endl;
+		}
+		else {
+			cout << "   " << options[i] << endl;
+		}
+	}
+}
+
+void Menu(Juego* ObjJuego) {
+	int selected = 0;
+	const int numOptions = 3;
+	char input;
+
 	while (true) {
-		system("cls");
-		Console::SetCursorPosition(17, 13); cout << "1. Jugar";
-		Console::SetCursorPosition(17, 14); cout << "2. Mostrar creditos";
-		Console::SetCursorPosition(17, 15); cout << "3. Salir";
-		opcion = _getch() - '0';
-		system("cls");
-		switch (opcion) {
-		case 1:
-			ObjJuego->iniciarJuego();
+		printMenu(selected);
+
+		input = toupper(_getch());
+
+		switch (input) {
+		case 'W':
+			selected = (selected - 1 + numOptions) % numOptions;
 			break;
-		case 2:
-			ObjJuego->mostrarCreditos();
+		case 'S':
+			selected = (selected + 1) % numOptions;
 			break;
-		case 3:
-			cout << "Saliendo...";
-			exit(0);
+		case '\r':
+			switch (selected) {
+			case 0:
+				ObjJuego->iniciarJuego();
+				break;
+			case 1:
+				ObjJuego->mostrarCreditos();
+				break;
+			case 2:
+				cout << "Saliendo..." << endl;
+				exit(0);
+				break;
+			}
+			system("pause>0");
+			break;
+		default:
+			cout << "Usa [W/S] para navegar y [Enter] para seleccionar." << endl;
+			system("pause");
 			break;
 		}
-		system("pause>0");
 	}
+}
+
+void UPClogo(int x, int y) {
+	system("cls");
+	Console::SetCursorPosition(x, y);
+	const int height = 20;
+	const int width = 40;
+	int UPC[height][width] = {
+		{2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2},
+		{2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2},
+		{2,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,2},
+		{2,2,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,2,2},
+		{2,2,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,2,2},
+		{2,2,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,2,2},
+		{2,2,0,0,0,0,0,1,1,1,0,0,0,0,0,0,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,2,2},
+		{2,2,0,0,0,0,1,1,1,0,0,0,0,0,0,0,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,2,2},
+		{2,2,0,0,0,1,1,1,0,0,0,0,0,0,0,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,2,2},
+		{2,2,0,0,0,1,1,1,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,2,2},
+		{2,2,0,0,1,1,1,1,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,1,1,1,1,0,2,2},
+		{2,2,0,0,1,1,1,1,1,0,0,0,0,0,0,0,0,0,1,1,1,1,1,0,0,0,0,0,0,0,0,0,1,1,1,1,1,0,2,2},
+		{2,2,0,0,0,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,1,1,1,1,1,0,0,2,2},
+		{2,2,0,0,0,0,1,1,1,1,1,1,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,1,1,1,1,1,1,0,0,0,2,2},
+		{2,2,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0,0,0,1,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0,2,2},
+		{2,2,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,0,0,1,1,1,0,0,1,1,1,1,1,1,1,1,0,0,0,0,0,0,2,2},
+		{2,2,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,2,2},
+		{2,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,2,2},
+		{2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2},
+		{2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2},
+
+	};
+	for (int i = 0; i < height; i++) {
+		for (int j = 0; j < width; ++j) {
+			if (UPC[i][j] == 0) {
+				setColor(15, 15);
+				cout << "#";
+			}
+			if (UPC[i][j] == 1) {
+				setColor(4, 4);
+				cout << "#";
+			}
+			if (UPC[i][j] == 2) {
+				setColor(8, 8);
+				cout << "#";
+			}
+		}
+		Console::SetCursorPosition(x, y++);
+	}
+	resetColor();
+	Console::SetCursorPosition(x += 8, y++);
+	cout << "-Exigete, Innova, UPC-";
+	Sleep(3000);
+	Console::SetCursorPosition(0, 0);
+	system("cls");
+	resetColor();
+}
+
+void TrabajoParcial() {
+	hidecursor();
+	Juego* ObjJuego = new Juego();
+	UPClogo(4, 5);
+	ObjJuego->Introduccion();
+	_sleep(3000);
+	Menu(ObjJuego);
+	delete ObjJuego;
 }
 
 int main() {
