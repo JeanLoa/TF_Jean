@@ -314,7 +314,9 @@ public:
 	void dibujarVidas() {
 		Console::SetCursorPosition(6, 26); cout << "Vidas: ";
 		for (int i = 0; i < vidas; ++i) {
+			setColor(3, 0);
 			vida(13 + i * 6, 25);
+			resetColor();
 		}
 	}
 	void vida(int x, int y) {
