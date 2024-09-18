@@ -831,7 +831,7 @@ void Menu(Juego* ObjJuego) {
 	const int numOptions = 3;
 	char input;
 	int dificultadInput;
-	bool ready = false;
+	bool ready;
 	while (true) {
 		printMenu(selected);
 
@@ -847,6 +847,7 @@ void Menu(Juego* ObjJuego) {
 		case '\r':
 			switch (selected) {
 			case 0:
+				ready = false;
 				while (!ready) {
 					system("cls");
 					setColor(3, 15);
@@ -899,7 +900,7 @@ void Menu(Juego* ObjJuego) {
 			break;
 		default:
 			cout << "Usa [W/S] para navegar y [Enter] para seleccionar." << endl;
-			system("pause");
+			system("pause>0");
 			break;
 		}
 	}
