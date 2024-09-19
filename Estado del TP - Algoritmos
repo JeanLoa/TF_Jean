@@ -27,34 +27,18 @@ int randnum(int min, int max) {
 	return min + rand() % (max - min + 1);
 }
 int randDX() {
-	int num = rand() % 2;
-	switch (num) {
-	case 0:
-		num = -1;
-		break;
-	case 1:
-		num = 1;
-		break;
-	}
-	return num;
+	int num = randnum(1, 2);
+	return num == 1 ? 1 : -1;
 }
 int randDY() {
-	int num = rand() % 2;
-	switch (num) {
-	case 0:
-		num = -1;
-		break;
-	case 1:
-		num = 1;
-		break;
-	}
-	return num;
+	int num = randnum(1,2);
+	return num == 1 ? 1 : -1;
 }
 int randX() {
-	return 2 + rand() % (46 - 1 + 1);
+	return randnum(4, 46);
 }
 int randY() {
-	return 2 + rand() % (20 - 1 + 1);
+	return randnum(4, 21);
 }
 char randRecurso() {
 	int num = rand() % 3;
@@ -75,30 +59,40 @@ char randRecurso() {
 
 class Obstaculo {
 private:
+	// Variables para el obstaculo
 	int x, y;
 	char forma;
 public:
+	// Construir el obstaculo
 	Obstaculo(int x, int y, char forma) : x(x), y(y), forma(forma) {}
+	// Destruir el obstaculo
 	~Obstaculo() {}
+	// Dibujar el obstaculo
 	void dibujar() {
 		Console::SetCursorPosition(x, y);
 		cout << forma;
 	}
+	// Metodo set para la forma
 	void setForma(char forma) {
 		this->forma = forma;
 	}
+	// Metodo set para x
 	void setX(int x) {
 		this->x = x;
 	}
+	// Metodo set para y
 	void setY(int y) {
 		this->y = y;
 	}
+	// Metodo get para la forma
 	char getForma() {
 		return this->forma;
 	}
+	// Metodo get para x
 	int getX() {
 		return this->x;
 	}
+	// Metodo get para y
 	int getY() {
 		return this->y;
 	}
@@ -106,12 +100,14 @@ public:
 
 class Tablero {
 protected:
+	// Variables para el tablero
 	int ANCHO;
 	int LARGO;
 	char** TABLERO;
 	Obstaculo** obstaculos;
 	int n_Obstaculos;
 public:
+	// Construimos el tablero y obstaculos
 	Tablero() : ANCHO(25), LARGO(50), TABLERO(nullptr), obstaculos(nullptr), n_Obstaculos(60) {
 		TABLERO = new char* [ANCHO];
 		for (int i = 0; i < ANCHO; ++i) {
@@ -151,14 +147,14 @@ public:
 			}
 			obstaculos = new Obstaculo * [n_Obstaculos];
 			bool valid;
-			int posX;
-			int posY;
+			int posX, posY;
 			for (int i = 0; i < n_Obstaculos; ++i) {
 				do {
 					valid = true;
 					posX = randX();
 					posY = randY();
-					if ((posX > 22 && posX < 27) && (posY > 11 && posY < 15)) {
+					// Validamos que los obstaculos no estén dentro del Heroe
+					if ((posX > 22 && posX < 28) && (posY > 11 && posY < 14)) {
 						valid = false;
 					}
 				} while (!valid);
@@ -166,12 +162,14 @@ public:
 			}
 		}
 	}
+	// Destruimos el tablero
 	~Tablero() {
 		for (int i = 0; i < ANCHO; ++i) {
 			delete[] TABLERO[i];
 		}
 		delete[] TABLERO;
 	}
+	// Dibujamos el tablero
 	void DIBUJAR_MAPA() {
 		for (int i = 0; i < ANCHO; ++i) {
 			for (int j = 0; j < LARGO; ++j) {
@@ -180,6 +178,7 @@ public:
 			cout << endl;
 		}
 	}
+	// Dibujamos los obstaculos
 	void DIBUJAR_OBSTACULOS() {
 		for (int i = 0; i < n_Obstaculos; ++i) {
 			Console::SetCursorPosition(obstaculos[i]->getX(), obstaculos[i]->getY());
@@ -187,20 +186,24 @@ public:
 			cout << obstaculos[i]->getForma();
 		}
 	}
+	// Metodo get para la celda
 	char getCelda(int x, int y) {
 		if (x >= 0 && x < ANCHO && y >= 0 && y < LARGO) {
 			return TABLERO[x][y];
 		}
 		return ' ';
 	}
+	// Metodo set para la celda
 	void setCelda(int x, int y, char c) {
 		if (x >= 0 && x < ANCHO && y >= 0 && y < LARGO) {
 			TABLERO[x][y] = c;
 		}
 	}
+	// Metodo get para el arreglo de obstaculos
 	Obstaculo** getObstaculo() {
 		return this->obstaculos;
 	}
+	// Metodo get para la cantidad de obstaculos
 	int getN_Obs() {
 		return this->n_Obstaculos;
 	}
@@ -208,6 +211,7 @@ public:
 
 class Heroe {
 protected:
+	// Variables para el heroe
 	int x, y;
 	int dx, dy;
 	int vidas, salud;
@@ -223,15 +227,16 @@ protected:
 	int* posY_Escobas;
 	int n_Escobas;
 public:
-	// Constructor y Destructor
+	// Construimos el heroe
 	Heroe() : x(0), y(0), dx(1), dy(1), vidas(3) {}
-	Heroe(int x, int y, int dx, int dy, int vidas, int progreso, int tiempo) : 
+	Heroe(int x, int y, int dx, int dy, int vidas, int progreso, int tiempo) :
 		x(x), y(y), dx(dx), dy(dy), vidas(vidas),
 		PROGRESO(progreso), tiempo(tiempo),
 		n_Plantas(0), n_Arboles(0), n_Escobas(0),
 		posX_Plantas(nullptr), posY_Plantas(nullptr),
 		posX_Arboles(nullptr), posY_Arboles(nullptr),
 		posX_Escobas(nullptr), posY_Escobas(nullptr) {}
+	// Destruimos el heroe
 	~Heroe() {
 		if (posX_Plantas > 0) {
 			delete[] posX_Plantas;
@@ -252,11 +257,12 @@ public:
 			delete[] posY_Escobas;
 		}
 	}
+	// Mostramos el contador
 	void mostrarContador() {
 		Console::SetCursorPosition(48, 27);
 		cout << setw(2) << int(tiempo);
 	}
-	// Movimiento
+	// Dibujamos el heroe
 	void dibujar(int x, int y) {
 		setColor(3, 15);
 		Console::SetCursorPosition(x, y);	  cout << " O ";
@@ -264,55 +270,64 @@ public:
 		Console::SetCursorPosition(x, y + 2); cout << "/ \\";
 		resetColor();
 	}
+	// Borramos el heroe
 	void borrar(int x, int y) {
 		setColor(0, 15);
 		Console::SetCursorPosition(x, y);	  cout << "   ";
 		Console::SetCursorPosition(x, y + 1); cout << "   ";
 		Console::SetCursorPosition(x, y + 2); cout << "   ";
 	}
+	// Movemos el heroe con condiciones
 	void mover(char input, int n, Obstaculo** obstaculos) {
 		bool valid1 = true, valid2 = true, valid3 = true, valid4 = true;
 
 		for (int i = 0; i < n; ++i) {
+			// Para la izquierda
 			if ((x - 1 == obstaculos[i]->getX() && y == obstaculos[i]->getY()) ||
 				(x - 1 == obstaculos[i]->getX() && y + 1 == obstaculos[i]->getY()) ||
 				(x - 1 == obstaculos[i]->getX() && y + 2 == obstaculos[i]->getY())) {
 				valid1 = false;
 			}
+			// Para la derecha
 			if ((x + 3 == obstaculos[i]->getX() && y == obstaculos[i]->getY()) ||
 				(x + 3 == obstaculos[i]->getX() && y + 1 == obstaculos[i]->getY()) ||
 				(x + 3 == obstaculos[i]->getX() && y + 2 == obstaculos[i]->getY())) {
 				valid2 = false;
 			}
+			// Para arriba
 			if ((y - 1 == obstaculos[i]->getY() && x == obstaculos[i]->getX()) ||
 				(y - 1 == obstaculos[i]->getY() && x + 1 == obstaculos[i]->getX()) ||
 				(y - 1 == obstaculos[i]->getY() && x + 2 == obstaculos[i]->getX())) {
 				valid3 = false;
 			}
+			// Para abajo
 			if ((y + 3 == obstaculos[i]->getY() && x == obstaculos[i]->getX()) ||
 				(y + 3 == obstaculos[i]->getY() && x + 1 == obstaculos[i]->getX()) ||
 				(y + 3 == obstaculos[i]->getY() && x + 2 == obstaculos[i]->getX())) {
 				valid4 = false;
 			}
 		}
-
+		// Movemos hacia la izquierda si la condición es verdadera y si esta en los límites del tablero
 		if (input == 'A' && valid1 && x > 1) {
-			x -= 1;
+			x -= dx;
 		}
+		// Movemos hacia la derecha si la condición es verdadera y si esta en los límites del tablero
 		if (input == 'D' && valid2 && x < 46) {
-			x += 1;
+			x += dx;
 		}
+		// Movemos hacia arriba si la condición es verdadera y si esta en los límites del tablero
 		if (input == 'W' && valid3 && y > 1) {
-			y -= 1;
+			y -= dy;
 		}
+		// Movemos hacia abajo si la condición es verdadera y si esta en los límites del tablero
 		if (input == 'S' && valid4 && y < 21) {
-			y += 1;
+			y += dy;
 		}
-
-		// Actualizar las coordenadas del héroe
+		// Asignamos los valores cambiados al heroe
 		setX(x);
 		setY(y);
 	}
+	// Imprime en las coordenadas de colisión con los recursos
 	void Labores() {
 		int x, y;
 		for (int i = 0; i < n_Arboles; ++i) {
@@ -332,6 +347,7 @@ public:
 		}
 		resetColor();
 	}
+	// Dibujamos un arbol verde
 	void arbol(int x, int y) {
 		setColor(2, 15);
 		Console::SetCursorPosition(x, y);		cout << "  /\\";
@@ -339,6 +355,7 @@ public:
 		Console::SetCursorPosition(x, y + 2);	cout << "/____\\";
 		Console::SetCursorPosition(x, y + 3);	cout << "  ||";
 	}
+	// Dibujamos una planta amarilla
 	void planta(int x, int y) {
 		setColor(6, 15);
 		Console::SetCursorPosition(x, y);		cout << " /---\\";
@@ -346,6 +363,7 @@ public:
 		Console::SetCursorPosition(x, y + 2);	cout << " \\---/";
 		Console::SetCursorPosition(x, y + 3);	cout << "  | |";
 	}
+	// Dibujamos una escoba magenta
 	void escoba(int x, int y) {
 		setColor(5, 15);
 		Console::SetCursorPosition(x, y);		cout << "  ||";
@@ -353,39 +371,55 @@ public:
 		Console::SetCursorPosition(x, y + 2);	cout << " /||\\";
 		Console::SetCursorPosition(x, y + 3);	cout << "//||\\\\";
 	}
+	// Dibujamos las vidas
 	void dibujarVidas() {
 		Console::SetCursorPosition(6, 26); cout << "Vidas: ";
 		for (int i = 0; i < vidas; ++i) {
-			setColor(3, 0);
+			// Avanza con una proporcion de 6 por cada iteracion a la derecha
 			vida(13 + i * 6, 25);
 			resetColor();
 		}
 	}
+	// Vida celeste
 	void vida(int x, int y) {
+		setColor(3, 0);
 		Console::SetCursorPosition(x, y);	cout << "/-\\/-\\";
 		Console::SetCursorPosition(x, y + 1); cout << "\\    /";
 		Console::SetCursorPosition(x, y + 2); cout << " \\__/";
 	}
+	// Borramos una vida con ayuda de la cantidad de vidas
 	void borrarVida(int i) {
 		Console::SetCursorPosition(i * 6 + 7, 25); cout << "      ";
 		Console::SetCursorPosition(i * 6 + 7, 26); cout << "      ";
 		Console::SetCursorPosition(i * 6 + 7, 27); cout << "      ";
 	}
+	// Mostramos el progreso
 	void mostrarProgreso() {
 		Console::SetCursorPosition(20, 28);
 		cout << "Progreso:" << setw(3) << PROGRESO << "%";
 	}
+	// Metodo set para x
 	void setX(int x) { this->x = x; }
+	// Metodo set para y
 	void setY(int y) { this->y = y; }
+	// Metodo get para x
 	int getX() { return x; }
+	// Metodo get para y
 	int getY() { return y; }
+	// Metodo get para tiempo
 	float getTiempo() { return this->tiempo; }
+	// Metodo set para tiempo
 	void setTiempo(float tiempo) { this->tiempo = tiempo; }
+	// Metodo get para vidas
 	int getVidas() { return vidas; }
+	// Metodo set para vidas
 	void setVidas(int vidas) { this->vidas = vidas; }
+	// Metodo get para progreso
 	int getProgreso() { return this->PROGRESO; }
+	// Metodo set progreso
 	void setProgreso(int progreso) { this->PROGRESO = progreso; }
-	
+
+	// Metodo para agregar una coordenada x al arreglo de coordenadas x de plantas
 	void setX_Plantas(int x) {
 		int* copia = new int[n_Plantas + 1];
 		for (int i = 0; i < n_Plantas; ++i) {
@@ -395,6 +429,7 @@ public:
 		delete[] posX_Plantas;
 		posX_Plantas = copia;
 	}
+	// Metodo para agregar una coordenada y al arreglo de coordenadas y de plantas
 	void setY_Plantas(int y) {
 		int* copia = new int[n_Plantas + 1];
 		for (int i = 0; i < n_Plantas; ++i) {
@@ -404,6 +439,7 @@ public:
 		delete[] posY_Plantas;
 		posY_Plantas = copia;
 	}
+	// Metodo para agregar una coordenada x al arreglo de coordenadas x de arboles
 	void setX_Arboles(int x) {
 		int* copia = new int[n_Arboles + 1];
 		for (int i = 0; i < n_Arboles; ++i) {
@@ -413,6 +449,7 @@ public:
 		delete[] posX_Arboles;
 		posX_Arboles = copia;
 	}
+	// Metodo para asignar una coordenada y al arreglo de coordenadas y de arboles
 	void setY_Arboles(int y) {
 		int* copia = new int[n_Arboles + 1];
 		for (int i = 0; i < n_Arboles; ++i) {
@@ -422,6 +459,7 @@ public:
 		delete[] posY_Arboles;
 		posY_Arboles = copia;
 	}
+	// Metodo para asignar una coordenada x al arreglo de coordenadas x de escobas
 	void setX_Escobas(int x) {
 		int* copia = new int[n_Escobas + 1];
 		for (int i = 0; i < n_Escobas; ++i) {
@@ -431,6 +469,7 @@ public:
 		delete[] posX_Escobas;
 		posX_Escobas = copia;
 	}
+	// Metodo para asignar una coordenada y al arreglo de coordenadas y de plantas
 	void setY_Escobas(int y) {
 		int* copia = new int[n_Escobas + 1];
 		for (int i = 0; i < n_Escobas; ++i) {
@@ -440,75 +479,98 @@ public:
 		delete[] posY_Escobas;
 		posY_Escobas = copia;
 	}
+	// Metodo get para la cantidad de plantas
 	int getN_Plantas() {
 		return this->n_Plantas;
 	}
+	// Metodo get para la cantidad de arboles
 	int getN_Arboles() {
 		return this->n_Arboles;
 	}
+	// Metodo get para la cantidad de escobas
 	int getN_Escobas() {
 		return this->n_Escobas;
 	}
+	// Metodo set para la cantidad de plantas
 	void setN_Plantas(int n) {
 		this->n_Plantas = n;
 	}
+	// Metodo set para la cantidad de arboles
 	void setN_Arboles(int n) {
 		this->n_Arboles = n;
 	}
+	// Metodo set para la cantidad de escobas
 	void setN_Escobas(int n) {
 		this->n_Escobas = n;
 	}
 };
-
+// Clase enemigo
 class Enemigo : public Tablero {
 private:
+	// Variables para el enemigo
 	int x, y;
 	int dx;
 	char forma;
 public:
+	// Constructor por defecto del enemigo
 	Enemigo() {}
+	// Construimos el enemigo
 	Enemigo(int x, int y, int dx, char forma) : x(x), y(y), dx(dx), forma(forma) {}
+	// Destruimos el enemigo
 	~Enemigo() {}
+	// Dibujamos el enemigo
 	void dibujar() {
 		Console::SetCursorPosition(x, y);
 		cout << forma;
 	}
+	// Borramos el enemigo
 	void borrar() {
 		Console::SetCursorPosition(x, y);
 		cout << " ";
 	}
+	// Movemos el enemigo
 	void mover() {
 		if (x <= 1 || x >= LARGO - 2) {
 			dx *= -1;
 		}
 		x += dx;
 	}
+	// Metodo get para x
 	int getX() { return this->x; }
+	// Metodo get para y
 	int getY() { return this->y; }
+	// Metodo get para la forma
 	char getForma() { return this->forma; }
 };
 
 class Recurso : public Tablero {
 private:
+	// Variables del recurso
 	int x, y;
 	int dx, dy;
 	char forma;
 public:
+	// Constructor por defecto del recurso
 	Recurso() {}
+	// Construimos el recurso
 	Recurso(int x, int y, int dx, int dy, char forma) : x(x), y(y), dx(dx), dy(dy), forma(forma) {}
+	// Destruimos el recurso
 	~Recurso() {}
+	// Dibujamos el recurso
 	void dibujar() {
 		Console::SetCursorPosition(x, y);
 		setColor(8, 15);
 		cout << forma;
 		resetColor();
 	}
+	// Borramos el recurso
 	void borrar() {
 		Console::SetCursorPosition(x, y);
 		setColor(0, 15);
 		cout << " ";
 		resetColor();
 	}
+	// Movemos el recurso
 	void mover() {
 		if (x <= 1 || x >= LARGO - 2) {
 			dx *= -1;
@@ -519,14 +581,17 @@ public:
 		x += dx;
 		y += dy;
 	}
+	// Metodo get para x
 	int getX() { return this->x; }
+	// Metodo get para y
 	int getY() { return this->y; }
+	// Metodo get para la forma
 	char getForma() { return this->forma; }
 };
-
+// Clase del Juego
 class Juego : public Tablero, public Heroe {
 private:
-	// Declaraciones de los Objetos
+	// Declaraciones de los objetos
 	Heroe* heroe;
 	Tablero* tablero;
 	Enemigo** enemigos;
@@ -534,26 +599,45 @@ private:
 	Recurso** recursos;
 	int n_Recursos;
 public:
-	Juego() : heroe(new Heroe(24, 11, 1, 1, 5, 0, 45)), tablero(new Tablero()), n_Enemigos(5), n_Recursos(70){
+	// Constructor por defecto del Juego
+	Juego() : heroe(new Heroe(24, 11, 1, 1, 5, 0, 45)), tablero(new Tablero()), n_Enemigos(5), n_Recursos(70) // Inicializamos las variables
+	{
+		// Declaramos a enemigos con el tamaño de n_Enemigos
 		enemigos = new Enemigo * [n_Enemigos];
 		for (int i = 0; i < n_Enemigos; ++i) {
+			// Construimos con un valor aleatorio x, y, dirección y forma de X
 			enemigos[i] = new Enemigo(randX(), randY(), randDX(), 'X');
 		}
+		// Declaramos a recursos con el tamaño de n_Recursos
 		recursos = new Recurso * [n_Recursos];
 		for (int i = 0; i < n_Recursos; ++i) {
+			// Construimos con un valor aleatorio x, y, dirección y con forma aleatoria
 			recursos[i] = new Recurso(randX(), randY(), randDX(), randDY(), randRecurso());
 		}
+		heroe->setVidas(5);		// Asignamos las vidas a 5
+		heroe->setTiempo(45);	// Asignamos el tiempo a 45
+		heroe->setProgreso(0);	// Asignamos el progreso a 0
 	}
-	Juego(int n_Enemigos, int n_Recursos) : heroe(new Heroe(24, 11, 1, 1, 5, 0, 45)), tablero(new Tablero()), n_Enemigos(n_Enemigos), n_Recursos(n_Recursos) {
+	// Construimos el juego
+	Juego(int n_Enemigos, int n_Recursos) : heroe(new Heroe(24, 11, 1, 1, 5, 0, 45)), tablero(new Tablero()), n_Enemigos(n_Enemigos), n_Recursos(n_Recursos) // Inicializamos las variables con los parámetros especificados
+	{
+		// Declaramos a enemigos con el tamaño de n_Enemigos
 		enemigos = new Enemigo * [n_Enemigos];
 		for (int i = 0; i < n_Enemigos; ++i) {
+			// Construimos con un valor aleatorio x, y, dirección y forma de X
 			enemigos[i] = new Enemigo(randX(), randY(), randDX(), 'X');
 		}
+		// Declaramos a recursos con el tamaño de n_Recursos
 		recursos = new Recurso * [n_Recursos];
 		for (int i = 0; i < n_Recursos; ++i) {
+			// Construimos con un valor aleatorio x, y, dirección y con forma aleatoria
 			recursos[i] = new Recurso(randX(), randY(), randDX(), randDY(), randRecurso());
 		}
+		heroe->setVidas(5);		// Asignamos las vidas a 5
+		heroe->setTiempo(45);	// Asignamos el tiempo a 45
+		heroe->setProgreso(0);	// Asignamos el progreso a 0
 	}
+	// Destruimos el juego
 	~Juego() {
 		delete heroe;
 		delete tablero;
@@ -567,6 +651,7 @@ public:
 		}
 		delete[] enemigos;
 	}
+	// Presentacion del juego y su dinámica
 	void contextualizacion() {
 		system("cls");
 		setColor(3, 0);
@@ -623,6 +708,7 @@ public:
 		system("cls");
 		setColor(0, 15);
 	}
+	// Mostramos los créditos del TP
 	void mostrarCreditos() {
 		system("cls");
 		Console::SetCursorPosition(6, 13); cout << "Integrantes:"; setColor(5, 0);
@@ -632,11 +718,14 @@ public:
 		system("pause>0");
 		resetColor();
 	}
+	// Validación de la finalizacion del juego
 	bool validacion(int progreso, int vidas, int tiempo) {
 		bool end = false;
+		// Preguntamos si cualquiera de estos valores es cierto para afirmar end
 		if (progreso >= 100 || vidas <= 0 || tiempo <= 0) {
 			end = true;
 		}
+		// Si end es verdadero, muestra diferentes finales por dependiendo el desempeño del jugador
 		if (end) {
 			system("cls");
 			Console::SetCursorPosition(2, 11);
@@ -664,8 +753,10 @@ public:
 			resetColor();
 			mostrarCreditos();
 		}
+		// Retornamos el valor de end, para correlacionar el flujo del juego
 		return end;
 	}
+	// Introducimos el juego GMA
 	void Introduccion() {
 		setColor(0, 15);
 		Console::SetCursorPosition(8, 5);
@@ -687,58 +778,85 @@ public:
                \____|_|  |_/_/   \_\              
 
 )";
+		_sleep(3000);
 		resetColor();
 	}
+	// Verificamos la colision con los recursos
 	void colisionRecursos() {
 		int heroeX = heroe->getX();
 		int heroeY = heroe->getY();
 
-		for (int i = 0; i < n_Recursos - 1; ++i) {
+		for (int i = 0; i < n_Recursos; ++i) {
+			bool eliminado = false; // Variable booleana en caso de colisión
+			// Bucles for auxiliares para recorrer el cuerpo 3x3 del heroe
 			for (int dx = 0; dx <= 2; ++dx) {
 				for (int dy = 0; dy <= 2; ++dy) {
+					// Verificamos la colision
 					if (recursos[i]->getX() == heroeX + dx && recursos[i]->getY() == heroeY + dy) {
 						int x = recursos[i]->getX();
 						int y = recursos[i]->getY();
+						// Verificamos la forma del recurso
 						if (recursos[i]->getForma() == '~') {
+							// Guardamos la posicion del recurso para una planta
 							heroe->setX_Plantas(x);
 							heroe->setY_Plantas(y);
+							// Aumentamos la cantidad de plantas
 							heroe->setN_Plantas(heroe->getN_Plantas() + 1);
 						}
 						else if (recursos[i]->getForma() == '*') {
+							// Guardamos la posicion del recurso para un arbol
 							heroe->setX_Arboles(x);
 							heroe->setY_Arboles(y);
+							// Aumentamos la cantidad de arboles
 							heroe->setN_Arboles(heroe->getN_Arboles() + 1);
 						}
 						else if (recursos[i]->getForma() == '#') {
+							// Guardamos la posicion del recurso para una escoba
 							heroe->setX_Escobas(x);
 							heroe->setY_Escobas(y);
+							// Aumentamos la cantidad de escobas
 							heroe->setN_Escobas(heroe->getN_Escobas() + 1);
 						}
+						// Actualizamos el progreso +5%
 						heroe->setProgreso(heroe->getProgreso() + 5);
+						// Borramos y eliminamos el recurso 
 						recursos[i]->borrar();
 						eliminarRecurso(i);
+						// Afirmamos eliminado
+						eliminado = true;
+						// Salimos del segundo bucle
 						break;
 					}
 				}
+				// Salimos del primer bucle
+				if (eliminado) break;
 			}
+			// Disminuimos i porque el cantidad de recursos se ha actualizado y el recurso se ha eliminado
+			if (eliminado) --i;
 		}
 	}
+	// Verificamos la colision con los enemigos
 	void colisionEnemigos() {
 		int heroeX = heroe->getX();
 		int heroeY = heroe->getY();
-
 		for (int i = 0; i < n_Enemigos; ++i) {
+			// Bucles for auxiliares para recorrer el cuerpo 3x3 del heroe
 			for (int dx = 0; dx <= 2; ++dx) {
 				for (int dy = 0; dy <= 2; ++dy) {
+					// Verificamos la colisión
 					if (enemigos[i]->getX() == heroeX + dx && enemigos[i]->getY() == heroeY + dy) {
+						// Borramos la vida
 						heroe->borrarVida(heroe->getVidas());
+						// Disminuimos la cantidad de vidas en 1
 						heroe->setVidas(heroe->getVidas() - 1);
 					}
 				}
 			}
 		}
 	}
+	// Movemos a los enemigos
 	void moverEnemigos() {
+		// Bucle para recorrer la cantidad de enemigos y moverlos
 		for (int i = 0; i < n_Enemigos; ++i) {
 			setColor(12, 15);
 			enemigos[i]->borrar();
@@ -747,7 +865,9 @@ public:
 			resetColor();
 		}
 	}
+	// Movemos a los recursos
 	void moverRecursos() {
+		// Bucle para recorrer la cantidad de recursos y moverlos
 		for (int i = 0; i < n_Recursos; ++i) {
 			setColor(8, 15);
 			recursos[i]->borrar();
@@ -756,98 +876,143 @@ public:
 			resetColor();
 		}
 	}
+	// Eliminamos un recurso indicado
 	void eliminarRecurso(int indice) {
+		// Eliminamos el recurso indicado
 		delete recursos[indice];
+		// Ajustamos todas las posiciones por el espacio libre del recurso eliminado
 		for (int i = indice; i < n_Recursos - 1; ++i) {
 			recursos[i] = recursos[i + 1];
 		}
+		// Disminuimos la cantidad de recursos
 		--n_Recursos;
+		// Creamos una copia para almacenar el nuevo arreglo de recursos
 		Recurso** copia = new Recurso * [n_Recursos];
+		// Guardamos todos los recursos del antiguo arreglo al nuevo
 		for (int i = 0; i < n_Recursos; ++i) {
 			copia[i] = recursos[i];
 		}
+		// Eliminamos el antiguo arreglo
 		delete[] recursos;
+		// Apuntamos al nuevo arreglo
 		recursos = copia;
 	}
+	// Iniciamos el juego
 	void iniciarJuego() {
+		// Presentamos el juego
 		contextualizacion();
-		char input;
-		int prevx;
-		int prevy;
-		bool final = false;
-		heroe->setVidas(5);
-		heroe->setTiempo(45);
-		heroe->setProgreso(0);
+		char input; // Para capturar la entrada del jugador
+		int prevx; // Coordenada x para borrar la posición anterior del heroe
+		int prevy; // Coordenada y para borrar la posición anterior del heroe
+		bool final = false; // Booleano para controlar el estado de la partida
+
+		// Dibujamos el mapa
 		tablero->DIBUJAR_MAPA();
+		// Bucle while del juego
 		while (!final) {
+			// Dibujamos los obstaculos
 			tablero->DIBUJAR_OBSTACULOS();
+			// Dibujamos los labores que el heroe ha hecho
 			heroe->Labores();
+			// Movemos los recursos y enemigos
 			moverRecursos();
 			moverEnemigos();
-
-			prevx = heroe->getX();
-			prevy = heroe->getY();
-			heroe->borrar(prevx, prevy);
-
+			
+			// Verificamos si alguna tecla se presiono
 			if (_kbhit()) {
+				// Capturamos la tecla
 				input = toupper(_getch());
+				// Guardamos la coordenadas anteriores del heroe
+				prevx = heroe->getX();
+				prevy = heroe->getY();
+				// Movemos el heroe
 				heroe->mover(input, tablero->getN_Obs(), tablero->getObstaculo());
+				// Borramos la antigua posición del heroe
+				heroe->borrar(prevx, prevy);
 			}
-
+			// Dibujamos al heroe
 			heroe->dibujar(heroe->getX(), heroe->getY());
+			// Verificamos la colisión con los recursos
 			colisionRecursos();
 			colisionEnemigos();
+			// Dibujamos las vidas
 			heroe->dibujarVidas();
+			// Dibujamos los progreso
 			heroe->mostrarProgreso();
+			// Velocidad del bucle
 			_sleep(50);
+			// Dibujamos el contador
 			heroe->mostrarContador();
+			// Actualizamos el tiempo respecto al tiempo del bucle
 			heroe->setTiempo(heroe->getTiempo() - 0.07);
+			// Asignamos la validacion al booleano que controla el juego
 			final = validacion(heroe->getProgreso(), heroe->getVidas(), heroe->getTiempo());
 		}
 	}
 };
 
-void printMenu(int selected = 0) {
-	const string options[] = { "1. Jugar", "2. Mostrar creditos", "3. Salir"};
+// Funcion para imprimir el menú
+void printMenu(int selected) {
+	// Constante para almacenar las opciones
+	const string options[] = { "1. Jugar", "2. Mostrar creditos", "3. Salir" };
+	// Constante para almacenar el numero de opciones
 	const int numOptions = sizeof(options) / sizeof(options[0]);
 	system("cls");
 	for (int i = 0; i < numOptions; ++i) {
+		// Mueve hacia abajo en cada iteracion
 		Console::SetCursorPosition(15, 13 + i);
 
+		// Verifica la seleccion
 		if (i == selected) {
+			// Si la seleccion coincide con el numero de opcion, se imprime una flecha
 			setColor(12, 0);
 			cout << "-> ";
 			resetColor();
 			cout << options[i] << endl;
 		}
 		else {
+			// Si la seleccion no coincide con el numero de opcion, se imprime espacios en blanco
 			cout << "   " << options[i] << endl;
 		}
 	}
 }
 
+// Funcion para manejar el menu
 void Menu(Juego* ObjJuego) {
+	// Variable para manejar opcion es seleccionada
 	int selected = 0;
+	// Constante para manejar el numero de opciones
 	const int numOptions = 3;
+	// Variable para manejar la entrada
 	char input;
+	// Variable para manejar la entrada para la dificultad del juego
 	int dificultadInput;
+	// Booleano para verificar la dificultad
 	bool ready;
 	while (true) {
+		// Imprime el Menú
 		printMenu(selected);
 
+		// Captura la entrada y la convierte en mayuscula
 		input = toupper(_getch());
 
+		// Condicional para manejar el flujo de la entrada
 		switch (input) {
 		case 'W':
+			// Si sube en el menu, se le resta a selected y suma el numero de opciones, para luego obtener el residuo de dividir entre el numero de opciones
 			selected = (selected - 1 + numOptions) % numOptions;
 			break;
 		case 'S':
+			// Si baja en el menu, se le suma a selected y para luego obtener el residuo de dividir entre el numero de opciones
 			selected = (selected + 1) % numOptions;
 			break;
 		case '\r':
+			// Si presiono 'ENTER'
 			switch (selected) {
+				// Si fue la primera opcion, jugamos
 			case 0:
 				ready = false;
+				// Preguntamos que dificultad desea escoger
 				while (!ready) {
 					system("cls");
 					setColor(3, 15);
@@ -858,39 +1023,45 @@ void Menu(Juego* ObjJuego) {
 					Console::SetCursorPosition(7, 15); cout << "3. Dificil - 30 recursos, 7 enemigos";
 					Console::SetCursorPosition(7, 16); cout << "4. Extremo - 20 recursos, 9 enemigos";
 					resetColor();
+					// Obtenemos el numero de entrada
+					dificultadInput = _getch() - '0';
 
-					dificultadInput = _getch() - '0'; // Lee la entrada del usuario
-
-					// Asegúrate de que la entrada sea válida
+					// Condicional para manejar el flujo del constructor
 					switch (dificultadInput) {
 					case 1:
-						ObjJuego = new Juego(3, 51);
+						ObjJuego = new Juego(3, 50);
 						break;
 					case 2:
-						ObjJuego = new Juego(5, 41);
+						ObjJuego = new Juego(5, 40);
 						break;
 					case 3:
-						ObjJuego = new Juego(7, 31);
+						ObjJuego = new Juego(7, 30);
 						break;
 					case 4:
-						ObjJuego = new Juego(9, 21);
+						ObjJuego = new Juego(9, 20);
 						break;
 					default:
 						Console::SetCursorPosition(7, 17);
 						cout << "Opcion invalida, elige una opcion del 1 al 4.\n";
-						system("pause");
+						system("pause>0");
 						break;
 					}
+					// Verificamos si la dificultad fue valida
 					if (dificultadInput == 1 || dificultadInput == 2 || dificultadInput == 3 || dificultadInput == 4) {
+						// Afirmamos ready
 						ready = true;
 					}
 				}
+				// E iniciamos el juego
 				ObjJuego->iniciarJuego();
 				break;
 			case 1:
+				// Si fue la segunda opcion, mostramos los créditos
 				ObjJuego->mostrarCreditos();
 				break;
 			case 2:
+				// Si fue la tercera opcion, salimos del programa
+				delete ObjJuego;
 				cout << "Saliendo..." << endl;
 				setColor(0, 0);
 				exit(0);
@@ -906,11 +1077,15 @@ void Menu(Juego* ObjJuego) {
 	}
 }
 
+// Funcion para imprimir el logo de la UPC
 void UPClogo(int x, int y) {
 	system("cls");
 	Console::SetCursorPosition(x, y);
+	// Alto de la figura
 	const int height = 20;
+	// Ancho de la figura
 	const int width = 40;
+	// Logo de la UPC con 0 para el blanco, 1 para el rojo y 2 para el negro
 	int UPC[height][width] = {
 		{2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2},
 		{2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2},
@@ -934,44 +1109,55 @@ void UPClogo(int x, int y) {
 		{2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2},
 
 	};
+
+	// Bucle anidado para imprimir el tablero
 	for (int i = 0; i < height; i++) {
+		Console::SetCursorPosition(x, y);
 		for (int j = 0; j < width; ++j) {
+			// Preguntamos el numero en la figura
 			if (UPC[i][j] == 0) {
+				// Asignamos color blanco brillante
 				setColor(15, 15);
-				cout << "#";
+				cout << " ";
 			}
 			if (UPC[i][j] == 1) {
-				setColor(4, 4);
-				cout << "#";
+				// Asignamos rojo
+				setColor(4, 12);
+				cout << " ";
 			}
 			if (UPC[i][j] == 2) {
+				// Asignamos gris
 				setColor(8, 8);
-				cout << "#";
+				cout << " ";
 			}
 		}
-		Console::SetCursorPosition(x, y++);
+		// Movemos hacia abajo el cursor
+		++y;
 	}
+	// Reiniciamos el color
 	resetColor();
-	Console::SetCursorPosition(x += 8, y++);
+	// Movemos el cursor para centrar el mensaje
+	Console::SetCursorPosition(x += 8, y += 2);
 	cout << "-Exigete, Innova, UPC-";
+	// Retraso de 3 segundos
 	Sleep(3000);
 	Console::SetCursorPosition(0, 0);
 	system("cls");
 	resetColor();
 }
 
+// Funcion del Trabajo Parcial
 void TrabajoParcial() {
-	hidecursor();
-	UPClogo(4, 5);
-	Juego* ObjJuego = new Juego();
-	ObjJuego->Introduccion();
-	_sleep(3000);
-	Menu(ObjJuego);
-	delete ObjJuego;
+	srand(time(0));					// Inicializamos la semilla para numeros aleatorios
+	hidecursor();					// Ocultamos el cursor
+	UPClogo(5, 5);					// Imprimimos el logo de la UPC
+	Juego* ObjJuego = new Juego();	// Construimos predeterminadamente el Juego
+	ObjJuego->Introduccion();		// Presentamos GMA
+	Menu(ObjJuego);					// Llamamos al Menu
 }
 
+// Funcion principal
 int main() {
-	srand(time(0));
-	TrabajoParcial();
+	TrabajoParcial(); // Llamamos a Trabajo Parcial
 	return 0;
 }
