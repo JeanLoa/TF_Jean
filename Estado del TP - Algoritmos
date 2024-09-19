@@ -1,10 +1,10 @@
-#include "pch.h"
-#include <iostream>
-#include <conio.h>
-#include <windows.h>
-#include <iomanip>
-using namespace std;
-using namespace System;
+#include "pch.h"		// Para Console
+#include <iostream>		// Para cout
+#include <conio.h>		// Para _kbhit() y _getch()
+#include <windows.h>	// Para setColor, resetColor y hidecursor
+#include <iomanip>		// Para setw()
+using namespace std;	// Alias std
+using namespace System; // Alias System
 // Chat GPT
 void hidecursor() {
 	HANDLE consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -23,23 +23,29 @@ void resetColor() {
 	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 	SetConsoleTextAttribute(hConsole, 7);
 }
+// Numero aleatorio entre un rango dado
 int randnum(int min, int max) {
 	return min + rand() % (max - min + 1);
 }
+// Direccion x aleatoria
 int randDX() {
 	int num = randnum(1, 2);
 	return num == 1 ? 1 : -1;
 }
+// Direccion y aleatoria
 int randDY() {
 	int num = randnum(1,2);
 	return num == 1 ? 1 : -1;
 }
+// Coordenada x aleatoria
 int randX() {
 	return randnum(4, 46);
 }
+// Coordenada y aleatoria
 int randY() {
 	return randnum(4, 21);
 }
+// Recurso aleatorio
 char randRecurso() {
 	int num = rand() % 3;
 	char recurso = ' ';
@@ -57,9 +63,10 @@ char randRecurso() {
 	return recurso;
 }
 
+// Clase del obstaculo
 class Obstaculo {
 private:
-	// Variables para el obstaculo
+	// Atributos para el obstaculo
 	int x, y;
 	char forma;
 public:
@@ -98,9 +105,10 @@ public:
 	}
 };
 
+// Clase del tablero
 class Tablero {
 protected:
-	// Variables para el tablero
+	// Atributos para el tablero
 	int ANCHO;
 	int LARGO;
 	char** TABLERO;
@@ -209,9 +217,10 @@ public:
 	}
 };
 
+// Clase del heroe
 class Heroe {
 protected:
-	// Variables para el heroe
+	// Atributos para el heroe
 	int x, y;
 	int dx, dy;
 	int vidas, salud;
@@ -507,7 +516,7 @@ public:
 // Clase enemigo
 class Enemigo : public Tablero {
 private:
-	// Variables para el enemigo
+	// Atributos para el enemigo
 	int x, y;
 	int dx;
 	char forma;
@@ -545,7 +554,7 @@ public:
 
 class Recurso : public Tablero {
 private:
-	// Variables del recurso
+	// Atributos del recurso
 	int x, y;
 	int dx, dy;
 	char forma;
@@ -591,7 +600,7 @@ public:
 // Clase del Juego
 class Juego : public Tablero, public Heroe {
 private:
-	// Declaraciones de los objetos
+	// Declaraciones de los objetos y atributos
 	Heroe* heroe;
 	Tablero* tablero;
 	Enemigo** enemigos;
