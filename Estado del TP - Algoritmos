@@ -5,7 +5,8 @@
 #include <iomanip>		// Para setw()
 using namespace std;	// Alias std
 using namespace System; // Alias System
-// Chat GPT
+
+// Chat GPT - Oculta el cursor
 void hidecursor() {
 	HANDLE consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
 	CONSOLE_CURSOR_INFO info;
@@ -13,12 +14,12 @@ void hidecursor() {
 	info.bVisible = FALSE;
 	SetConsoleCursorInfo(consoleHandle, &info);
 }
-// ChatGPT
+// ChatGPT - Asigna un color de texto y fondo
 void setColor(int textColor, int bgColor) {
 	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 	SetConsoleTextAttribute(hConsole, (bgColor << 4) | textColor);
 }
-// ChatGPT
+// ChatGPT - Asigna el color predeterminado
 void resetColor() {
 	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 	SetConsoleTextAttribute(hConsole, 7);
@@ -28,22 +29,28 @@ int randnum(int min, int max) {
 	return min + rand() % (max - min + 1);
 }
 // Direccion x aleatoria
-int randDX() {
-	int num = randnum(1, 2);
-	return num == 1 ? 1 : -1;
-}
-// Direccion y aleatoria
-int randDY() {
-	int num = randnum(1,2);
-	return num == 1 ? 1 : -1;
+int randD() {
+	int num = randnum(1, 3);
+	switch (num) {
+	case 1:
+		num = -1;
+		break;
+	case 2:
+		num = 0;
+		break;
+	case 3:
+		num = 1;
+		break;
+	}
+	return num;
 }
 // Coordenada x aleatoria
 int randX() {
-	return randnum(4, 46);
+	return randnum(1, 46);
 }
 // Coordenada y aleatoria
 int randY() {
-	return randnum(4, 21);
+	return randnum(1, 23);
 }
 // Recurso aleatorio
 char randRecurso() {
@@ -63,60 +70,75 @@ char randRecurso() {
 	return recurso;
 }
 
-// Clase del obstaculo
-class Obstaculo {
-private:
-	// Atributos para el obstaculo
+// Clase Padre - Elemento
+class Elemento {
+protected:
 	int x, y;
 	char forma;
 public:
-	// Construir el obstaculo
-	Obstaculo(int x, int y, char forma) : x(x), y(y), forma(forma) {}
-	// Destruir el obstaculo
-	~Obstaculo() {}
-	// Dibujar el obstaculo
-	void dibujar() {
-		Console::SetCursorPosition(x, y);
-		cout << forma;
-	}
-	// Metodo set para la forma
-	void setForma(char forma) {
+	Elemento(){}
+	Elemento(int x, int y, char forma = 0) {
+		this->x = x;
+		this->y = y;
 		this->forma = forma;
 	}
-	// Metodo set para x
+	virtual ~Elemento(){}
+	virtual void dibujar() {}
+	virtual void borrar() {}
+	virtual void mover() {}
 	void setX(int x) {
 		this->x = x;
 	}
-	// Metodo set para y
 	void setY(int y) {
 		this->y = y;
 	}
-	// Metodo get para la forma
-	char getForma() {
-		return this->forma;
+	void setForma(char forma) {
+		this->forma = forma;
 	}
-	// Metodo get para x
 	int getX() {
 		return this->x;
 	}
-	// Metodo get para y
 	int getY() {
 		return this->y;
 	}
+	char getForma() {
+		return this->forma;
+	}
 };
 
+// Clase del obstaculo
+class Obstaculo : public Elemento {
+public:
+	// Constructor por defecto
+	Obstaculo(){}
+	// Construir el obstaculo
+	Obstaculo(int x, int y, char forma) : Elemento(x, y, forma) {}
+	// Destruir el obstaculo
+	~Obstaculo() {}
+	// Dibujar el obstaculo
+	void dibujar() override {
+		Console::SetCursorPosition(x, y);
+		cout << forma;
+	}
+	// Implementaciones necesarias aunque no utiles para obstaculo
+	void mover() override {}
+	void borrar() override {}
+}; // Check
 // Clase del tablero
 class Tablero {
-protected:
+private:
 	// Atributos para el tablero
+	char** TABLERO;
 	int ANCHO;
 	int LARGO;
-	char** TABLERO;
 	Obstaculo** obstaculos;
 	int n_Obstaculos;
+	int modo;
 public:
+	// Constructor por defecto
+	Tablero(){}
 	// Construimos el tablero y obstaculos
-	Tablero() : ANCHO(25), LARGO(50), TABLERO(nullptr), obstaculos(nullptr), n_Obstaculos(60) {
+	Tablero(int modo) : modo(modo), ANCHO(25), LARGO(50), TABLERO(nullptr), obstaculos(nullptr) {
 		TABLERO = new char* [ANCHO];
 		for (int i = 0; i < ANCHO; ++i) {
 			TABLERO[i] = new char[LARGO];
@@ -153,32 +175,220 @@ public:
 					TABLERO[i][j] = ' ';
 				}
 			}
-			obstaculos = new Obstaculo * [n_Obstaculos];
-			bool valid;
-			int posX, posY;
-			for (int i = 0; i < n_Obstaculos; ++i) {
-				do {
-					valid = true;
-					posX = randX();
-					posY = randY();
-					// Validamos que los obstaculos no estén dentro del Heroe
-					if ((posX > 22 && posX < 28) && (posY > 11 && posY < 14)) {
-						valid = false;
-					}
-				} while (!valid);
-				obstaculos[i] = new Obstaculo(posX, posY, 206);
-			}
 		}
+		// Obstaculos para el modo facil
+		if (modo == 1) {
+				n_Obstaculos = 20;
+				obstaculos = new Obstaculo * [n_Obstaculos];
+				
+				obstaculos[0] = new Obstaculo(10, 5, 186);
+				obstaculos[1] = new Obstaculo(10, 4, 186);
+				obstaculos[2] = new Obstaculo(10, 3, 201);
+				obstaculos[3] = new Obstaculo(11, 3, 205);
+				obstaculos[4] = new Obstaculo(12, 3, 205);
+
+				obstaculos[5] = new Obstaculo(43, 4, 186);
+				obstaculos[6] = new Obstaculo(43, 5, 185);
+				obstaculos[7] = new Obstaculo(43, 6, 200);
+				obstaculos[8] = new Obstaculo(44, 6, 205);
+				obstaculos[9] = new Obstaculo(45, 6, 205);
+
+				obstaculos[10] = new Obstaculo(8, 19, 188);
+				obstaculos[11] = new Obstaculo(8, 18, 201);
+				obstaculos[12] = new Obstaculo(9, 18, 205);
+				obstaculos[13] = new Obstaculo(10, 18, 187);
+				obstaculos[14] = new Obstaculo(10, 19, 186);
+
+				obstaculos[15] = new Obstaculo(40, 18, 187);
+				obstaculos[16] = new Obstaculo(40, 19, 204);
+				obstaculos[17] = new Obstaculo(40, 20, 186);
+				obstaculos[18] = new Obstaculo(41, 19, 205);
+				obstaculos[19] = new Obstaculo(42, 19, 205);
+			}
+		// Obstaculos para el modo medio
+		else if (modo == 2) {
+				n_Obstaculos = 30;
+				obstaculos = new Obstaculo * [n_Obstaculos];
+				
+				obstaculos[0] = new Obstaculo(7, 10, 187);
+				obstaculos[1] = new Obstaculo(7, 11, 200);
+				obstaculos[2] = new Obstaculo(8, 11, 188);
+				obstaculos[3] = new Obstaculo(8, 10, 205);
+				obstaculos[4] = new Obstaculo(8, 9, 205);
+				
+				obstaculos[5] = new Obstaculo(6, 15, 205);
+				obstaculos[6] = new Obstaculo(7, 15, 203);
+				obstaculos[7] = new Obstaculo(8, 15, 205);
+				obstaculos[8] = new Obstaculo(9, 15, 205);
+				obstaculos[9] = new Obstaculo(10, 15, 187);
+
+				obstaculos[10] = new Obstaculo(23, 21, 205);
+				obstaculos[11] = new Obstaculo(24, 21, 205);
+				obstaculos[12] = new Obstaculo(25, 21, 188);
+				obstaculos[13] = new Obstaculo(25, 20, 186);
+				obstaculos[14] = new Obstaculo(25, 19, 186);
+
+				obstaculos[15] = new Obstaculo(41, 14, 205);
+				obstaculos[16] = new Obstaculo(40, 14, 201);
+				obstaculos[17] = new Obstaculo(40, 15, 186);
+				obstaculos[18] = new Obstaculo(40, 16, 204);
+				obstaculos[19] = new Obstaculo(41, 16, 205);
+
+				obstaculos[20] = new Obstaculo(39, 11, 205);
+				obstaculos[21] = new Obstaculo(40, 11, 202);
+				obstaculos[22] = new Obstaculo(41, 11, 205);
+				obstaculos[23] = new Obstaculo(39, 10, 186);
+				obstaculos[24] = new Obstaculo(39, 9, 186);
+
+				obstaculos[25] = new Obstaculo(22, 6, 186);
+				obstaculos[26] = new Obstaculo(22, 5, 201);
+				obstaculos[27] = new Obstaculo(23, 5, 205);
+				obstaculos[28] = new Obstaculo(24, 5, 205);
+				obstaculos[29] = new Obstaculo(25, 5, 205);
+			}
+		// Obstaculos para el modo dificil
+		else if (modo == 3) {
+				n_Obstaculos = 40;
+				obstaculos = new Obstaculo * [n_Obstaculos];
+				obstaculos[0] = new Obstaculo(4, 10, 205);
+				obstaculos[1] = new Obstaculo(5, 10, 205);
+				obstaculos[2] = new Obstaculo(6, 10, 205);
+				obstaculos[3] = new Obstaculo(7, 10, 205);
+				obstaculos[4] = new Obstaculo(8, 10, 205);
+
+				obstaculos[5] = new Obstaculo(5, 15, 186);
+				obstaculos[6] = new Obstaculo(5, 16, 186);
+				obstaculos[7] = new Obstaculo(5, 17, 186);
+				obstaculos[8] = new Obstaculo(5, 18, 200);
+				obstaculos[9] = new Obstaculo(6, 18, 205);
+
+				obstaculos[10] = new Obstaculo(18, 23, 205);
+				obstaculos[11] = new Obstaculo(19, 23, 188);
+				obstaculos[12] = new Obstaculo(19, 22, 186);
+				obstaculos[13] = new Obstaculo(19, 21, 186);
+				obstaculos[14] = new Obstaculo(19, 20, 186);
+
+				obstaculos[15] = new Obstaculo(30, 22, 205);
+				obstaculos[16] = new Obstaculo(31, 22, 203);
+				obstaculos[17] = new Obstaculo(32, 22, 188);
+				obstaculos[18] = new Obstaculo(32, 21, 186);
+				obstaculos[19] = new Obstaculo(31, 23, 186);
+
+				obstaculos[20] = new Obstaculo(43, 17, 205);
+				obstaculos[21] = new Obstaculo(44, 17, 205);
+				obstaculos[22] = new Obstaculo(45, 17, 188);
+				obstaculos[23] = new Obstaculo(45, 16, 186);
+				obstaculos[24] = new Obstaculo(45, 15, 186);
+
+				obstaculos[25] = new Obstaculo(43, 11, 186);
+				obstaculos[26] = new Obstaculo(43, 10, 201);
+				obstaculos[27] = new Obstaculo(44, 10, 205);
+				obstaculos[28] = new Obstaculo(45, 10, 188);
+				obstaculos[29] = new Obstaculo(45, 9, 186);
+
+				obstaculos[30] = new Obstaculo(30, 3, 205);
+				obstaculos[31] = new Obstaculo(31, 3, 206);
+				obstaculos[32] = new Obstaculo(32, 3, 205);
+				obstaculos[33] = new Obstaculo(31, 4, 186);
+				obstaculos[34] = new Obstaculo(31, 5, 186);
+
+				obstaculos[35] = new Obstaculo(17, 4, 202);
+				obstaculos[36] = new Obstaculo(18, 4, 205);
+				obstaculos[37] = new Obstaculo(19, 4, 205);
+				obstaculos[38] = new Obstaculo(20, 4, 205);
+				obstaculos[39] = new Obstaculo(17, 3, 186);
+			}
+		// Obstaculos para el modo extremo
+		else if (modo == 4) {
+			n_Obstaculos = 60;
+				obstaculos = new Obstaculo * [n_Obstaculos];
+				
+				obstaculos[0] = new Obstaculo(9, 3, 205);
+				obstaculos[1] = new Obstaculo(10, 3, 206);
+				obstaculos[2] = new Obstaculo(11, 3, 205);
+				obstaculos[3] = new Obstaculo(10, 2, 186);
+				obstaculos[4] = new Obstaculo(10, 4, 186);
+
+				obstaculos[5] = new Obstaculo(19, 4, 205);
+				obstaculos[6] = new Obstaculo(20, 4, 188);
+				obstaculos[7] = new Obstaculo(20, 3, 186);
+				obstaculos[8] = new Obstaculo(20, 2, 201);
+				obstaculos[9] = new Obstaculo(21, 2, 205);
+
+				obstaculos[10] = new Obstaculo(30, 2, 186);
+				obstaculos[11] = new Obstaculo(30, 3, 185);
+				obstaculos[12] = new Obstaculo(30, 4, 200);
+				obstaculos[13] = new Obstaculo(31, 4, 205);
+				obstaculos[14] = new Obstaculo(29, 3, 205);
+
+				obstaculos[15] = new Obstaculo(39, 4, 205);
+				obstaculos[16] = new Obstaculo(40, 4, 188);
+				obstaculos[17] = new Obstaculo(40, 3, 201);
+				obstaculos[18] = new Obstaculo(41, 3, 188);
+				obstaculos[19] = new Obstaculo(41, 2, 186);
+
+				obstaculos[20] = new Obstaculo(9, 17, 205);
+				obstaculos[21] = new Obstaculo(10, 17, 202);
+				obstaculos[22] = new Obstaculo(11, 17, 187);
+				obstaculos[23] = new Obstaculo(11, 18, 186);
+				obstaculos[24] = new Obstaculo(10, 16, 186);
+
+				obstaculos[25] = new Obstaculo(19, 16, 205);
+				obstaculos[26] = new Obstaculo(20, 16, 206);
+				obstaculos[27] = new Obstaculo(20, 17, 186);
+				obstaculos[28] = new Obstaculo(20, 18, 186);
+				obstaculos[29] = new Obstaculo(21, 16, 205);
+
+				obstaculos[30] = new Obstaculo(29, 16, 205);
+				obstaculos[31] = new Obstaculo(30, 16, 187);
+				obstaculos[32] = new Obstaculo(30, 17, 186);
+				obstaculos[33] = new Obstaculo(30, 18, 188);
+				obstaculos[34] = new Obstaculo(29, 18, 205);
+
+				obstaculos[35] = new Obstaculo(39, 18, 205);
+				obstaculos[36] = new Obstaculo(40, 18, 205);
+				obstaculos[37] = new Obstaculo(41, 18, 188);
+				obstaculos[38] = new Obstaculo(41, 17, 186);
+				obstaculos[39] = new Obstaculo(41, 16, 186);
+
+				obstaculos[40] = new Obstaculo(10, 6, 186);
+				obstaculos[41] = new Obstaculo(10, 7, 186);
+				obstaculos[42] = new Obstaculo(10, 8, 186);
+				obstaculos[43] = new Obstaculo(10, 9, 186);
+				obstaculos[44] = new Obstaculo(10, 10, 186);
+
+				obstaculos[45] = new Obstaculo(8, 13, 205);
+				obstaculos[46] = new Obstaculo(9, 13, 187);
+				obstaculos[47] = new Obstaculo(9, 14, 200);
+				obstaculos[48] = new Obstaculo(10, 14, 205);
+				obstaculos[49] = new Obstaculo(11, 14, 205);
+
+				obstaculos[50] = new Obstaculo(39, 7, 205);
+				obstaculos[51] = new Obstaculo(40, 7, 205);
+				obstaculos[52] = new Obstaculo(41, 7, 185);
+				obstaculos[53] = new Obstaculo(41, 8, 186);
+				obstaculos[54] = new Obstaculo(41, 6, 186);
+
+				obstaculos[55] = new Obstaculo(38, 14, 205);
+				obstaculos[56] = new Obstaculo(39, 14, 205);
+				obstaculos[57] = new Obstaculo(40, 14, 188);
+				obstaculos[58] = new Obstaculo(40, 13, 201);
+				obstaculos[59] = new Obstaculo(41, 13, 205);
+			}
 	}
-	// Destruimos el tablero
-	~Tablero() {
+	// Destruimos el tablero virtualmente
+	virtual ~Tablero() {
 		for (int i = 0; i < ANCHO; ++i) {
 			delete[] TABLERO[i];
 		}
 		delete[] TABLERO;
+		for (int i = 0; i < n_Obstaculos; ++i) {
+			delete[] obstaculos[i];
+		}
+		delete[] obstaculos;
 	}
 	// Dibujamos el tablero
-	void DIBUJAR_MAPA() {
+	void dibujar_Mapa() {
 		for (int i = 0; i < ANCHO; ++i) {
 			for (int j = 0; j < LARGO; ++j) {
 				cout << TABLERO[i][j];
@@ -187,7 +397,7 @@ public:
 		}
 	}
 	// Dibujamos los obstaculos
-	void DIBUJAR_OBSTACULOS() {
+	void dibujar_Obstaculos() {
 		for (int i = 0; i < n_Obstaculos; ++i) {
 			Console::SetCursorPosition(obstaculos[i]->getX(), obstaculos[i]->getY());
 			setColor(0, 15);
@@ -197,14 +407,14 @@ public:
 	// Metodo get para la celda
 	char getCelda(int x, int y) {
 		if (x >= 0 && x < ANCHO && y >= 0 && y < LARGO) {
-			return TABLERO[x][y];
+			return TABLERO[y][x];
 		}
 		return ' ';
 	}
 	// Metodo set para la celda
 	void setCelda(int x, int y, char c) {
 		if (x >= 0 && x < ANCHO && y >= 0 && y < LARGO) {
-			TABLERO[x][y] = c;
+			TABLERO[y][x] = c;
 		}
 	}
 	// Metodo get para el arreglo de obstaculos
@@ -216,16 +426,106 @@ public:
 		return this->n_Obstaculos;
 	}
 };
-
+// Clase del aliado
+class Aliado : public Elemento {
+public:
+	// Constructor por defecto
+	Aliado(){}
+	// Constructor de aliado
+	Aliado(int x, int y) : Elemento(x, y){}
+	// Destruimos virtualmente aliado
+	virtual ~Aliado(){}
+	// Dibujamos el aliado celeste
+	void dibujar() override {
+		setColor(3, 15);
+		Console::SetCursorPosition(x, y);	  cout << " O";
+		Console::SetCursorPosition(x, y + 1); cout << "<|>";
+		Console::SetCursorPosition(x, y + 2); cout << "/ \\";
+		resetColor();
+	}
+	// Movemos el aliado
+	void mover() override {
+		x += randD();
+		y += randD();
+		if (x < 1)	x = 1;
+		if (x > 46)	x = 46;
+		if (y < 1) y = 1;
+		if (y > 20) y = 20;
+	}
+	// Borramos el aliado
+	void borrar() override {
+		setColor(0, 15);
+		Console::SetCursorPosition(x, y);     cout << "  ";
+		Console::SetCursorPosition(x, y + 1); cout << "   ";
+		Console::SetCursorPosition(x, y + 2); cout << "   ";
+		resetColor();
+	}
+};
+// Clase del enemigo
+class Enemigo : public Elemento {
+public:
+	// Constructor por defecto del enemigo
+	Enemigo() {}
+	// Construimos el enemigo
+	Enemigo(int x, int y, char forma) : Elemento(x, y, forma) {}
+	// Destruimos el enemigo
+	virtual ~Enemigo() {}
+	// Dibujamos el enemigo
+	void dibujar() override {
+		Console::SetCursorPosition(x, y);
+		cout << forma;
+	}
+	// Borramos el enemigo
+	void borrar() override {
+		Console::SetCursorPosition(x, y);
+		cout << " ";
+	}
+	// Movemos el enemigo
+	void mover() override  {
+		x += randD();
+		y += randD();
+		if (x < 1)	x = 1;
+		if (x > 48)	x = 48;
+		if (y < 1) y = 1;
+		if (y > 21) y = 21;
+	}
+};
+// Clase del recurso
+class Recurso : public Elemento {
+public:
+	// Constructor por defecto del recurso
+	Recurso() {}
+	// Construimos el recurso
+	Recurso(int x, int y, char forma) : Elemento(x, y, forma) {}
+	// Destruimos el recurso
+	virtual ~Recurso() {}
+	// Dibujamos el recurso
+	void dibujar() override {
+		Console::SetCursorPosition(x, y);
+		setColor(8, 15);
+		cout << forma;
+		resetColor();
+	}
+	// Borramos el recurso
+	void borrar() override {
+		setColor(8, 15);
+		Console::SetCursorPosition(x, y);
+		cout << " ";
+	}
+	// Implementacion necesaria aunque no util para recurso
+	void mover() override {}
+};
 // Clase del heroe
 class Heroe {
-protected:
+private:
 	// Atributos para el heroe
 	int x, y;
 	int dx, dy;
-	int vidas, salud;
-	int PROGRESO;
+	int vidas;
+	int progreso;
 	float tiempo;
+	int n_Habilidades_A;
+	int n_Habilidades_B;
 	int* posX_Plantas;
 	int* posY_Plantas;
 	int n_Plantas;
@@ -236,33 +536,35 @@ protected:
 	int* posY_Escobas;
 	int n_Escobas;
 public:
-	// Construimos el heroe
-	Heroe() : x(0), y(0), dx(1), dy(1), vidas(3) {}
-	Heroe(int x, int y, int dx, int dy, int vidas, int progreso, int tiempo) :
-		x(x), y(y), dx(dx), dy(dy), vidas(vidas),
-		PROGRESO(progreso), tiempo(tiempo),
+	// Constructor por defecto
+	Heroe() : x(0), y(0), dx(1), dy(1), vidas(3),
+		progreso(0), tiempo(0),
+		n_Habilidades_A(5), n_Habilidades_B(5),
 		n_Plantas(0), n_Arboles(0), n_Escobas(0),
 		posX_Plantas(nullptr), posY_Plantas(nullptr),
 		posX_Arboles(nullptr), posY_Arboles(nullptr),
 		posX_Escobas(nullptr), posY_Escobas(nullptr) {}
-	// Destruimos el heroe
-	~Heroe() {
-		if (posX_Plantas > 0) {
+	// Construimos el heroe
+	Heroe(int x, int y, int dx, int dy, int vidas, int progreso, float tiempo, int n_Habilidades_A, int n_Habilidades_B) :
+		x(x), y(y), dx(dx), dy(dy), vidas(vidas),
+		progreso(progreso), tiempo(tiempo),
+		n_Habilidades_A(n_Habilidades_A), n_Habilidades_B(n_Habilidades_B),
+		n_Plantas(0), n_Arboles(0), n_Escobas(0),
+		posX_Plantas(nullptr), posY_Plantas(nullptr),
+		posX_Arboles(nullptr), posY_Arboles(nullptr),
+		posX_Escobas(nullptr), posY_Escobas(nullptr) {}
+	// Destruimos virtualmente el heroe
+	virtual ~Heroe() {
+		if (n_Plantas >= 0) {
 			delete[] posX_Plantas;
-		}
-		if (posY_Plantas > 0) {
 			delete[] posY_Plantas;
 		}
-		if (posX_Arboles > 0) {
+		if (n_Arboles >= 0) {
 			delete[] posX_Arboles;
-		}
-		if (posY_Arboles > 0) {
 			delete[] posY_Arboles;
 		}
-		if (posX_Escobas > 0) {
+		if (n_Escobas >= 0) {
 			delete[] posX_Escobas;
-		}
-		if (posY_Escobas > 0) {
 			delete[] posY_Escobas;
 		}
 	}
@@ -271,11 +573,16 @@ public:
 		Console::SetCursorPosition(48, 27);
 		cout << setw(2) << int(tiempo);
 	}
+	// Mostramos el stock de habilidades
+	void mostrarHabilidades() {
+		Console::SetCursorPosition(18, 29); cout << "A: " << setw(1) << n_Habilidades_A;
+		Console::SetCursorPosition(30, 29); cout << "B: " << setw(1)<< n_Habilidades_B;
+	}
 	// Dibujamos el heroe
 	void dibujar(int x, int y) {
-		setColor(3, 15);
+		setColor(0, 15);
 		Console::SetCursorPosition(x, y);	  cout << " O ";
-		Console::SetCursorPosition(x, y + 1); cout << "<|>";
+		Console::SetCursorPosition(x, y + 1); cout << "/|\\";
 		Console::SetCursorPosition(x, y + 2); cout << "/ \\";
 		resetColor();
 	}
@@ -336,8 +643,44 @@ public:
 		setX(x);
 		setY(y);
 	}
+	// Habilidades del heroe
+	void habilidades(char input, Enemigo** enemigos, int n_Enemigos, Recurso** recursos, int n_Recursos) {
+		// Variables auxiliares
+		int x, y;
+		// Reposiciona a los recursos cerca del centro
+		if (input == 'Q' && n_Habilidades_A > 0) {
+			for (int i = 0; i < n_Recursos; ++i) {
+				do {
+					x = randX();
+					y = randY();
+				} while ((x < 10 || x > 40) && (y < 5 || y > 20));
+				recursos[i]->borrar();
+				recursos[i]->setX(x);
+				recursos[i]->setY(y);
+			}
+			// Restamos las habilidades A restantes
+			--n_Habilidades_A;
+			Sleep(500);
+		}
+		// Reposiciona a los enemigos lejos del centro
+		else if (input == 'E' && n_Habilidades_B > 0) {
+			for (int i = 0; i < n_Enemigos; ++i) {
+				do {
+					x = randX();
+					y = randY();
+				} while (x > 10 && x < 40 && y > 5 && y < 20);
+				enemigos[i]->borrar();
+				enemigos[i]->setX(x);
+				enemigos[i]->setY(y);
+			}
+			// Restamos las habilidades B restantes
+			--n_Habilidades_B;
+			Sleep(500);
+		}
+	}
 	// Imprime en las coordenadas de colisión con los recursos
-	void Labores() {
+	void labores() {
+		// Variables auxialiares
 		int x, y;
 		for (int i = 0; i < n_Arboles; ++i) {
 			x = posX_Arboles[i];
@@ -405,28 +748,34 @@ public:
 	// Mostramos el progreso
 	void mostrarProgreso() {
 		Console::SetCursorPosition(20, 28);
-		cout << "Progreso:" << setw(3) << PROGRESO << "%";
+		cout << "Progreso:" << setw(3) << progreso << "%";
 	}
 	// Metodo set para x
 	void setX(int x) { this->x = x; }
 	// Metodo set para y
 	void setY(int y) { this->y = y; }
+	// Metodo set para tiempo
+	void setTiempo(float tiempo) { this->tiempo = tiempo; }
+	// Metodo set para vidas
+	void setVidas(int vidas) { 
+		if (vidas >= 5) vidas = 5;
+		this->vidas = vidas;
+	}
+	// Metodo set progreso
+	void setProgreso(int progreso) { 
+		if (progreso < 0) progreso = 0;
+		this->progreso = progreso;
+	}
 	// Metodo get para x
 	int getX() { return x; }
 	// Metodo get para y
 	int getY() { return y; }
 	// Metodo get para tiempo
 	float getTiempo() { return this->tiempo; }
-	// Metodo set para tiempo
-	void setTiempo(float tiempo) { this->tiempo = tiempo; }
 	// Metodo get para vidas
 	int getVidas() { return vidas; }
-	// Metodo set para vidas
-	void setVidas(int vidas) { this->vidas = vidas; }
 	// Metodo get para progreso
-	int getProgreso() { return this->PROGRESO; }
-	// Metodo set progreso
-	void setProgreso(int progreso) { this->PROGRESO = progreso; }
+	int getProgreso() { return this->progreso; }
 
 	// Metodo para agregar una coordenada x al arreglo de coordenadas x de plantas
 	void setX_Plantas(int x) {
@@ -513,143 +862,140 @@ public:
 		this->n_Escobas = n;
 	}
 };
-// Clase enemigo
-class Enemigo : public Tablero {
-private:
-	// Atributos para el enemigo
-	int x, y;
-	int dx;
-	char forma;
-public:
-	// Constructor por defecto del enemigo
-	Enemigo() {}
-	// Construimos el enemigo
-	Enemigo(int x, int y, int dx, char forma) : x(x), y(y), dx(dx), forma(forma) {}
-	// Destruimos el enemigo
-	~Enemigo() {}
-	// Dibujamos el enemigo
-	void dibujar() {
-		Console::SetCursorPosition(x, y);
-		cout << forma;
-	}
-	// Borramos el enemigo
-	void borrar() {
-		Console::SetCursorPosition(x, y);
-		cout << " ";
-	}
-	// Movemos el enemigo
-	void mover() {
-		if (x <= 1 || x >= LARGO - 2) {
-			dx *= -1;
-		}
-		x += dx;
-	}
-	// Metodo get para x
-	int getX() { return this->x; }
-	// Metodo get para y
-	int getY() { return this->y; }
-	// Metodo get para la forma
-	char getForma() { return this->forma; }
-};
-
-class Recurso : public Tablero {
-private:
-	// Atributos del recurso
-	int x, y;
-	int dx, dy;
-	char forma;
-public:
-	// Constructor por defecto del recurso
-	Recurso() {}
-	// Construimos el recurso
-	Recurso(int x, int y, int dx, int dy, char forma) : x(x), y(y), dx(dx), dy(dy), forma(forma) {}
-	// Destruimos el recurso
-	~Recurso() {}
-	// Dibujamos el recurso
-	void dibujar() {
-		Console::SetCursorPosition(x, y);
-		setColor(8, 15);
-		cout << forma;
-		resetColor();
-	}
-	// Borramos el recurso
-	void borrar() {
-		Console::SetCursorPosition(x, y);
-		setColor(0, 15);
-		cout << " ";
-		resetColor();
-	}
-	// Movemos el recurso
-	void mover() {
-		if (x <= 1 || x >= LARGO - 2) {
-			dx *= -1;
-		}
-		if (y <= 1 || y >= ANCHO - 2) {
-			dy *= -1;
-		}
-		x += dx;
-		y += dy;
-	}
-	// Metodo get para x
-	int getX() { return this->x; }
-	// Metodo get para y
-	int getY() { return this->y; }
-	// Metodo get para la forma
-	char getForma() { return this->forma; }
-};
 // Clase del Juego
-class Juego : public Tablero, public Heroe {
-private:
+class Juego {
 	// Declaraciones de los objetos y atributos
+private:
 	Heroe* heroe;
 	Tablero* tablero;
-	Enemigo** enemigos;
-	int n_Enemigos;
 	Recurso** recursos;
 	int n_Recursos;
+	Enemigo** enemigos;
+	int n_Enemigos;
+	Aliado** aliados;
+	int n_Aliados;
 public:
-	// Constructor por defecto del Juego
-	Juego() : heroe(new Heroe(24, 11, 1, 1, 5, 0, 45)), tablero(new Tablero()), n_Enemigos(5), n_Recursos(70) // Inicializamos las variables
-	{
-		// Declaramos a enemigos con el tamaño de n_Enemigos
+	// Constructor predeterminado
+	Juego() : heroe(nullptr), tablero(nullptr), recursos(nullptr), enemigos(nullptr), aliados(nullptr) {}
+	// Construimos juego
+	Juego(int modo) {
+		// Construimos el tablero respecto al modo
+		tablero = new Tablero(modo);
+
+		// Variables auxiliares
+		int tiempo = 0;
+		int n_Habilidades_A = 0;
+		int n_Habilidades_B = 0;
+		// Asignamos valores respecto al modo
+		if (modo == 1) {
+			n_Enemigos = 3;
+			n_Recursos = 60;
+			n_Aliados = 6;
+			tiempo = 60;
+			n_Habilidades_A = 6;
+			n_Habilidades_B = 6;
+		}
+		else if (modo == 2) {
+			n_Enemigos = 6;
+			n_Recursos = 50;
+			n_Aliados = 5;
+			tiempo = 55;
+			n_Habilidades_A = 5;
+			n_Habilidades_B = 5;
+		}
+		else if (modo == 3) {
+			n_Enemigos = 9;
+			n_Recursos = 40;
+			n_Aliados = 4;
+			tiempo = 50;
+			n_Habilidades_A = 4;
+			n_Habilidades_B = 4;
+		}
+		else if (modo == 4) {
+			n_Enemigos = 12;
+			n_Recursos = 30;
+			n_Aliados = 2;
+			tiempo = 45;
+			n_Habilidades_A = 3;
+			n_Habilidades_B = 3;
+		}
+		// Construimos el heroe
+		heroe = new Heroe(24, 11, 1, 1, 5, 0, tiempo, n_Habilidades_A, n_Habilidades_B);
+
+		// Declaramos el arreglo de enemigos
 		enemigos = new Enemigo * [n_Enemigos];
+		// Construimos cada uno de los enemigos con coordenadas aleatorias x, y, y forma 'X'
 		for (int i = 0; i < n_Enemigos; ++i) {
-			// Construimos con un valor aleatorio x, y, dirección y forma de X
-			enemigos[i] = new Enemigo(randX(), randY(), randDX(), 'X');
+			int x, y;
+			bool valid = false;
+			// Variables auxiliares para evitar comportamientos indefinidos
+			int intentos = 0;
+			const int maxIntentos = 100; // Limitar el número de intentos
+			do {
+				x = randX();
+				y = randY();
+				if (!(x > 15 && x < 35 && y > 8 && y < 17)) { // Si no esta en los rangos prohibidos, afirmamos valid
+					valid = true;
+				}
+				intentos++; // Contador auxiliar para evitar comportamientos infinitos
+			} while (!valid && intentos < maxIntentos);
+			if (valid) {
+				// Si han sido validas las coordenadas, contruimos el enemigo
+				enemigos[i] = new Enemigo(x, y, 'X');
+			}
 		}
-		// Declaramos a recursos con el tamaño de n_Recursos
+
+		// Declaramos el arreglo de recursos
 		recursos = new Recurso * [n_Recursos];
+		// Construimos cada uno de los recursos con coordenadas aleatorias x, y, y forma aleatoria de recurso
 		for (int i = 0; i < n_Recursos; ++i) {
-			// Construimos con un valor aleatorio x, y, dirección y con forma aleatoria
-			recursos[i] = new Recurso(randX(), randY(), randDX(), randDY(), randRecurso());
+			int x, y;
+			bool valid = false;
+			// Variables auxiliares para evitar comportamientos indefinidos
+			int intentos = 0;
+			const int maxIntentos = 100; // Limitar el número de intentos
+			do {
+				x = randX();
+				y = randY();
+				if (!(x > 21 && x < 29 && y > 11 && y < 19 && tablero->getCelda(x, y) != ' ')) { // Si no esta en los rangos prohibidos, y su ubicacion es vacia, afirmamos valid
+					valid = true;
+				}
+				intentos++; // Contador auxiliar para evitar comportamientos infinitos
+			} while (!valid && intentos < maxIntentos);
+			if (valid) {
+				// Si han sido validas las coordenadas, contruimos el recurso
+				recursos[i] = new Recurso(x, y, randRecurso());
+			}
 		}
-		heroe->setVidas(5);		// Asignamos las vidas a 5
-		heroe->setTiempo(45);	// Asignamos el tiempo a 45
-		heroe->setProgreso(0);	// Asignamos el progreso a 0
-	}
-	// Construimos el juego
-	Juego(int n_Enemigos, int n_Recursos) : heroe(new Heroe(24, 11, 1, 1, 5, 0, 45)), tablero(new Tablero()), n_Enemigos(n_Enemigos), n_Recursos(n_Recursos) // Inicializamos las variables con los parámetros especificados
-	{
-		// Declaramos a enemigos con el tamaño de n_Enemigos
-		enemigos = new Enemigo * [n_Enemigos];
-		for (int i = 0; i < n_Enemigos; ++i) {
-			// Construimos con un valor aleatorio x, y, dirección y forma de X
-			enemigos[i] = new Enemigo(randX(), randY(), randDX(), 'X');
+
+		// Declaramos el arreglo de aliados
+		aliados = new Aliado * [n_Aliados];
+		// Construimos cada uno de los aliados con coordenadas aleatorias x, y
+		for (int i = 0; i < n_Aliados; ++i) {
+			int x, y;
+			bool valid = false;
+			// Variables auxiliares para evitar comportamientos indefinidos
+			int intentos = 0;
+			const int maxIntentos = 100; // Limitar el número de intentos
+			do {
+				x = randX();
+				y = randY();
+				if (!((x < 10 || x > 40) && !(y < 7 || y > 18))) { // Si no esta en los rangos prohibidos, afirmamos valid
+					valid = true;
+				}
+				intentos++; // Contador auxiliar para evitar comportamientos infinitos
+			} while (!valid && intentos < maxIntentos);
+			if (valid) {
+				// Si han sido validas las coordenadas, contruimos el aliado
+				aliados[i] = new Aliado(x, y);
+			}
 		}
-		// Declaramos a recursos con el tamaño de n_Recursos
-		recursos = new Recurso * [n_Recursos];
-		for (int i = 0; i < n_Recursos; ++i) {
-			// Construimos con un valor aleatorio x, y, dirección y con forma aleatoria
-			recursos[i] = new Recurso(randX(), randY(), randDX(), randDY(), randRecurso());
-		}
-		heroe->setVidas(5);		// Asignamos las vidas a 5
-		heroe->setTiempo(45);	// Asignamos el tiempo a 45
-		heroe->setProgreso(0);	// Asignamos el progreso a 0
 	}
 	// Destruimos el juego
 	~Juego() {
 		delete heroe;
 		delete tablero;
+
 		for (int i = 0; i < n_Recursos; ++i) {
 			delete recursos[i];
 		}
@@ -659,58 +1005,140 @@ public:
 			delete enemigos[i];
 		}
 		delete[] enemigos;
+
+		for (int i = 0; i < n_Aliados; ++i) {
+			delete aliados[i];
+		}
+		delete[] aliados;
 	}
 	// Presentacion del juego y su dinámica
 	void contextualizacion() {
+		// R("") Hace que no se inserten codigos dentro del texto, es decir '\' no funciona dentro de este
+		// Esto facilita el dibujo de los personajes del juego
 		system("cls");
-		setColor(3, 0);
+		setColor(14, 0);
 		Console::SetCursorPosition(0, 10);
 		cout << R"(
-       En el juego "Guardian del Medio Ambiente"       
-      te embarcaras en una mision para restaurar       
-    y proteger el ecosistema de un mundo en peligro.   
-       Tu objetivo es enfrentar a los enemigos,        
-       recolectar recursos y realizar diversas         
-          tareas ecologicas para devolverle            
-              la salud a la naturaleza.                
+     En el juego "Guardian del Medio Ambiente"     
+    te embarcaras en una mision para restaurar     
+  y proteger el ecosistema de un mundo en peligro. 
+     Tu objetivo es enfrentar a los enemigos,      
+     recolectar recursos y realizar diversas       
+        tareas ecologicas para devolverle          
+            la salud a la naturaleza.              
 )";
 		system("pause>0");
-		system("cls");
 		resetColor();
+		system("cls");
 		setColor(4, 0);
-		Console::SetCursorPosition(0, 10);
+		Console::SetCursorPosition(0, 11);
 		cout << R"(
-         Te encontraras en un tablero lleno de         
-         desafios y oportunidades. Tendras que         
-        moverte por el mapa, recolectar recursos       
-         valiosos y realizar acciones cruciales        
-         como plantar arboles, limpiar areas y         
-          reforestar. Cada uno de estos actos          
-         contribuira al progreso de tu mision.         
+        La partida es ganada completando el        
+     progreso al 100%, ademas puedes perder si     
+     el tiempo se acaba o si pierdes todas tus     
+     vidas, se precavido, evita a los enemigos     
+           y busca ayuda en los aliados            
 )";
 		system("pause>0");
-		system("cls");
 		resetColor();
-		setColor(5, 0);
-		Console::SetCursorPosition(0, 10);
-		cout << R"(
-        Sin embargo, no estaras solo. Enemigos         
-        peligrosos rondan el area y trataran de        
-      obstaculizar tus esfuerzos. Deberas evitar       
-      estos enemigos o enfrentarlos para mantener      
-       tus vidas y seguir adelante con tu mision.      
-)";
-		system("pause>0");
 		system("cls");
-		resetColor();
 		setColor(6, 0);
 		Console::SetCursorPosition(0, 10);
 		cout << R"(
-       Preparate para una aventura emocionante         
-         mientras trabajar para restaurar el           
-             equilibrio ecologico con                  
-                'X', '~', '*' y '#'.                   
--------Buena suerte, Guardian del Medio Ambiente-------
+           Busca los recursos, ayudan a            
+           progresar con la partida y a            
+             rehabilitar el ecosistema             
+                   ~ : Agua                        
+                   * : Semilla                     
+                   # : Madera                      
+)";
+		system("pause>0");
+		resetColor();
+		system("cls");
+		setColor(8, 0);
+		Console::SetCursorPosition(0, 9);
+		cout << R"(
+          Al recoger agua regaras a una            
+        planta, semilla plantaras un arbol,        
+            y la madera hara escobas               
+                                                   
+              /---\     /\      ||                 
+             |     |   /  \     ||                 
+              \---/   /____\   /||\                
+               | |      ||    //||\\               
+)";
+		system("pause>0");
+		resetColor();
+		system("cls");
+		setColor(3, 0);
+		Console::SetCursorPosition(0, 9);
+		cout << R"(
+     Al recibir ayuda de un aliado obtendras       
+        tiempo adicional para restaurar el         
+    medio ambiente recibiras una vida adicional    
+         y apareceran 10 nuevos recursos           
+                                                   
+                        O                          
+                       <|>                         
+                       / \                         
+)";
+		system("pause>0");
+		resetColor();
+		system("cls");
+		setColor(12, 0);
+		Console::SetCursorPosition(0, 10);
+		cout << R"(
+           Al cruzarte con un enemigo te           
+          restara una vida, evitalos, son          
+            los que causan la perdida              
+            del ecosistema, evitalos               
+                                                   
+                         X                         
+)";
+		system("pause>0");
+		resetColor();
+		system("cls");
+		setColor(0, 15);
+		Console::SetCursorPosition(0, 9);
+		cout << R"(
+         El heroe eres tu, debes restaurar         
+         el ambiente. Evita los obstaculos,        
+        seran lugares donde no podras pasar        
+                                                   
+         ║         ╗     O        ═       ╦        
+             ╩          /|\           ╔            
+                        / \                        
+)";
+		system("pause>0");
+		resetColor();
+		system("cls");
+		setColor(3, 15);
+		Console::SetCursorPosition(0, 8);
+		cout << R"(
+               Tienes 2 habilidades:               
+             Habilidad A: Se activa al             
+               presionar la tecla Q                
+             Reposiciona los recursos              
+                  aleatoriamente                   
+                 cerca del centro                  
+            ---------------------------            
+             Habilidad B: Se activa al             
+               presionar la tecla E                
+             Reposicion a los enemigos             
+                  aleatoriamente                   
+                 lejos del centro                  
+)";
+		system("pause>0");
+		resetColor();
+		system("cls");
+		setColor(6, 0);
+		Console::SetCursorPosition(0, 10);
+		cout << R"(
+     Preparate para una aventura emocionante       
+       mientras trabajas para restaurar el         
+           equilibrio ecologico con                
+              'X', '~', '*' y '#'.                 
+-----Buena suerte, Guardian del Medio Ambiente-----
 )";
 		system("pause>0");
 		resetColor();
@@ -724,7 +1152,6 @@ public:
 		Console::SetCursorPosition(6, 14); cout << "- Jean Franck Loa Rojas | u20241E406"; setColor(6, 0);
 		Console::SetCursorPosition(6, 15); cout << "- Juan Tintaya Quina    | u202419718"; setColor(3, 0);
 		Console::SetCursorPosition(6, 16); cout << "- Joaquin Becerra Salas | u20231F717";
-		system("pause>0");
 		resetColor();
 	}
 	// Validación de la finalizacion del juego
@@ -741,21 +1168,23 @@ public:
 			if (progreso >= 100) {
 				setColor(15, 10);
 				cout << R"(
-  ____    _    _   _    _    ____ _____ _____ 
- / ___|  / \  | \ | |  / \  / ___|_   _| ____|
-| |  _  / _ \ |  \| | / _ \ \___ \ | | |  _|  
-| |_| |/ ___ \| |\  |/ ___ \ ___) || | | |___ 
- \____/_/   \_\_| \_/_/   \_\____/ |_| |_____|
+    ____    _    _   _    _    ____ _____ _____    
+   / ___|  / \  | \ | |  / \  / ___|_   _| ____|   
+  | |  _  / _ \ |  \| | / _ \ \___ \ | | |  _|     
+  | |_| |/ ___ \| |\  |/ ___ \ ___) || | | |___    
+   \____/_/   \_\_| \_/_/   \_\____/ |_| |_____|   
+    ____  _____  __ __  _____  ____ _____ _____    
 )";
 			}
 			else if (vidas <= 0 || tiempo <= 0) {
 				setColor(15, 12);
 				cout << R"(
- ____  _____ ____  ____ ___ ____ _____ _____ 
-|  _ \| ____|  _ \|  _ \_ _/ ___|_   _| ____|
-| |_) |  _| | |_) | | | | |\___ \ | | |  _|  
-|  __/| |___|  _ <| |_| | | ___) || | | |___ 
-|_|   |_____|_| \_\____/___|____/ |_| |_____|
+    ____  _____ ____  ____ ___ ____ _____ _____    
+   |  _ \| ____|  _ \|  _ \_ _/ ___|_   _| ____|   
+   | |_) |  _| | |_) | | | | |\___ \ | | |  _|     
+   |  __/| |___|  _ <| |_| | | ___) || | | |___    
+   |_|   |_____|_| \_\____/___|____/ |_| |_____|   
+    ____  _____ ____  ____ ___ ____ _____ _____    
 )";
 			}
 			_sleep(3000);
@@ -790,13 +1219,31 @@ public:
 		_sleep(3000);
 		resetColor();
 	}
+	Enemigo** getEnemigos() {
+		return this->enemigos;
+	}
+	int getN_Enemigos() {
+		return this->n_Enemigos;
+	}
+	void setN_Enemigos(int n) {
+		this->n_Enemigos = n;
+	}
+	Recurso** getRecursos() {
+		return this->recursos;
+	}
+	int getN_Recursos() {
+		return this->n_Recursos;
+	}
+	void setN_Recursos(int n) {
+		this->n_Recursos = n;
+	}
 	// Verificamos la colision con los recursos
 	void colisionRecursos() {
 		int heroeX = heroe->getX();
 		int heroeY = heroe->getY();
 
-		for (int i = 0; i < n_Recursos; ++i) {
-			bool eliminado = false; // Variable booleana en caso de colisión
+		for (int i = 0; i < this->n_Recursos; ++i) {
+			bool eliminado = false;
 			// Bucles for auxiliares para recorrer el cuerpo 3x3 del heroe
 			for (int dx = 0; dx <= 2; ++dx) {
 				for (int dy = 0; dy <= 2; ++dy) {
@@ -811,6 +1258,8 @@ public:
 							heroe->setY_Plantas(y);
 							// Aumentamos la cantidad de plantas
 							heroe->setN_Plantas(heroe->getN_Plantas() + 1);
+							// Actualizamos el progreso +5%
+							heroe->setProgreso(heroe->getProgreso() + 5);
 						}
 						else if (recursos[i]->getForma() == '*') {
 							// Guardamos la posicion del recurso para un arbol
@@ -818,6 +1267,8 @@ public:
 							heroe->setY_Arboles(y);
 							// Aumentamos la cantidad de arboles
 							heroe->setN_Arboles(heroe->getN_Arboles() + 1);
+							// Actualizamos el progreso +4%
+							heroe->setProgreso(heroe->getProgreso() + 4);
 						}
 						else if (recursos[i]->getForma() == '#') {
 							// Guardamos la posicion del recurso para una escoba
@@ -825,22 +1276,17 @@ public:
 							heroe->setY_Escobas(y);
 							// Aumentamos la cantidad de escobas
 							heroe->setN_Escobas(heroe->getN_Escobas() + 1);
+							// Actualizamos el progreso +3%
+							heroe->setProgreso(heroe->getProgreso() + 3);
 						}
-						// Actualizamos el progreso +5%
-						heroe->setProgreso(heroe->getProgreso() + 5);
-						// Borramos y eliminamos el recurso 
 						recursos[i]->borrar();
 						eliminarRecurso(i);
-						// Afirmamos eliminado
 						eliminado = true;
-						// Salimos del segundo bucle
 						break;
 					}
 				}
-				// Salimos del primer bucle
 				if (eliminado) break;
 			}
-			// Disminuimos i porque el cantidad de recursos se ha actualizado y el recurso se ha eliminado
 			if (eliminado) --i;
 		}
 	}
@@ -848,7 +1294,7 @@ public:
 	void colisionEnemigos() {
 		int heroeX = heroe->getX();
 		int heroeY = heroe->getY();
-		for (int i = 0; i < n_Enemigos; ++i) {
+		for (int i = 0; i < this->n_Enemigos; ++i) {
 			// Bucles for auxiliares para recorrer el cuerpo 3x3 del heroe
 			for (int dx = 0; dx <= 2; ++dx) {
 				for (int dy = 0; dy <= 2; ++dy) {
@@ -858,9 +1304,41 @@ public:
 						heroe->borrarVida(heroe->getVidas());
 						// Disminuimos la cantidad de vidas en 1
 						heroe->setVidas(heroe->getVidas() - 1);
+						// Actualizamos el progreso -2%
+						heroe->setProgreso(heroe->getProgreso() - 2);
 					}
 				}
 			}
+		}
+	}
+	// Verificamos la colision con los enemigos
+	void colisionAliados() {
+		int heroeX = heroe->getX();
+		int heroeY = heroe->getY();
+		for (int i = 0; i < this->n_Aliados; ++i) {
+			bool eliminado = false;
+			// Bucles for auxiliares para recorrer el cuerpo 3x3 del heroe y del aliado
+			for (int dx = 0; dx <= 2; ++dx) {
+				for (int dy = 0; dy <= 2; ++dy) {
+					// Verificamos la colisión
+					if (aliados[i]->getX() <= heroeX + dx && aliados[i]->getX() + 2 >= heroeX + dx &&
+						aliados[i]->getY() <= heroeY + dy && aliados[i]->getY() + 2 >= heroeY + dy) {
+						// 
+						heroe->setVidas(heroe->getVidas() + 1);
+						heroe->setTiempo(heroe->getTiempo() + 7);
+						// Agregamos 10 recursos
+						for (int j = 0; j < 10; ++j) {
+							agregarRecurso();
+						}
+						aliados[i]->borrar();
+						eliminarAliado(i);
+						eliminado = true;
+						break;
+					}
+				}
+				if (eliminado) break;
+			}
+			if (eliminado) --i;
 		}
 	}
 	// Movemos a los enemigos
@@ -879,32 +1357,58 @@ public:
 		// Bucle para recorrer la cantidad de recursos y moverlos
 		for (int i = 0; i < n_Recursos; ++i) {
 			setColor(8, 15);
-			recursos[i]->borrar();
-			recursos[i]->mover();
 			recursos[i]->dibujar();
+			resetColor();
+		}
+	}
+	// Movemos a los aliados
+	void moverAliados() {
+		for (int i = 0; i < n_Aliados; ++i) {
+			setColor(3, 15);
+			aliados[i]->borrar();
+			aliados[i]->mover();
+			aliados[i]->dibujar();
 			resetColor();
 		}
 	}
 	// Eliminamos un recurso indicado
 	void eliminarRecurso(int indice) {
-		// Eliminamos el recurso indicado
-		delete recursos[indice];
-		// Ajustamos todas las posiciones por el espacio libre del recurso eliminado
+		// Desplazamos recursos una posicion atras
 		for (int i = indice; i < n_Recursos - 1; ++i) {
 			recursos[i] = recursos[i + 1];
 		}
 		// Disminuimos la cantidad de recursos
 		--n_Recursos;
-		// Creamos una copia para almacenar el nuevo arreglo de recursos
-		Recurso** copia = new Recurso * [n_Recursos];
-		// Guardamos todos los recursos del antiguo arreglo al nuevo
+		// Asignamos puntero nulo al recurso sobrante
+		recursos[n_Recursos] = nullptr;
+	}
+	// Eliminamos un aliado indicado
+	void eliminarAliado(int indice) {
+		// Desplazamos aliados una posicion atras
+		for (int i = indice; i < n_Aliados - 1; ++i) {
+			aliados[i] = aliados[i + 1];
+		}
+		// Disminuimos la cantidad de aliados
+		--n_Aliados;
+		// Asignamos puntero nulo al aliado sobrante
+		aliados[n_Aliados] = nullptr;
+	}
+	// Agregamos un recurso
+	void agregarRecurso() {
+		// Creamos una copia de arreglo de recursos mas una cantidad
+		Recurso** copia = new Recurso * [n_Recursos + 1];
+		// Copiamos todos los elementos del arreglo original de recursos a la copia
 		for (int i = 0; i < n_Recursos; ++i) {
 			copia[i] = recursos[i];
 		}
-		// Eliminamos el antiguo arreglo
+		// Asignamos en la nueva posicion un recurso contruido aleatoriamente
+		copia[n_Recursos] = new Recurso(randX(), randY(), randRecurso());
+		// Borramos el arreglo original
 		delete[] recursos;
 		// Apuntamos al nuevo arreglo
 		recursos = copia;
+		// Aumentamos la cantidad de recursos
+		++n_Recursos;
 	}
 	// Iniciamos el juego
 	void iniciarJuego() {
@@ -916,17 +1420,18 @@ public:
 		bool final = false; // Booleano para controlar el estado de la partida
 
 		// Dibujamos el mapa
-		tablero->DIBUJAR_MAPA();
+		tablero->dibujar_Mapa();
 		// Bucle while del juego
 		while (!final) {
 			// Dibujamos los obstaculos
-			tablero->DIBUJAR_OBSTACULOS();
+			tablero->dibujar_Obstaculos();
 			// Dibujamos los labores que el heroe ha hecho
-			heroe->Labores();
+			heroe->labores();
 			// Movemos los recursos y enemigos
 			moverRecursos();
 			moverEnemigos();
-			
+			moverAliados();
+
 			// Verificamos si alguna tecla se presiono
 			if (_kbhit()) {
 				// Capturamos la tecla
@@ -938,22 +1443,27 @@ public:
 				heroe->mover(input, tablero->getN_Obs(), tablero->getObstaculo());
 				// Borramos la antigua posición del heroe
 				heroe->borrar(prevx, prevy);
+				// Activar las habilidades si la entrada lo permite
+				heroe->habilidades(input, getEnemigos(), getN_Enemigos(), getRecursos(), getN_Recursos());
 			}
 			// Dibujamos al heroe
 			heroe->dibujar(heroe->getX(), heroe->getY());
-			// Verificamos la colisión con los recursos
+			// Verificamos la colisión con los recursos, enemigos y aliados
 			colisionRecursos();
 			colisionEnemigos();
+			colisionAliados();
 			// Dibujamos las vidas
 			heroe->dibujarVidas();
 			// Dibujamos los progreso
 			heroe->mostrarProgreso();
+			// Mostramos el stock de habilidades
+			heroe->mostrarHabilidades();
 			// Velocidad del bucle
-			_sleep(50);
+			_sleep(100);
 			// Dibujamos el contador
 			heroe->mostrarContador();
 			// Actualizamos el tiempo respecto al tiempo del bucle
-			heroe->setTiempo(heroe->getTiempo() - 0.07);
+			heroe->setTiempo(heroe->getTiempo() - 0.21);
 			// Asignamos la validacion al booleano que controla el juego
 			final = validacion(heroe->getProgreso(), heroe->getVidas(), heroe->getTiempo());
 		}
@@ -1025,12 +1535,20 @@ void Menu(Juego* ObjJuego) {
 				while (!ready) {
 					system("cls");
 					setColor(3, 15);
-					Console::SetCursorPosition(7, 12); cout << "Selecciona la dificultad: ";
+					Console::SetCursorPosition(3, 7); cout << "Selecciona la dificultad: ";
 					setColor(15, 0);
-					Console::SetCursorPosition(7, 13); cout << "1. Facil - 50 recursos, 3 enemigos";
-					Console::SetCursorPosition(7, 14); cout << "2. Medio - 40 recursos, 5 enemigos";
-					Console::SetCursorPosition(7, 15); cout << "3. Dificil - 30 recursos, 7 enemigos";
-					Console::SetCursorPosition(7, 16); cout << "4. Extremo - 20 recursos, 9 enemigos";
+					Console::SetCursorPosition(3, 8); cout << "1. Facil:";
+					Console::SetCursorPosition(3, 9); cout << "60 recursos, 3 enemigos, 60 segundos";
+					Console::SetCursorPosition(3, 10); cout << "4 bloques, 6 habilidades (A-B), 6 aliados";
+					Console::SetCursorPosition(3, 11); cout << "2. Medio:";
+					Console::SetCursorPosition(3, 12); cout << "50 recursos, 6 enemigos, 55 segundos";
+					Console::SetCursorPosition(3, 13); cout << "6 bloques, 5 habilidades (A-B), 5 aliados";
+					Console::SetCursorPosition(3, 14); cout << "3. Dificil:";
+					Console::SetCursorPosition(3, 15); cout << "40 recursos, 9 enemigos, 50 segundos";
+					Console::SetCursorPosition(3, 16); cout << "8 bloques, 4 habilidades (A-B), 4 aliados";
+					Console::SetCursorPosition(3, 17); cout << "4. Extremo:";
+					Console::SetCursorPosition(3, 18); cout << "30 recursos, 12 enemigos, 45 segundos";
+					Console::SetCursorPosition(3, 19); cout << "12 bloques, 3 habilidades (A-B), 2 aliados";
 					resetColor();
 					// Obtenemos el numero de entrada
 					dificultadInput = _getch() - '0';
@@ -1038,20 +1556,20 @@ void Menu(Juego* ObjJuego) {
 					// Condicional para manejar el flujo del constructor
 					switch (dificultadInput) {
 					case 1:
-						ObjJuego = new Juego(3, 50);
+						ObjJuego = new Juego(1);
 						break;
 					case 2:
-						ObjJuego = new Juego(5, 40);
+						ObjJuego = new Juego(2);
 						break;
 					case 3:
-						ObjJuego = new Juego(7, 30);
+						ObjJuego = new Juego(3);
 						break;
 					case 4:
-						ObjJuego = new Juego(9, 20);
+						ObjJuego = new Juego(4);
 						break;
 					default:
-						Console::SetCursorPosition(7, 17);
-						cout << "Opcion invalida, elige una opcion del 1 al 4.\n";
+						Console::SetCursorPosition(3, 20);
+						cout << "Opcion invalida [1 - 4]\n";
 						system("pause>0");
 						break;
 					}
