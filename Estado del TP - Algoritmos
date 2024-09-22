@@ -76,13 +76,13 @@ protected:
 	int x, y;
 	char forma;
 public:
-	Elemento(){}
+	Elemento() {}
 	Elemento(int x, int y, char forma = 0) {
 		this->x = x;
 		this->y = y;
 		this->forma = forma;
 	}
-	virtual ~Elemento(){}
+	virtual ~Elemento() {}
 	virtual void dibujar() {}
 	virtual void borrar() {}
 	virtual void mover() {}
@@ -110,7 +110,7 @@ public:
 class Obstaculo : public Elemento {
 public:
 	// Constructor por defecto
-	Obstaculo(){}
+	Obstaculo() {}
 	// Construir el obstaculo
 	Obstaculo(int x, int y, char forma) : Elemento(x, y, forma) {}
 	// Destruir el obstaculo
@@ -123,7 +123,7 @@ public:
 	// Implementaciones necesarias aunque no utiles para obstaculo
 	void mover() override {}
 	void borrar() override {}
-}; // Check
+};
 // Clase del tablero
 class Tablero {
 private:
@@ -136,7 +136,7 @@ private:
 	int modo;
 public:
 	// Constructor por defecto
-	Tablero(){}
+	Tablero() {}
 	// Construimos el tablero y obstaculos
 	Tablero(int modo) : modo(modo), ANCHO(25), LARGO(50), TABLERO(nullptr), obstaculos(nullptr) {
 		TABLERO = new char* [ANCHO];
@@ -178,203 +178,203 @@ public:
 		}
 		// Obstaculos para el modo facil
 		if (modo == 1) {
-				n_Obstaculos = 20;
-				obstaculos = new Obstaculo * [n_Obstaculos];
-				
-				obstaculos[0] = new Obstaculo(10, 5, 186);
-				obstaculos[1] = new Obstaculo(10, 4, 186);
-				obstaculos[2] = new Obstaculo(10, 3, 201);
-				obstaculos[3] = new Obstaculo(11, 3, 205);
-				obstaculos[4] = new Obstaculo(12, 3, 205);
+			n_Obstaculos = 20;
+			obstaculos = new Obstaculo * [n_Obstaculos];
 
-				obstaculos[5] = new Obstaculo(43, 4, 186);
-				obstaculos[6] = new Obstaculo(43, 5, 185);
-				obstaculos[7] = new Obstaculo(43, 6, 200);
-				obstaculos[8] = new Obstaculo(44, 6, 205);
-				obstaculos[9] = new Obstaculo(45, 6, 205);
+			obstaculos[0] = new Obstaculo(10, 5, 186);
+			obstaculos[1] = new Obstaculo(10, 4, 186);
+			obstaculos[2] = new Obstaculo(10, 3, 201);
+			obstaculos[3] = new Obstaculo(11, 3, 205);
+			obstaculos[4] = new Obstaculo(12, 3, 205);
 
-				obstaculos[10] = new Obstaculo(8, 19, 188);
-				obstaculos[11] = new Obstaculo(8, 18, 201);
-				obstaculos[12] = new Obstaculo(9, 18, 205);
-				obstaculos[13] = new Obstaculo(10, 18, 187);
-				obstaculos[14] = new Obstaculo(10, 19, 186);
+			obstaculos[5] = new Obstaculo(43, 4, 186);
+			obstaculos[6] = new Obstaculo(43, 5, 185);
+			obstaculos[7] = new Obstaculo(43, 6, 200);
+			obstaculos[8] = new Obstaculo(44, 6, 205);
+			obstaculos[9] = new Obstaculo(45, 6, 205);
 
-				obstaculos[15] = new Obstaculo(40, 18, 187);
-				obstaculos[16] = new Obstaculo(40, 19, 204);
-				obstaculos[17] = new Obstaculo(40, 20, 186);
-				obstaculos[18] = new Obstaculo(41, 19, 205);
-				obstaculos[19] = new Obstaculo(42, 19, 205);
-			}
+			obstaculos[10] = new Obstaculo(8, 19, 188);
+			obstaculos[11] = new Obstaculo(8, 18, 201);
+			obstaculos[12] = new Obstaculo(9, 18, 205);
+			obstaculos[13] = new Obstaculo(10, 18, 187);
+			obstaculos[14] = new Obstaculo(10, 19, 186);
+
+			obstaculos[15] = new Obstaculo(40, 18, 187);
+			obstaculos[16] = new Obstaculo(40, 19, 204);
+			obstaculos[17] = new Obstaculo(40, 20, 186);
+			obstaculos[18] = new Obstaculo(41, 19, 205);
+			obstaculos[19] = new Obstaculo(42, 19, 205);
+		}
 		// Obstaculos para el modo medio
 		else if (modo == 2) {
-				n_Obstaculos = 30;
-				obstaculos = new Obstaculo * [n_Obstaculos];
-				
-				obstaculos[0] = new Obstaculo(7, 10, 187);
-				obstaculos[1] = new Obstaculo(7, 11, 200);
-				obstaculos[2] = new Obstaculo(8, 11, 188);
-				obstaculos[3] = new Obstaculo(8, 10, 205);
-				obstaculos[4] = new Obstaculo(8, 9, 205);
-				
-				obstaculos[5] = new Obstaculo(6, 15, 205);
-				obstaculos[6] = new Obstaculo(7, 15, 203);
-				obstaculos[7] = new Obstaculo(8, 15, 205);
-				obstaculos[8] = new Obstaculo(9, 15, 205);
-				obstaculos[9] = new Obstaculo(10, 15, 187);
+			n_Obstaculos = 30;
+			obstaculos = new Obstaculo * [n_Obstaculos];
 
-				obstaculos[10] = new Obstaculo(23, 21, 205);
-				obstaculos[11] = new Obstaculo(24, 21, 205);
-				obstaculos[12] = new Obstaculo(25, 21, 188);
-				obstaculos[13] = new Obstaculo(25, 20, 186);
-				obstaculos[14] = new Obstaculo(25, 19, 186);
+			obstaculos[0] = new Obstaculo(7, 10, 187);
+			obstaculos[1] = new Obstaculo(7, 11, 200);
+			obstaculos[2] = new Obstaculo(8, 11, 188);
+			obstaculos[3] = new Obstaculo(8, 10, 205);
+			obstaculos[4] = new Obstaculo(8, 9, 205);
 
-				obstaculos[15] = new Obstaculo(41, 14, 205);
-				obstaculos[16] = new Obstaculo(40, 14, 201);
-				obstaculos[17] = new Obstaculo(40, 15, 186);
-				obstaculos[18] = new Obstaculo(40, 16, 204);
-				obstaculos[19] = new Obstaculo(41, 16, 205);
+			obstaculos[5] = new Obstaculo(6, 15, 205);
+			obstaculos[6] = new Obstaculo(7, 15, 203);
+			obstaculos[7] = new Obstaculo(8, 15, 205);
+			obstaculos[8] = new Obstaculo(9, 15, 205);
+			obstaculos[9] = new Obstaculo(10, 15, 187);
 
-				obstaculos[20] = new Obstaculo(39, 11, 205);
-				obstaculos[21] = new Obstaculo(40, 11, 202);
-				obstaculos[22] = new Obstaculo(41, 11, 205);
-				obstaculos[23] = new Obstaculo(39, 10, 186);
-				obstaculos[24] = new Obstaculo(39, 9, 186);
+			obstaculos[10] = new Obstaculo(23, 21, 205);
+			obstaculos[11] = new Obstaculo(24, 21, 205);
+			obstaculos[12] = new Obstaculo(25, 21, 188);
+			obstaculos[13] = new Obstaculo(25, 20, 186);
+			obstaculos[14] = new Obstaculo(25, 19, 186);
 
-				obstaculos[25] = new Obstaculo(22, 6, 186);
-				obstaculos[26] = new Obstaculo(22, 5, 201);
-				obstaculos[27] = new Obstaculo(23, 5, 205);
-				obstaculos[28] = new Obstaculo(24, 5, 205);
-				obstaculos[29] = new Obstaculo(25, 5, 205);
-			}
+			obstaculos[15] = new Obstaculo(41, 14, 205);
+			obstaculos[16] = new Obstaculo(40, 14, 201);
+			obstaculos[17] = new Obstaculo(40, 15, 186);
+			obstaculos[18] = new Obstaculo(40, 16, 204);
+			obstaculos[19] = new Obstaculo(41, 16, 205);
+
+			obstaculos[20] = new Obstaculo(39, 11, 205);
+			obstaculos[21] = new Obstaculo(40, 11, 202);
+			obstaculos[22] = new Obstaculo(41, 11, 205);
+			obstaculos[23] = new Obstaculo(39, 10, 186);
+			obstaculos[24] = new Obstaculo(39, 9, 186);
+
+			obstaculos[25] = new Obstaculo(22, 6, 186);
+			obstaculos[26] = new Obstaculo(22, 5, 201);
+			obstaculos[27] = new Obstaculo(23, 5, 205);
+			obstaculos[28] = new Obstaculo(24, 5, 205);
+			obstaculos[29] = new Obstaculo(25, 5, 205);
+		}
 		// Obstaculos para el modo dificil
 		else if (modo == 3) {
-				n_Obstaculos = 40;
-				obstaculos = new Obstaculo * [n_Obstaculos];
-				obstaculos[0] = new Obstaculo(4, 10, 205);
-				obstaculos[1] = new Obstaculo(5, 10, 205);
-				obstaculos[2] = new Obstaculo(6, 10, 205);
-				obstaculos[3] = new Obstaculo(7, 10, 205);
-				obstaculos[4] = new Obstaculo(8, 10, 205);
+			n_Obstaculos = 40;
+			obstaculos = new Obstaculo * [n_Obstaculos];
+			obstaculos[0] = new Obstaculo(4, 10, 205);
+			obstaculos[1] = new Obstaculo(5, 10, 205);
+			obstaculos[2] = new Obstaculo(6, 10, 205);
+			obstaculos[3] = new Obstaculo(7, 10, 205);
+			obstaculos[4] = new Obstaculo(8, 10, 205);
 
-				obstaculos[5] = new Obstaculo(5, 15, 186);
-				obstaculos[6] = new Obstaculo(5, 16, 186);
-				obstaculos[7] = new Obstaculo(5, 17, 186);
-				obstaculos[8] = new Obstaculo(5, 18, 200);
-				obstaculos[9] = new Obstaculo(6, 18, 205);
+			obstaculos[5] = new Obstaculo(5, 15, 186);
+			obstaculos[6] = new Obstaculo(5, 16, 186);
+			obstaculos[7] = new Obstaculo(5, 17, 186);
+			obstaculos[8] = new Obstaculo(5, 18, 200);
+			obstaculos[9] = new Obstaculo(6, 18, 205);
 
-				obstaculos[10] = new Obstaculo(18, 23, 205);
-				obstaculos[11] = new Obstaculo(19, 23, 188);
-				obstaculos[12] = new Obstaculo(19, 22, 186);
-				obstaculos[13] = new Obstaculo(19, 21, 186);
-				obstaculos[14] = new Obstaculo(19, 20, 186);
+			obstaculos[10] = new Obstaculo(18, 23, 205);
+			obstaculos[11] = new Obstaculo(19, 23, 188);
+			obstaculos[12] = new Obstaculo(19, 22, 186);
+			obstaculos[13] = new Obstaculo(19, 21, 186);
+			obstaculos[14] = new Obstaculo(19, 20, 186);
 
-				obstaculos[15] = new Obstaculo(30, 22, 205);
-				obstaculos[16] = new Obstaculo(31, 22, 203);
-				obstaculos[17] = new Obstaculo(32, 22, 188);
-				obstaculos[18] = new Obstaculo(32, 21, 186);
-				obstaculos[19] = new Obstaculo(31, 23, 186);
+			obstaculos[15] = new Obstaculo(30, 22, 205);
+			obstaculos[16] = new Obstaculo(31, 22, 203);
+			obstaculos[17] = new Obstaculo(32, 22, 188);
+			obstaculos[18] = new Obstaculo(32, 21, 186);
+			obstaculos[19] = new Obstaculo(31, 23, 186);
 
-				obstaculos[20] = new Obstaculo(43, 17, 205);
-				obstaculos[21] = new Obstaculo(44, 17, 205);
-				obstaculos[22] = new Obstaculo(45, 17, 188);
-				obstaculos[23] = new Obstaculo(45, 16, 186);
-				obstaculos[24] = new Obstaculo(45, 15, 186);
+			obstaculos[20] = new Obstaculo(43, 17, 205);
+			obstaculos[21] = new Obstaculo(44, 17, 205);
+			obstaculos[22] = new Obstaculo(45, 17, 188);
+			obstaculos[23] = new Obstaculo(45, 16, 186);
+			obstaculos[24] = new Obstaculo(45, 15, 186);
 
-				obstaculos[25] = new Obstaculo(43, 11, 186);
-				obstaculos[26] = new Obstaculo(43, 10, 201);
-				obstaculos[27] = new Obstaculo(44, 10, 205);
-				obstaculos[28] = new Obstaculo(45, 10, 188);
-				obstaculos[29] = new Obstaculo(45, 9, 186);
+			obstaculos[25] = new Obstaculo(43, 11, 186);
+			obstaculos[26] = new Obstaculo(43, 10, 201);
+			obstaculos[27] = new Obstaculo(44, 10, 205);
+			obstaculos[28] = new Obstaculo(45, 10, 188);
+			obstaculos[29] = new Obstaculo(45, 9, 186);
 
-				obstaculos[30] = new Obstaculo(30, 3, 205);
-				obstaculos[31] = new Obstaculo(31, 3, 206);
-				obstaculos[32] = new Obstaculo(32, 3, 205);
-				obstaculos[33] = new Obstaculo(31, 4, 186);
-				obstaculos[34] = new Obstaculo(31, 5, 186);
+			obstaculos[30] = new Obstaculo(30, 3, 205);
+			obstaculos[31] = new Obstaculo(31, 3, 206);
+			obstaculos[32] = new Obstaculo(32, 3, 205);
+			obstaculos[33] = new Obstaculo(31, 4, 186);
+			obstaculos[34] = new Obstaculo(31, 5, 186);
 
-				obstaculos[35] = new Obstaculo(17, 4, 202);
-				obstaculos[36] = new Obstaculo(18, 4, 205);
-				obstaculos[37] = new Obstaculo(19, 4, 205);
-				obstaculos[38] = new Obstaculo(20, 4, 205);
-				obstaculos[39] = new Obstaculo(17, 3, 186);
-			}
+			obstaculos[35] = new Obstaculo(17, 4, 202);
+			obstaculos[36] = new Obstaculo(18, 4, 205);
+			obstaculos[37] = new Obstaculo(19, 4, 205);
+			obstaculos[38] = new Obstaculo(20, 4, 205);
+			obstaculos[39] = new Obstaculo(17, 3, 186);
+		}
 		// Obstaculos para el modo extremo
 		else if (modo == 4) {
 			n_Obstaculos = 60;
-				obstaculos = new Obstaculo * [n_Obstaculos];
-				
-				obstaculos[0] = new Obstaculo(9, 3, 205);
-				obstaculos[1] = new Obstaculo(10, 3, 206);
-				obstaculos[2] = new Obstaculo(11, 3, 205);
-				obstaculos[3] = new Obstaculo(10, 2, 186);
-				obstaculos[4] = new Obstaculo(10, 4, 186);
+			obstaculos = new Obstaculo * [n_Obstaculos];
 
-				obstaculos[5] = new Obstaculo(19, 4, 205);
-				obstaculos[6] = new Obstaculo(20, 4, 188);
-				obstaculos[7] = new Obstaculo(20, 3, 186);
-				obstaculos[8] = new Obstaculo(20, 2, 201);
-				obstaculos[9] = new Obstaculo(21, 2, 205);
+			obstaculos[0] = new Obstaculo(9, 3, 205);
+			obstaculos[1] = new Obstaculo(10, 3, 206);
+			obstaculos[2] = new Obstaculo(11, 3, 205);
+			obstaculos[3] = new Obstaculo(10, 2, 186);
+			obstaculos[4] = new Obstaculo(10, 4, 186);
 
-				obstaculos[10] = new Obstaculo(30, 2, 186);
-				obstaculos[11] = new Obstaculo(30, 3, 185);
-				obstaculos[12] = new Obstaculo(30, 4, 200);
-				obstaculos[13] = new Obstaculo(31, 4, 205);
-				obstaculos[14] = new Obstaculo(29, 3, 205);
+			obstaculos[5] = new Obstaculo(19, 4, 205);
+			obstaculos[6] = new Obstaculo(20, 4, 188);
+			obstaculos[7] = new Obstaculo(20, 3, 186);
+			obstaculos[8] = new Obstaculo(20, 2, 201);
+			obstaculos[9] = new Obstaculo(21, 2, 205);
 
-				obstaculos[15] = new Obstaculo(39, 4, 205);
-				obstaculos[16] = new Obstaculo(40, 4, 188);
-				obstaculos[17] = new Obstaculo(40, 3, 201);
-				obstaculos[18] = new Obstaculo(41, 3, 188);
-				obstaculos[19] = new Obstaculo(41, 2, 186);
+			obstaculos[10] = new Obstaculo(30, 2, 186);
+			obstaculos[11] = new Obstaculo(30, 3, 185);
+			obstaculos[12] = new Obstaculo(30, 4, 200);
+			obstaculos[13] = new Obstaculo(31, 4, 205);
+			obstaculos[14] = new Obstaculo(29, 3, 205);
 
-				obstaculos[20] = new Obstaculo(9, 17, 205);
-				obstaculos[21] = new Obstaculo(10, 17, 202);
-				obstaculos[22] = new Obstaculo(11, 17, 187);
-				obstaculos[23] = new Obstaculo(11, 18, 186);
-				obstaculos[24] = new Obstaculo(10, 16, 186);
+			obstaculos[15] = new Obstaculo(39, 4, 205);
+			obstaculos[16] = new Obstaculo(40, 4, 188);
+			obstaculos[17] = new Obstaculo(40, 3, 201);
+			obstaculos[18] = new Obstaculo(41, 3, 188);
+			obstaculos[19] = new Obstaculo(41, 2, 186);
 
-				obstaculos[25] = new Obstaculo(19, 16, 205);
-				obstaculos[26] = new Obstaculo(20, 16, 206);
-				obstaculos[27] = new Obstaculo(20, 17, 186);
-				obstaculos[28] = new Obstaculo(20, 18, 186);
-				obstaculos[29] = new Obstaculo(21, 16, 205);
+			obstaculos[20] = new Obstaculo(9, 17, 205);
+			obstaculos[21] = new Obstaculo(10, 17, 202);
+			obstaculos[22] = new Obstaculo(11, 17, 187);
+			obstaculos[23] = new Obstaculo(11, 18, 186);
+			obstaculos[24] = new Obstaculo(10, 16, 186);
 
-				obstaculos[30] = new Obstaculo(29, 16, 205);
-				obstaculos[31] = new Obstaculo(30, 16, 187);
-				obstaculos[32] = new Obstaculo(30, 17, 186);
-				obstaculos[33] = new Obstaculo(30, 18, 188);
-				obstaculos[34] = new Obstaculo(29, 18, 205);
+			obstaculos[25] = new Obstaculo(19, 16, 205);
+			obstaculos[26] = new Obstaculo(20, 16, 206);
+			obstaculos[27] = new Obstaculo(20, 17, 186);
+			obstaculos[28] = new Obstaculo(20, 18, 186);
+			obstaculos[29] = new Obstaculo(21, 16, 205);
 
-				obstaculos[35] = new Obstaculo(39, 18, 205);
-				obstaculos[36] = new Obstaculo(40, 18, 205);
-				obstaculos[37] = new Obstaculo(41, 18, 188);
-				obstaculos[38] = new Obstaculo(41, 17, 186);
-				obstaculos[39] = new Obstaculo(41, 16, 186);
+			obstaculos[30] = new Obstaculo(29, 16, 205);
+			obstaculos[31] = new Obstaculo(30, 16, 187);
+			obstaculos[32] = new Obstaculo(30, 17, 186);
+			obstaculos[33] = new Obstaculo(30, 18, 188);
+			obstaculos[34] = new Obstaculo(29, 18, 205);
 
-				obstaculos[40] = new Obstaculo(10, 6, 186);
-				obstaculos[41] = new Obstaculo(10, 7, 186);
-				obstaculos[42] = new Obstaculo(10, 8, 186);
-				obstaculos[43] = new Obstaculo(10, 9, 186);
-				obstaculos[44] = new Obstaculo(10, 10, 186);
+			obstaculos[35] = new Obstaculo(39, 18, 205);
+			obstaculos[36] = new Obstaculo(40, 18, 205);
+			obstaculos[37] = new Obstaculo(41, 18, 188);
+			obstaculos[38] = new Obstaculo(41, 17, 186);
+			obstaculos[39] = new Obstaculo(41, 16, 186);
 
-				obstaculos[45] = new Obstaculo(8, 13, 205);
-				obstaculos[46] = new Obstaculo(9, 13, 187);
-				obstaculos[47] = new Obstaculo(9, 14, 200);
-				obstaculos[48] = new Obstaculo(10, 14, 205);
-				obstaculos[49] = new Obstaculo(11, 14, 205);
+			obstaculos[40] = new Obstaculo(10, 6, 186);
+			obstaculos[41] = new Obstaculo(10, 7, 186);
+			obstaculos[42] = new Obstaculo(10, 8, 186);
+			obstaculos[43] = new Obstaculo(10, 9, 186);
+			obstaculos[44] = new Obstaculo(10, 10, 186);
 
-				obstaculos[50] = new Obstaculo(39, 7, 205);
-				obstaculos[51] = new Obstaculo(40, 7, 205);
-				obstaculos[52] = new Obstaculo(41, 7, 185);
-				obstaculos[53] = new Obstaculo(41, 8, 186);
-				obstaculos[54] = new Obstaculo(41, 6, 186);
+			obstaculos[45] = new Obstaculo(8, 13, 205);
+			obstaculos[46] = new Obstaculo(9, 13, 187);
+			obstaculos[47] = new Obstaculo(9, 14, 200);
+			obstaculos[48] = new Obstaculo(10, 14, 205);
+			obstaculos[49] = new Obstaculo(11, 14, 205);
 
-				obstaculos[55] = new Obstaculo(38, 14, 205);
-				obstaculos[56] = new Obstaculo(39, 14, 205);
-				obstaculos[57] = new Obstaculo(40, 14, 188);
-				obstaculos[58] = new Obstaculo(40, 13, 201);
-				obstaculos[59] = new Obstaculo(41, 13, 205);
-			}
+			obstaculos[50] = new Obstaculo(39, 7, 205);
+			obstaculos[51] = new Obstaculo(40, 7, 205);
+			obstaculos[52] = new Obstaculo(41, 7, 185);
+			obstaculos[53] = new Obstaculo(41, 8, 186);
+			obstaculos[54] = new Obstaculo(41, 6, 186);
+
+			obstaculos[55] = new Obstaculo(38, 14, 205);
+			obstaculos[56] = new Obstaculo(39, 14, 205);
+			obstaculos[57] = new Obstaculo(40, 14, 188);
+			obstaculos[58] = new Obstaculo(40, 13, 201);
+			obstaculos[59] = new Obstaculo(41, 13, 205);
+		}
 	}
 	// Destruimos el tablero virtualmente
 	virtual ~Tablero() {
@@ -430,11 +430,11 @@ public:
 class Aliado : public Elemento {
 public:
 	// Constructor por defecto
-	Aliado(){}
+	Aliado() {}
 	// Constructor de aliado
-	Aliado(int x, int y) : Elemento(x, y){}
+	Aliado(int x, int y) : Elemento(x, y) {}
 	// Destruimos virtualmente aliado
-	virtual ~Aliado(){}
+	virtual ~Aliado() {}
 	// Dibujamos el aliado celeste
 	void dibujar() override {
 		setColor(3, 15);
@@ -481,7 +481,7 @@ public:
 		cout << " ";
 	}
 	// Movemos el enemigo
-	void mover() override  {
+	void mover() override {
 		x += randD();
 		y += randD();
 		if (x < 1)	x = 1;
@@ -576,7 +576,7 @@ public:
 	// Mostramos el stock de habilidades
 	void mostrarHabilidades() {
 		Console::SetCursorPosition(18, 29); cout << "A: " << setw(1) << n_Habilidades_A;
-		Console::SetCursorPosition(30, 29); cout << "B: " << setw(1)<< n_Habilidades_B;
+		Console::SetCursorPosition(30, 29); cout << "B: " << setw(1) << n_Habilidades_B;
 	}
 	// Dibujamos el heroe
 	void dibujar(int x, int y) {
@@ -757,12 +757,12 @@ public:
 	// Metodo set para tiempo
 	void setTiempo(float tiempo) { this->tiempo = tiempo; }
 	// Metodo set para vidas
-	void setVidas(int vidas) { 
+	void setVidas(int vidas) {
 		if (vidas >= 5) vidas = 5;
 		this->vidas = vidas;
 	}
 	// Metodo set progreso
-	void setProgreso(int progreso) { 
+	void setProgreso(int progreso) {
 		if (progreso < 0) progreso = 0;
 		this->progreso = progreso;
 	}
