@@ -1675,6 +1675,7 @@ void UPClogo(int x, int y) {
 
 // Funcion del Trabajo Parcial
 void TrabajoParcial() {
+	Console::SetWindowSize(50, 30);			// Ajustamos el tamaño de la pantalla
 	srand(time(0));					// Inicializamos la semilla para numeros aleatorios
 	hidecursor();					// Ocultamos el cursor
 	UPClogo(5, 5);					// Imprimimos el logo de la UPC
